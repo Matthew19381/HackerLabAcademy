@@ -14,13 +14,13 @@ start.bat
 .\start.ps1
 
 # Manual — backend (from HackerLabAcademy/)
-uvicorn backend.main:app --reload --port 8000
+uvicorn backend.main:app --reload --port 8001
 
 # Manual — frontend (from HackerLabAcademy/frontend/)
 npm run dev
 ```
 
-Frontend dev server runs on `:5173` and proxies `/api` to `http://localhost:8000` (configured in `frontend/vite.config.js`).
+Frontend dev server runs on `:5174` and proxies `/api` to `http://localhost:8001` (configured in `frontend/vite.config.js`).
 
 ## Environment
 
