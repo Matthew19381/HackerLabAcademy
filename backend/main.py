@@ -66,6 +66,23 @@ TOPICS_SEED = [
      "difficulty": 4, "prerequisites": ["file-upload"],
      "description": "Dołączanie lokalnych i zdalnych plików — LFI i RFI.",
      "lab_type": "dvwa_file_inclusion", "order_index": 32},
+    # ── Level 5: Expert ──────────────────────────────────────────────
+    {"slug": "java-security", "name": "Java Security", "category": "Expert",
+     "difficulty": 5, "prerequisites": ["blind-sqli", "stored-xss"],
+     "description": "Podatności w aplikacjach Java: deserializacja, SpEL, SSTI, JNDI.",
+     "lab_type": None, "order_index": 40},
+    {"slug": "api-security", "name": "API Security", "category": "Expert",
+     "difficulty": 5, "prerequisites": ["blind-sqli", "stored-xss"],
+     "description": "Ataki na REST/GraphQL: BOLA, mass assignment, improper rate limiting.",
+     "lab_type": None, "order_index": 41},
+    {"slug": "crypto-basics", "name": "Cryptography Basics", "category": "Expert",
+     "difficulty": 5, "prerequisites": ["http-basics"],
+     "description": "Słabe generatory liczb, padding attacks, słabe hashowanie, JWT attacks.",
+     "lab_type": None, "order_index": 42},
+    {"slug": "privilege-escalation", "name": "Privilege Escalation", "category": "Expert",
+     "difficulty": 5, "prerequisites": ["command-injection"],
+     "description": "Linux/Windows escalation: SUID, cron, sudo, kernel exploits.",
+     "lab_type": None, "order_index": 43},
 ]
 
 
