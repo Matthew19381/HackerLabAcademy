@@ -35,6 +35,26 @@ ACHIEVEMENT_DEFS = {
     "owasp_sqli": ("Mistrz SQL", "Opanowałeś SQL Injection", "💉"),
     "owasp_xss": ("Łowca XSS", "Opanowałeś Cross-Site Scripting", "🕷️"),
     "owasp_complete": ("Wojownik OWASP", "Ukończyłeś wszystkie tematy OWASP Top 10", "🛡️"),
+    # CTF
+    "first_ctf": ("Łowca Flag", "Rozwiązałeś swój pierwszy CTF", "🚩"),
+    "ctf_5": ("CTF Enthusiast", "Rozwiązałeś 5 CTF-ów", "🎯"),
+    "ctf_15": ("CTF Master", "Rozwiązałeś 15 CTF-ów", "🏆"),
+    # Defense
+    "first_defense": ("Pierwsza Obrona", "Ukończyłeś pierwszy Defense Challenge", "🛡"),
+    "defense_5": ("Strażnik Kodu", "Ukończyłeś 5 Defense Challenges", "🔰"),
+    # Articles
+    "first_article": ("Czytelnik", "Przeczytałeś swój pierwszy artykuł", "📰"),
+    "articles_5": ("Badacz Wiedzy", "Przeczytałeś 5 artykułów", "📚"),
+    # Attack Scenarios
+    "first_scenario": ("Pierwszy Atak", "Ukończyłeś swój pierwszy scenariusz ataku", "⚔️"),
+    "scenarios_3": ("Architekt Ataków", "Ukończyłeś 3 scenariusze ataków", "🎭"),
+    # Flashcards
+    "flashcards_50": ("Kolekcjoner Fiszek", "Przejrzałeś 50 fiszek", "🃏"),
+    "flashcards_200": ("Archiwista", "Przejrzałeś 200 fiszek", "📇"),
+    # Conversation
+    "conversation_5": ("Rozmownik", "Odbuyłeś 5 sesji z AI Mentorem", "💬"),
+    # Terminal
+    "terminal_3": ("Guru Terminala", "Ukończyłeś 3 scenariusze terminala", "💻"),
 }
 
 
@@ -94,6 +114,13 @@ def check_and_award_achievements(user, db: Session) -> list:
     from models.topic import UserTopicProgress
     from models.lab_attempt import LabAttempt
     from models.error_item import ErrorItem
+    from models.ctf import UserCtfAttempt
+    from models.defense import UserDefenseAttempt
+    from models.article import ArticleRead
+    from models.attack_scenario import UserAttackProgress
+    from models.flashcard_attempt import FlashcardAttempt
+    from models.conversation import ConversationSession
+    from models.terminal import TerminalAttempt
 
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user.id,
@@ -149,6 +176,59 @@ def check_and_award_achievements(user, db: Session) -> list:
     if current_level >= 5: maybe("level_5")
     if current_level >= 10: maybe("level_10")
     if current_level >= 25: maybe("level_25")
+
+    # CTF completions
+    ctf_done = db.query(UserCtfAttempt).filter(
+        UserCtfAttempt.user_id == user.id,
+        UserCtfAttempt.completed == True
+    ).count()
+    if ctf_done >= 1: maybe("first_ctf")
+    if ctf_done >= 5: maybe("ctf_5")
+    if ctf_done >= 15: maybe("ctf_15")
+
+    # Defense completions
+    defense_done = db.query(UserDefenseAttempt).filter(
+        UserDefenseAttempt.user_id == user.id,
+        UserDefenseAttempt.completed == True
+    ).count()
+    if defense_done >= 1: maybe("first_defense")
+    if defense_done >= 5: maybe("defense_5")
+
+    # Articles read
+    articles_read = db.query(ArticleRead).filter(
+        ArticleRead.user_id == user.id
+    ).count()
+    if articles_read >= 1: maybe("first_article")
+    if articles_read >= 5: maybe("articles_5")
+
+    # Attack scenarios completed
+    scenarios_done = db.query(UserAttackProgress).filter(
+        UserAttackProgress.user_id == user.id,
+        UserAttackProgress.completed == True
+    ).count()
+    if scenarios_done >= 1: maybe("first_scenario")
+    if scenarios_done >= 3: maybe("scenarios_3")
+
+    # Flashcards reviewed
+    flashcards_reviewed = db.query(FlashcardAttempt).filter(
+        FlashcardAttempt.user_id == user.id
+    ).count()
+    if flashcards_reviewed >= 50: maybe("flashcards_50")
+    if flashcards_reviewed >= 200: maybe("flashcards_200")
+
+    # Conversation sessions completed
+    conv_sessions = db.query(ConversationSession).filter(
+        ConversationSession.user_id == user.id,
+        ConversationSession.completed == True
+    ).count()
+    if conv_sessions >= 5: maybe("conversation_5")
+
+    # Terminal scenarios completed
+    terminal_done = db.query(TerminalAttempt).filter(
+        TerminalAttempt.user_id == user.id,
+        TerminalAttempt.completed == True
+    ).count()
+    if terminal_done >= 3: maybe("terminal_3")
 
     # Check OWASP topic mastery
     _check_owasp_achievements(user.id, db, existing, candidates)
