@@ -53,8 +53,6 @@ ACHIEVEMENT_DEFS = {
     "flashcards_200": ("Archiwista", "Przejrzałeś 200 fiszek", "📇"),
     # Conversation
     "conversation_5": ("Rozmownik", "Odbuyłeś 5 sesji z AI Mentorem", "💬"),
-    # Terminal
-    "terminal_3": ("Guru Terminala", "Ukończyłeś 3 scenariusze terminala", "💻"),
 }
 
 
@@ -120,7 +118,6 @@ def check_and_award_achievements(user, db: Session) -> list:
     from models.attack_scenario import UserAttackProgress
     from models.flashcard_attempt import FlashcardAttempt
     from models.conversation import ConversationSession
-    from models.terminal import TerminalAttempt
 
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user.id,
@@ -222,13 +219,6 @@ def check_and_award_achievements(user, db: Session) -> list:
         ConversationSession.completed == True
     ).count()
     if conv_sessions >= 5: maybe("conversation_5")
-
-    # Terminal scenarios completed
-    terminal_done = db.query(TerminalAttempt).filter(
-        TerminalAttempt.user_id == user.id,
-        TerminalAttempt.completed == True
-    ).count()
-    if terminal_done >= 3: maybe("terminal_3")
 
     # Check OWASP topic mastery
     _check_owasp_achievements(user.id, db, existing, candidates)
