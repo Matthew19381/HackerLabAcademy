@@ -94,6 +94,15 @@ def seed_sample_videos(db: Session):
         {"topic_slug": "stored-xss", "video_id": "Rw_kJqbKF9g", "title": "Stored XSS Attack", "channel": "HackerOne", "category": "demo", "description": "Stored XSS in the wild."},
         # File Inclusion
         {"topic_slug": "file-inclusion", "video_id": "3nG__z8w4zM", "title": "LFI/RFI Vulnerabilities", "channel": "Cybersecurity", "category": "tutorial", "description": "Local and Remote File Inclusion."},
+        # Additional videos
+        {"topic_slug": "sql-injection", "video_id": "0lHJsgVsrGg", "title": "SQL Injection - UNION Based", "channel": "The Cyber Mentor", "category": "tutorial", "description": "Advanced SQLi with UNION attacks."},
+        {"topic_slug": "xss", "video_id": "bEZo0VazT08", "title": "XSS - DOM Based Attacks", "channel": "PwnFunction", "category": "tutorial", "description": "DOM-based XSS explained."},
+        {"topic_slug": "csrf", "video_id": "1nYz_aVURnc", "title": "CSRF Protection - SameSite Cookies", "channel": "Web Security", "category": "defense", "description": "How SameSite cookies protect against CSRF."},
+        {"topic_slug": "idor", "video_id": "XEcI5kwzFbw", "title": "IDOR - How to Find and Exploit", "channel": "NahamSec", "category": "demo", "description": "Real-world IDOR examples."},
+        {"topic_slug": "auth-bypass", "video_id": "2eQv2yDO0EA", "title": "Broken Authentication - OWASP", "channel": "OWASP", "category": "tutorial", "description": "Password attacks and session management."},
+        {"topic_slug": "blind-sqli", "video_id": "8ZcOJIherPo", "title": "Blind SQLi - Time Based", "channel": "SecurityId", "category": "tutorial", "description": "Using sleep() and benchmarking."},
+        {"topic_slug": "stored-xss", "video_id": "zSLdDKirx1Y", "title": "Stored XSS - Cookie Stealing", "channel": "LiveOverflow", "category": "demo", "description": "Stealing session cookies via stored XSS."},
+        {"topic_slug": "command-injection", "video_id": "kEeT8x_Cr0", "title": "Command Inj - Netcat Reverse Shell", "channel": "Hackersploit", "category": "demo", "description": "Getting a reverse shell via command injection."},
     ]
 
     added = 0

@@ -212,6 +212,60 @@ def seed_sample_cves(db: Session):
         },
     ]
 
+    # Add more CVEs
+    samples.extend([
+        {
+            "cve_id": "CVE-2023-38831",
+            "title": "Linux Kernel ksmbd RCE",
+            "description": "Podatność w podsystemie ksmbd jądra Linux pozwala na zdalne wykonanie kodu poprzez specjalnie spreparowany pakiet SMB.",
+            "severity": "HIGH",
+            "published_date": datetime(2023, 8, 15),
+            "affected_products": ["Linux Kernel przed 6.1.36", "6.4.x przed 6.4.1"],
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-38831"],
+            "topic_slug": "command-injection"
+        },
+        {
+            "cve_id": "CVE-2022-22965",
+            "title": "Spring Cloud Gateway Code Injection",
+            "description": "Podatność w Spring Cloud Gateway pozwala na wstrzyknięcie kodu (SpEL) i zdalne wykonanie kodu poprzez specjalnie spreparowane żądanie.",
+            "severity": "CRITICAL",
+            "published_date": datetime(2022, 3, 31),
+            "affected_products": ["Spring Cloud Gateway 3.1.x przed 3.1.1", "3.0.x przed 3.0.7"],
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2022-22965"],
+            "topic_slug": "java-security"
+        },
+        {
+            "cve_id": "CVE-2021-34527",
+            "title": "PrintNightmare (Windows Print Spooler)",
+            "description": "Podatność w Print Spooler pozwala na podniesienie uprawnień do SYSTEM poprzez dodanie drukarki punktowej i wykonanie złośliwego kodu.",
+            "severity": "CRITICAL",
+            "published_date": datetime(2021, 7, 1),
+            "affected_products": ["Windows 7 - 10", "Windows Server 2008 - 2019"],
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2021-34527"],
+            "topic_slug": "privilege-escalation"
+        },
+        {
+            "cve_id": "CVE-2023-2176",
+            "title": "Atlassian Confluence RCE",
+            "description": "Podatność w Atlassian Confluence Server i Data Center pozwala na zdalne wykonanie kodu poprzez OGNL injection w klasie Action.",
+            "severity": "CRITICAL",
+            "published_date": datetime(2023, 4, 20),
+            "affected_products": ["Confluence Server/Data Center przed 7.13.6", "7.14.x przed 7.14.2"],
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2023-2176"],
+            "topic_slug": "java-security"
+        },
+        {
+            "cve_id": "CVE-2022-30190",
+            "title": "Follina (MSDT RCE via Office)",
+            "description": "Podatność w Microsoft Support Diagnostic Tool (MSDT) pozwala na zdalne wykonanie kodu poprzez specjalnie spreparowany dokument Word używający protokołu URI ms-msdt.",
+            "severity": "CRITICAL",
+            "published_date": datetime(2022, 5, 27),
+            "affected_products": ["Microsoft Office 2013 - 2021", "Windows 7 - 11"],
+            "references": ["https://nvd.nist.gov/vuln/detail/CVE-2022-30190"],
+            "topic_slug": "xss"
+        },
+    ])
+
     added = 0
     for cve_data in samples:
         existing = db.query(Cve).filter(Cve.cve_id == cve_data["cve_id"]).first()
