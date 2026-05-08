@@ -2,10 +2,10 @@ import logging
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from models.ctf import CtfChallenge, UserCtfAttempt
-from models.user import User
-from services.achievement_service import check_and_award_achievements
+from backend.database import get_db
+from backend.models.ctf import CtfChallenge, UserCtfAttempt
+from backend.models.user import User
+from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/ctf", tags=["ctf"])
@@ -139,7 +139,7 @@ def submit_flag(
 def get_leaderboard(limit: int = 20, db: Session = Depends(get_db)):
     """Top users by CTF points sum."""
     from sqlalchemy import func
-    from models.user import User
+    from backend.models.user import User
 
     # Sum of points_earned from UserCtfAttempt per user
     scores = db.query(

@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from database import engine, Base, SessionLocal
+from .database import engine, Base, SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ TOPICS_SEED = [
 
 def seed_topics(db):
     import json
-    from models.topic import Topic
+    from backend.models.topic import Topic
     existing_slugs = {t.slug for t in db.query(Topic).all()}
     added = 0
     for t in TOPICS_SEED:
@@ -113,7 +113,7 @@ def seed_topics(db):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Import all models so create_all picks them up
-    from models import user, topic, flashcard, flashcard_attempt, error_item, lab_attempt, achievement, exercise, conversation, cve, youtube_video, ctf, attack_scenario, defense, certificate, article  # noqa
+    from .models import user, topic, flashcard, flashcard_attempt, error_item, lab_attempt, achievement, exercise, conversation, cve, youtube_video, ctf, attack_scenario, defense, certificate, article  # noqa
 
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created")
@@ -124,24 +124,24 @@ async def lifespan(app: FastAPI):
     db = SessionLocal()
     try:
         seed_topics(db)
-        from routers.cves import seed_sample_cves
+        from .routers.cves import seed_sample_cves
         seed_sample_cves(db)
-        from routers.videos import seed_sample_videos
+        from .routers.videos import seed_sample_videos
         seed_sample_videos(db)
-        from routers.ctf import seed_sample_challenges
+        from .routers.ctf import seed_sample_challenges
         seed_sample_challenges(db)
-        from routers.defense import seed_sample_defense_challenges
+        from .routers.defense import seed_sample_defense_challenges
         seed_sample_defense_challenges(db)
-        from routers.articles import seed_sample_articles
+        from .routers.articles import seed_sample_articles
         seed_sample_articles(db)
-        from routers.writeups import seed_sample_templates
+        from .routers.writeups import seed_sample_templates
         seed_sample_templates(db)
     finally:
         db.close()
 
     # Start CVE auto-fetch scheduler if enabled
     if os.getenv("CVE_SCHEDULED_FETCH", "false").lower() == "true":
-        from services.cve_service import start_scheduler
+        from .services.cve_service import start_scheduler
         start_scheduler(interval_hours=24)
         logger.info("CVE auto-scheduler started (every 24h)")
 
@@ -159,7 +159,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from routers import placement, topics, labs, flashcards, mentor, errors, stats, brain, downloads, vocabulary, exercises, conversation, cves, videos, ctf, defense, attack, certificates, daily, articles, writeups  # noqa
+import backend.routers.placement as placement
+import backend.routers.topics as topics
+import backend.routers.labs as labs
+import backend.routers.flashcards as flashcards
+import backend.routers.mentor as mentor
+import backend.routers.errors as errors
+import backend.routers.stats as stats
+import backend.routers.brain as brain
+import backend.routers.downloads as downloads
+import backend.routers.vocabulary as vocabulary
+import backend.routers.exercises as exercises
+import backend.routers.conversation as conversation
+import backend.routers.cves as cves
+import backend.routers.videos as videos
+import backend.routers.ctf as ctf
+import backend.routers.defense as defense
+import backend.routers.attack as attack
+import backend.routers.certificates as certificates
+import backend.routers.daily as daily
+#import backend.routers.articles as articles  # Google Drive Sync issue
+import backend.routers.writeups as writeups
 
 app.include_router(placement.router, prefix="/api/v1")
 app.include_router(topics.router, prefix="/api/v1")
@@ -180,7 +200,7 @@ app.include_router(defense.router, prefix="/api/v1")
 app.include_router(attack.router, prefix="/api/v1")
 app.include_router(certificates.router, prefix="/api/v1")
 app.include_router(daily.router, prefix="/api/v1")
-app.include_router(articles.router, prefix="/api/v1")
+# app.include_router(articles.router, prefix="/api/v1")  # Google Drive Sync issue
 app.include_router(writeups.router, prefix="/api/v1")
 
 

@@ -3,7 +3,7 @@ AI Service Router — selects provider based on config (Gemini or Ollama).
 All services should import from here instead of direct gemini_service.
 """
 import logging
-from config import settings
+from backend.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def _load_gemini():
     global _gemini_text, _gemini_json
     if _gemini_text is None:
         try:
-            from services.gemini_service import generate_text as gemini_text, generate_json as gemini_json
+            from backend.services.gemini_service import generate_text as gemini_text, generate_json as gemini_json
             _gemini_text = gemini_text
             _gemini_json = gemini_json
             logger.info("Gemini AI service loaded")
@@ -31,7 +31,7 @@ def _load_ollama():
     global _ollama_text, _ollama_json
     if _ollama_text is None:
         try:
-            from services.ollama_service import generate_text as ollama_text, generate_json as ollama_json
+            from backend.services.ollama_service import generate_text as ollama_text, generate_json as ollama_json
             _ollama_text = ollama_text
             _ollama_json = ollama_json
             logger.info("Ollama AI service loaded")

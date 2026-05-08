@@ -3,7 +3,7 @@ Defense Challenge model for HackerLabAcademy.
 """
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from database import Base
+from backend.database import Base
 from datetime import datetime
 
 

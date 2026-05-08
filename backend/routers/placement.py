@@ -2,9 +2,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.user import User
-from models.topic import Topic, UserTopicProgress
+from backend.database import get_db
+from backend.models.user import User
+from backend.models.topic import Topic, UserTopicProgress
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/placement", tags=["placement"])

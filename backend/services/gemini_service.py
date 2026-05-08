@@ -1,7 +1,7 @@
 import json
 import logging
 from google import genai
-from config import settings
+from backend.config import settings
 
 logger = logging.getLogger(__name__)
 

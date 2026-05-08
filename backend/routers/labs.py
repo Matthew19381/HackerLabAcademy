@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter
-from services.lab_service import get_lab_status, start_lab, stop_lab, reset_lab, get_lab_url
+from backend.services.lab_service import get_lab_status, start_lab, stop_lab, reset_lab, get_lab_url
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/labs", tags=["labs"])

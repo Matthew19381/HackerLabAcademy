@@ -5,7 +5,7 @@ import logging
 import os
 from datetime import datetime
 from fpdf import FPDF
-from config import PDF_EXPORT_DIR
+from backend.config import PDF_EXPORT_DIR
 
 logger = logging.getLogger(__name__)
 

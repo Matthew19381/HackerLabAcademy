@@ -2,8 +2,8 @@ import logging
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from models.youtube_video import YouTubeVideo
+from backend.database import get_db
+from backend.models.youtube_video import YouTubeVideo
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/videos", tags=["videos"])
@@ -17,7 +17,7 @@ def get_videos(
     db: Session = Depends(get_db)
 ):
     """List YouTube videos, optionally filtered by topic or category."""
-    from models.topic import Topic
+    from backend.models.topic import Topic
     query = db.query(YouTubeVideo).filter(YouTubeVideo.is_active == True)
 
     if topic_slug:
@@ -51,7 +51,7 @@ def get_videos(
 @router.get("/topics")
 def get_videos_by_topic(db: Session = Depends(get_db)):
     """Return mapping: topic_slug -> list of videos."""
-    from models.topic import Topic
+    from backend.models.topic import Topic
     topics = db.query(Topic).all()
     result = {}
     for t in topics:

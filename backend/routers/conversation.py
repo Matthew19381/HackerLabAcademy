@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from services.conversation_service import (
+from backend.database import get_db
+from backend.services.conversation_service import (
     start_conversation_session,
     generate_question,
     evaluate_answer,
     end_conversation_session,
 )
-from models.conversation import ConversationSession
+from backend.models.conversation import ConversationSession
 
 router = APIRouter(prefix="/api/conversation", tags=["conversation"])
 

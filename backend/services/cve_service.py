@@ -7,8 +7,8 @@ import json
 import requests
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from models.cve import Cve
-from database import SessionLocal
+from backend.models.cve import Cve
+from backend.database import SessionLocal
 
 logger = logging.getLogger(__name__)
 

@@ -2,11 +2,11 @@ import json
 import logging
 from datetime import datetime
 from sqlalchemy.orm import Session
-from models.exercise import Exercise, UserExerciseAttempt
-from models.topic import Topic
-from models.user import User
-from services.ai_service import generate_json
-from services.achievement_service import check_and_award_achievements
+from backend.models.exercise import Exercise, UserExerciseAttempt
+from backend.models.topic import Topic
+from backend.models.user import User
+from backend.services.ai_service import generate_json
+from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
 

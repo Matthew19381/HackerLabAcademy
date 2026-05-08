@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.lesson_service import mentor_chat
+from backend.services.lesson_service import mentor_chat
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/mentor", tags=["mentor"])

@@ -7,11 +7,11 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.defense import DefenseChallenge, UserDefenseAttempt
-from models.user import User
-from services.ai_service import generate_json
-from services.achievement_service import check_and_award_achievements
+from backend.database import get_db
+from backend.models.defense import DefenseChallenge, UserDefenseAttempt
+from backend.models.user import User
+from backend.services.ai_service import generate_json
+from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/defense", tags=["defense"])

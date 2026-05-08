@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from services.exercise_service import (
+from backend.database import get_db
+from backend.services.exercise_service import (
     generate_exercises_for_topic,
     get_exercises_for_topic,
     submit_exercise_answer,
 )
-from models.exercise import Exercise
+from backend.models.exercise import Exercise
 
 router = APIRouter(prefix="/api/exercises", tags=["exercises"])
 

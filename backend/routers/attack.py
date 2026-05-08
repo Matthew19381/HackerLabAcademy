@@ -4,10 +4,10 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.attack_scenario import AttackScenario, UserAttackProgress
-from models.user import User
-from services.achievement_service import check_and_award_achievements
+from backend.database import get_db
+from backend.models.attack_scenario import AttackScenario, UserAttackProgress
+from backend.models.user import User
+from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/attack", tags=["attack"])

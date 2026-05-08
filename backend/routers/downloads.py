@@ -7,14 +7,14 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from database import get_db
-from models.topic import Topic
-from models.flashcard import Flashcard
-from services.pdf_service import generate_lesson_pdf
-from services.audio_service import generate_lesson_audio, generate_flashcard_audio
-from services.anki_service import export_flashcards_to_anki
-from services.lesson_bundle_service import create_lesson_bundle
-from models.flashcard import Flashcard
+from backend.database import get_db
+from backend.models.topic import Topic
+from backend.models.flashcard import Flashcard
+from backend.services.pdf_service import generate_lesson_pdf
+from backend.services.audio_service import generate_lesson_audio, generate_flashcard_audio
+from backend.services.anki_service import export_flashcards_to_anki
+from backend.services.lesson_bundle_service import create_lesson_bundle
+from backend.models.flashcard import Flashcard
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/download", tags=["downloads"])

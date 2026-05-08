@@ -4,11 +4,11 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.cve import Cve
-from models.flashcard import Flashcard
-from services.ai_service import generate_json
-from services.cve_service import refresh_cves, fetch_nvd_cves
+from backend.database import get_db
+from backend.models.cve import Cve
+from backend.models.flashcard import Flashcard
+from backend.services.ai_service import generate_json
+from backend.services.cve_service import refresh_cves, fetch_nvd_cves
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cves", tags=["cves"])

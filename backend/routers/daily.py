@@ -5,11 +5,11 @@ import logging
 from datetime import datetime, date, timedelta
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from database import get_db
-from models.lab_attempt import LabAttempt
-from models.exercise import UserExerciseAttempt
-from models.flashcard_attempt import FlashcardAttempt
-from models.article import ArticleRead
+from backend.database import get_db
+from backend.models.lab_attempt import LabAttempt
+from backend.models.exercise import UserExerciseAttempt
+from backend.models.flashcard_attempt import FlashcardAttempt
+from backend.models.article import ArticleRead
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/daily", tags=["daily"])

@@ -4,13 +4,13 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.user import User
-from models.topic import Topic, UserTopicProgress
-from models.flashcard import Flashcard
-from models.error_item import ErrorItem
-from services.lesson_service import generate_theory_lesson, generate_lab_instructions, analyze_quiz_errors
-from services.achievement_service import check_and_award_achievements, calculate_level_from_xp
+from backend.database import get_db
+from backend.models.user import User
+from backend.models.topic import Topic, UserTopicProgress
+from backend.models.flashcard import Flashcard
+from backend.models.error_item import ErrorItem
+from backend.services.lesson_service import generate_theory_lesson, generate_lab_instructions, analyze_quiz_errors
+from backend.services.achievement_service import check_and_award_achievements, calculate_level_from_xp
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/topics", tags=["topics"])
@@ -216,8 +216,8 @@ class LabCompleteRequest(BaseModel):
 @router.post("/{slug}/lab/complete")
 async def complete_lab(slug: str, req: LabCompleteRequest, db: Session = Depends(get_db)):
     """Mark lab as complete and generate writeup."""
-    from models.lab_attempt import LabAttempt
-    from services.lesson_service import generate_writeup
+    from backend.models.lab_attempt import LabAttempt
+    from backend.services.lesson_service import generate_writeup
 
     topic = db.query(Topic).filter(Topic.slug == slug).first()
     if not topic:

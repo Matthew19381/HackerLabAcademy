@@ -7,12 +7,12 @@ import logging
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from models.user import User
-from models.topic import Topic, UserTopicProgress
-from models.error_item import ErrorItem
-from models.flashcard import Flashcard
-from services.achievement_service import calculate_level_from_xp
+from backend.database import get_db
+from backend.models.user import User
+from backend.models.topic import Topic, UserTopicProgress
+from backend.models.error_item import ErrorItem
+from backend.models.flashcard import Flashcard
+from backend.services.achievement_service import calculate_level_from_xp
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/brain", tags=["brain"])

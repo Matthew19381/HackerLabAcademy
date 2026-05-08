@@ -6,9 +6,9 @@ import json
 import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from models.topic import Topic
-from services.ai_service import generate_json
+from backend.database import get_db
+from backend.models.topic import Topic
+from backend.services.ai_service import generate_json
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/vocabulary", tags=["vocabulary"])

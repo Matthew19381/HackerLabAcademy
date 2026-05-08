@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.error_item import ErrorItem
+from backend.database import get_db
+from backend.models.error_item import ErrorItem
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/errors", tags=["errors"])

@@ -3,12 +3,12 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from database import get_db
-from models.user import User
-from models.flashcard import Flashcard
-from models.flashcard_attempt import FlashcardAttempt
-from services.sm2_service import sm2_update
-from services.ai_service import generate_json
+from backend.database import get_db
+from backend.models.user import User
+from backend.models.flashcard import Flashcard
+from backend.models.flashcard_attempt import FlashcardAttempt
+from backend.services.sm2_service import sm2_update
+from backend.services.ai_service import generate_json
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/flashcards", tags=["flashcards"])
