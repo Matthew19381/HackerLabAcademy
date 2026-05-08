@@ -169,7 +169,8 @@ export default function AttackScenario() {
               {feedback ? (
                 <div className={`p-4 rounded-lg border ${feedback.correct ? 'bg-[#39d353]/10 border-[#39d353]/30' : 'bg-[#f85149]/10 border-[#f85149]/30'}`}>
                   <div className={`font-bold mb-1 ${feedback.correct ? 'text-[#39d353]' : 'text-[#f85149]'}`}>
-                    {feedback.correct ? <><CheckCircle className="inline mr-1" size={18} /> Poprawnie! </> : <><XCircle className="inline mr-1" size={18} /> Niepoprawnie</>}
+                    {feedback.correct ? <><CheckCircle className="inline mr-1" size={18} /> Poprawnie! </>
+                      : <><XCircle className="inline mr-1" size={18} /> Niepoprawnie</>}
                   </div>
                   <p className="text-sm text-[#c9d1d9]">{feedback.message}</p>
                   {feedback.points && feedback.points > 0 && (
@@ -203,7 +204,6 @@ export default function AttackScenario() {
                   </button>
                 </form>
               )}
-            </div>
           </>
         )}
         </div>
