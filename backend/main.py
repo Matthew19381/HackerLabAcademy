@@ -132,8 +132,8 @@ async def lifespan(app: FastAPI):
         seed_sample_challenges(db)
         from backend.routers.defense import seed_sample_defense_challenges
         seed_sample_defense_challenges(db)
-        # from backend.routers.articles import seed_sample_articles  # Google Drive Sync issue
-        # seed_sample_articles(db)
+        from backend.routers.articles import seed_sample_articles
+        seed_sample_articles(db)
         from backend.routers.writeups import seed_sample_templates
         seed_sample_templates(db)
     finally:
@@ -178,7 +178,7 @@ import backend.routers.defense as defense
 import backend.routers.attack as attack
 import backend.routers.certificates as certificates
 import backend.routers.daily as daily
-#import backend.routers.articles as articles  # Google Drive Sync issue
+import backend.routers.articles as articles
 import backend.routers.writeups as writeups
 
 app.include_router(placement.router, prefix="/api/v1")
@@ -200,7 +200,7 @@ app.include_router(defense.router, prefix="/api/v1")
 app.include_router(attack.router, prefix="/api/v1")
 app.include_router(certificates.router, prefix="/api/v1")
 app.include_router(daily.router, prefix="/api/v1")
-# app.include_router(articles.router, prefix="/api/v1")  # Google Drive Sync issue
+app.include_router(articles.router, prefix="/api/v1")
 app.include_router(writeups.router, prefix="/api/v1")
 
 
