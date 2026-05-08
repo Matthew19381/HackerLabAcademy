@@ -17,7 +17,7 @@ class CtfChallenge(Base):
     hint = Column(Text, nullable=True)
     solution = Column(Text, nullable=True)  # for admins
     is_active = Column(Boolean, default=True)
-    created_at = DateTime = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
     attempts = relationship("UserCtfAttempt", back_populates="challenge", cascade="all, delete-orphan")
