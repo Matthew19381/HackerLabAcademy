@@ -180,6 +180,7 @@ import backend.routers.certificates as certificates
 import backend.routers.daily as daily
 import backend.routers.articles as articles
 import backend.routers.writeups as writeups
+import backend.routers.ai_config as ai_config
 
 app.include_router(placement.router, prefix="/api/v1")
 app.include_router(topics.router, prefix="/api/v1")
@@ -202,6 +203,7 @@ app.include_router(certificates.router, prefix="/api/v1")
 app.include_router(daily.router, prefix="/api/v1")
 app.include_router(articles.router, prefix="/api/v1")
 app.include_router(writeups.router, prefix="/api/v1")
+app.include_router(ai_config.router, prefix="/api/v1")
 
 
 @app.get("/api/health")

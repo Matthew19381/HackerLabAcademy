@@ -53,7 +53,6 @@ async def generate_json(prompt: str) -> dict:
         "model": settings.OPENROUTER_MODEL or _DEFAULT_MODEL,
         "messages": [{"role": "user", "content": full_prompt}],
         "stream": False,
-        "response_format": {"type": "json_object"},  # Request JSON mode if supported
     }
 
     async with httpx.AsyncClient(timeout=180.0) as client:
