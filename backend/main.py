@@ -124,17 +124,17 @@ async def lifespan(app: FastAPI):
     db = SessionLocal()
     try:
         seed_topics(db)
-        from .routers.cves import seed_sample_cves
+        from backend.routers.cves import seed_sample_cves
         seed_sample_cves(db)
-        from .routers.videos import seed_sample_videos
+        from backend.routers.videos import seed_sample_videos
         seed_sample_videos(db)
-        from .routers.ctf import seed_sample_challenges
+        from backend.routers.ctf import seed_sample_challenges
         seed_sample_challenges(db)
-        from .routers.defense import seed_sample_defense_challenges
+        from backend.routers.defense import seed_sample_defense_challenges
         seed_sample_defense_challenges(db)
-        from .routers.articles import seed_sample_articles
-        seed_sample_articles(db)
-        from .routers.writeups import seed_sample_templates
+        # from backend.routers.articles import seed_sample_articles  # Google Drive Sync issue
+        # seed_sample_articles(db)
+        from backend.routers.writeups import seed_sample_templates
         seed_sample_templates(db)
     finally:
         db.close()

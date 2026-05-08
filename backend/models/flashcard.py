@@ -10,6 +10,7 @@ class Flashcard(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     topic_slug = Column(String, nullable=True)
+    cve_id = Column(Integer, ForeignKey("cves.id"), nullable=True)
 
     front = Column(Text, nullable=False)    # question / term
     back = Column(Text, nullable=False)     # answer / definition
@@ -26,3 +27,4 @@ class Flashcard(Base):
 
     user = relationship("User", back_populates="flashcards")
     cve = relationship("Cve", back_populates="flashcards")
+    attempts = relationship("FlashcardAttempt", back_populates="flashcard")
