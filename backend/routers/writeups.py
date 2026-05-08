@@ -12,7 +12,7 @@ from backend.models.user import User
 from backend.services.pdf_service import generate_pdf_from_markdown
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/writeups", tags=["writeups"])
+router = APIRouter(prefix="/writeups", tags=["writeups"])
 
 
 @router.get("/templates")

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from backend.services.lesson_service import mentor_chat
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/mentor", tags=["mentor"])
+router = APIRouter(prefix="/mentor", tags=["mentor"])
 
 # In-memory sessions: {session_id: [messages]}
 _sessions: dict = {}

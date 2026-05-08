@@ -7,7 +7,7 @@ from backend.models.user import User
 from backend.models.topic import Topic, UserTopicProgress
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/placement", tags=["placement"])
+router = APIRouter(prefix="/placement", tags=["placement"])
 
 
 class CreateUserRequest(BaseModel):

@@ -11,7 +11,7 @@ from backend.services.sm2_service import sm2_update
 from backend.services.ai_service import generate_json
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/flashcards", tags=["flashcards"])
+router = APIRouter(prefix="/flashcards", tags=["flashcards"])
 
 
 @router.get("/due/{user_id}")

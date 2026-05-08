@@ -9,7 +9,7 @@ from backend.services.conversation_service import (
 )
 from backend.models.conversation import ConversationSession
 
-router = APIRouter(prefix="/api/conversation", tags=["conversation"])
+router = APIRouter(prefix="/conversation", tags=["conversation"])
 
 
 @router.post("/sessions/start")

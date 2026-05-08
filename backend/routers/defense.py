@@ -14,7 +14,7 @@ from backend.services.ai_service import generate_json
 from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/defense", tags=["defense"])
+router = APIRouter(prefix="/defense", tags=["defense"])
 
 
 class DefenseSubmitRequest(BaseModel):

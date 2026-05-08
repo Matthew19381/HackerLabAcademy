@@ -17,7 +17,7 @@ from backend.services.lesson_bundle_service import create_lesson_bundle
 from backend.models.flashcard import Flashcard
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/download", tags=["downloads"])
+router = APIRouter(prefix="/download", tags=["downloads"])
 
 
 @router.get("/lesson/{slug}/pdf")

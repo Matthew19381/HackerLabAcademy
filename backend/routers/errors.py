@@ -7,7 +7,7 @@ from backend.database import get_db
 from backend.models.error_item import ErrorItem
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/errors", tags=["errors"])
+router = APIRouter(prefix="/errors", tags=["errors"])
 
 
 @router.get("/due/{user_id}")

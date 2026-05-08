@@ -15,7 +15,7 @@ from backend.models.certificate import Certificate
 from backend.services.certificate_service import generate_certificate_pdf
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/certificates", tags=["certificates"])
+router = APIRouter(prefix="/certificates", tags=["certificates"])
 
 
 @router.get("/list")

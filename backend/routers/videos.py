@@ -6,7 +6,7 @@ from backend.database import get_db
 from backend.models.youtube_video import YouTubeVideo
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/videos", tags=["videos"])
+router = APIRouter(prefix="/videos", tags=["videos"])
 
 
 @router.get("/")

@@ -15,7 +15,7 @@ from backend.models.flashcard import Flashcard
 from backend.services.achievement_service import calculate_level_from_xp
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/brain", tags=["brain"])
+router = APIRouter(prefix="/brain", tags=["brain"])
 
 
 @router.get("/today/{user_id}")

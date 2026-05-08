@@ -12,7 +12,7 @@ from backend.models.flashcard_attempt import FlashcardAttempt
 from backend.models.article import ArticleRead
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/daily", tags=["daily"])
+router = APIRouter(prefix="/daily", tags=["daily"])
 
 
 @router.get("/status")

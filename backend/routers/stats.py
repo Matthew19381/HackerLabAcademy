@@ -15,7 +15,7 @@ from backend.services.achievement_service import (
 )
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/stats", tags=["stats"])
+router = APIRouter(prefix="/stats", tags=["stats"])
 
 
 @router.get("/{user_id}")

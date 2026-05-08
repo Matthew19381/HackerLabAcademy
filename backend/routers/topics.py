@@ -13,7 +13,7 @@ from backend.services.lesson_service import generate_theory_lesson, generate_lab
 from backend.services.achievement_service import check_and_award_achievements, calculate_level_from_xp
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/topics", tags=["topics"])
+router = APIRouter(prefix="/topics", tags=["topics"])
 
 XP_THEORY = 20
 XP_QUIZ_PASS = 30

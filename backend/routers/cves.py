@@ -11,7 +11,7 @@ from backend.services.ai_service import generate_json
 from backend.services.cve_service import refresh_cves, fetch_nvd_cves
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/cves", tags=["cves"])
+router = APIRouter(prefix="/cves", tags=["cves"])
 
 
 class CveRefreshResponse(BaseModel):

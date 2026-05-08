@@ -11,7 +11,7 @@ from backend.models.topic import Topic
 from backend.services.ai_service import generate_json
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/vocabulary", tags=["vocabulary"])
+router = APIRouter(prefix="/vocabulary", tags=["vocabulary"])
 
 
 @router.get("/topic/{slug}")

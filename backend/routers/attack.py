@@ -10,7 +10,7 @@ from backend.models.user import User
 from backend.services.achievement_service import check_and_award_achievements
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/attack", tags=["attack"])
+router = APIRouter(prefix="/attack", tags=["attack"])
 
 
 class SubmitAnswerRequest(BaseModel):

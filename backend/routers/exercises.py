@@ -8,7 +8,7 @@ from backend.services.exercise_service import (
 )
 from backend.models.exercise import Exercise
 
-router = APIRouter(prefix="/api/exercises", tags=["exercises"])
+router = APIRouter(prefix="/exercises", tags=["exercises"])
 
 
 @router.post("/topics/{topic_id}/generate")
