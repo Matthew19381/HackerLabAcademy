@@ -82,10 +82,10 @@ def submit_answer(
 
 
 @router.post("/sessions/{session_id}/end")
-def end_session(session_id: int, db: Session = Depends(get_db)):
+async def end_session(session_id: int, db: Session = Depends(get_db)):
     """End the conversation session."""
     try:
-        result = end_conversation_session(session_id, db)
+        result = await end_conversation_session(session_id, db)
         return result
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
