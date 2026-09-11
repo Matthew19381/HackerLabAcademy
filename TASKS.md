@@ -5,6 +5,39 @@
 
 ---
 
+## 🔗 PLAN v2 — NEURO + INTEGRACJA Z SYSTEMEM GŁÓWNYM (2026-07-19)
+
+_Kontekst: `NEURO_PLAN.md` + `System-Glowny/MASTER_PLAN.md`. Aplikacja ma bogaty
+zestaw funkcji (laby, CTF, Defense, Terminal) — ta faza podpina naukę uczenia się
+pod istniejące mechanizmy i włącza moduł do ekosystemu._
+
+### N — Ugruntowanie naukowe (NEURO_PLAN fazy 1-3)
+- [ ] N-1: **HL-1** Fiszki na wspólny Learning Engine (algorytm FSRS jak LinguaAI,
+      zamiast własnego); error tracking zasila kolejkę (błąd → fiszka)
+- [ ] N-2: **HL-4** Mentor AI: wskazówki stopniowane (kierunek → technika → krok),
+      zakaz payloadu przy pierwszej prośbie
+- [ ] N-3: **HL-2** Faded worked examples: nowy typ podatności = walkthrough,
+      kolejne laby stopniowo usuwają kroki
+- [ ] N-4: **HL-6** Retrieval po labie: 3 pytania "czemu działało / jak się bronić"
+      (istniejący Defense Mode = naturalne miejsce transferu)
+- [ ] N-5: **HL-3** Productive failure mode dla poziomów 2+ (próba przed instrukcją);
+      poziom 1 odwrotnie (placement test decyduje)
+- [ ] N-6: **HL-5** Interleaving typów podatności w powtórkach ("który atak tu pasuje?")
+- [ ] N-7: **HL-7** Brain: dobór trudności wg accuracy (~70-85% jako hipoteza
+      kalibrowana); **HL-8** osiągnięcia bez lig/rankingów (CTF leaderboard →
+      tylko własny postęp)
+
+### INT — Integracja z Systemem Głównym
+- [ ] INT-1: `GET /api/v1/summary` (sesje, ukończone laby/tematy, błędy, zaległe
+      powtórki, `wellbeing_contribution`)
+- [ ] INT-2: Publisher eventów (`lab_completed`, `topic_completed`, `session_skipped`,
+      `ctf_solved`) → `:8000` z `X-Module-Key`
+- [ ] INT-3: `POST /api/v1/directives` (survival_mode → 1 sesja fiszek 5 min; priorytety)
+- [ ] INT-4: Zaległe powtórki → wspólna kolejka planera dnia
+- [ ] INT-5: Profil umiejętności → moduł Edukacja (web security jako kompetencja)
+
+---
+
 ## ✅ P0 — ZAKOŃCZONE (już zaimplementowane)
 
 - [x] P0-1: Brak zróżnicowanych ćwiczeń (tylko DVWA labs) — dodać quiz, fill blank, code review per temat
@@ -22,16 +55,16 @@
   - **Data:** ✅ Sample CVEs seeded (4 przykładowe)
   - **Auto-fetch:** ✅ backend/services/cve_service.py (NVD API integration, manual refresh endpoint)
   - **Status:** ✅ FULLY COMPLETED — includes P1-1a auto-fetch service
-- [~] P1-2: YouTube Security Videos per topic
+- [x] P1-2: YouTube Security Videos per topic
   - **Backend:** ✅ /api/videos (GET with filters), /api/videos/topics (mapping)
   - **Frontend:** ✅ Videos.jsx (iframe embeds, topic/category filters)
   - **Data:** ✅ 11 sample videos seeded (SQLi, XSS, CSRF, IDOR, etc.)
   - **Status:** ✅ ZAKOŃCZONE
-- [~] P1-3: Eksport fiszek do Anki (.apkg)
+- [x] P1-3: Eksport fiszek do Anki (.apkg)
   - **Backend:** ✅ anki_service.py + /api/download/flashcards/{uid}/anki
   - **Frontend:** ✅ Przycisk "Anki" na Flashcards page z downloading state
   - **Status:** ✅ ZAKOŃCZONE
-- [~] P1-4: Timer sesji nauki (persistent across all tabs)
+- [x] P1-4: Timer sesji nauki (persistent across all tabs)
   - **Backend:** N/A (frontend-only)
   - **Frontend:** ✅ StudyTimer.jsx (global component in Layout)
   - **Features:** 15/30/60 min selector, Play/Pause/Reset, localStorage persistence, desktop notification
@@ -45,7 +78,7 @@
 
 ## 🆕 P2 — Nowe funkcje
 
-- [~] P2-1: CTF Challenge Mode
+- [x] P2-1: CTF Challenge Mode
   - **Backend:** ✅ /api/ctf (challenges, submit, leaderboard), models (CtfChallenge, UserCtfAttempt)
   - **Frontend:** ✅ CTF.jsx (list/detail, hint, submit, leaderboard tabs)
   - **Data:** ✅ 5 sample challenges (web category, diff 1-4, DVWA-themed)
@@ -53,22 +86,22 @@
   - **Status:** ✅ ZAKOŃCZONE
 - [x] P2-2: Code Review Exercise (wskaż podatność w kodzie)
   - **Faktycznie:** ✅ Already included in P0-1 (exercise_type='code_review'), UI supports code snippets
-- [~] P2-3: Terminal Simulator (nmap, curl, sqlmap, bash)
+- [x] P2-3: Terminal Simulator (nmap, curl, sqlmap, bash)
   - **Frontend:** ✅ Terminal.jsx + terminal_scenarios.js
   - **Scenarios:** 4 complete (nmap basics, curl basics, bash essentials, sqlmap basics)
   - **Status:** ✅ ZAKOŃCZONE
-- [~] P2-4: Defense Mode (code fix + AI evaluation)
+- [x] P2-4: Defense Mode (code fix + AI evaluation)
   - **Backend:** ✅ /api/defense (GET challenges, POST submit), models (DefenseChallenge, UserDefenseAttempt), AI eval via Gemini
   - **Frontend:** ✅ Defense.jsx (list + editor + AI feedback), integrated with Layout navigation
   - **Data:** ✅ 3 sample challenges (SQLi, XSS, Command Injection)
   - **Status:** ✅ ZAKOŃCZONE
-- [~] P2-5: Attack Scenario (full kill chain step-by-step)
+- [x] P2-5: Attack Scenario (full kill chain step-by-step)
   - **Backend:** ✅ /api/attack (scenarios, start, submit step, progress tracking)
   - **Frontend:** ✅ AttackScenario.jsx (multi-step interactive, per-step answers, points)
   - **Data:** ✅ 2 sample scenarios (SQLi kill chain, XSS kill chain)
   - **Nav:** ✅ Added to Layout (Skull icon)
   - **Status:** ✅ ZAKOŃCZONE
-- [~] P2-6: Topic Mindmap / Dependency Graph
+- [x] P2-6: Topic Mindmap / Dependency Graph
   - **Backend:** ✅ /api/topics already provides prerequisites + unlock status
   - **Frontend:** ✅ Mindmap.jsx (D3 force-directed graph, drag nodes, color by completion)
   - **Integration:** ✅ Added to App.jsx and Layout nav (Network icon)
@@ -92,7 +125,7 @@
   - ✅ Backend: generate_flashcard_audio() + endpoint /api/download/flashcard/{card_id}/audio
   - ✅ Frontend: Volume2 button on flashcard (Flashcards.jsx)
   - **Gotowe**
-- [~] P3-4: Certyfikat ukończenia sekcji (PDF)
+- [x] P3-4: Certyfikat ukończenia sekcji (PDF)
   - **Backend:** ✅ Certificate model, /api/certificates (list, generate, download), certificate_service.py (fpdf2)
   - **Frontend:** ✅ Certificates.jsx page (generate per category, download PDF, list)
   - **Integration:** ✅ Added to App.jsx and Layout nav (Award icon)

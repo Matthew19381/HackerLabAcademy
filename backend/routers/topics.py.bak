@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
@@ -78,7 +78,7 @@ async def get_theory(slug: str, user_id: int, db: Session = Depends(get_db)):
                 prog = db.query(UserTopicProgress).filter(
                     UserTopicProgress.user_id == user_id,
                     UserTopicProgress.topic_id == prereq_topic.id,
-                    UserTopicProgress.theory_completed is True
+                    UserTopicProgress.theory_completed == True
                 ).first()
                 if not prog:
                     raise HTTPException(status_code=403, detail=f"Najpierw ukończ: {prereq_slug}")
@@ -142,7 +142,7 @@ async def submit_quiz(slug: str, req: QuizSubmitRequest, db: Session = Depends(g
     )
     score = analysis.get("score", 0)
 
-    # Save error items for the Fix Loop and create flashcards from mistakes
+    # Save error items for the Fix Loop
     for error in analysis.get("errors", []):
         item = ErrorItem(
             user_id=user.id,
@@ -154,41 +154,6 @@ async def submit_quiz(slug: str, req: QuizSubmitRequest, db: Session = Depends(g
             explanation=error.get("explanation", "")
         )
         db.add(item)
-        
-        # Create flashcard from this mistake
-        # Check if we already have a flashcard with this question (front) for this user and topic
-        existing_flashcard = db.query(Flashcard).filter(
-            Flashcard.user_id == user.id,
-            Flashcard.topic_slug == slug,
-            Flashcard.front == error["question"]
-        ).first()
-        
-        if not existing_flashcard:
-            # Initialize FSRS state for new card
-            from backend.services.fsrs_service import initialize_new_card
-            fsrs_initial = initialize_new_card()
-            
-            fc = Flashcard(
-                user_id=user.id,
-                topic_slug=slug,
-                front=error["question"],
-                back=error["correct_answer"],
-                example=error.get("explanation"),  # Use explanation as example
-                # SM-2 fields (initial values)
-                ease_factor=2.5,
-                interval_days=1,
-                repetitions=0,
-                next_review_date=fsrs_initial['due'],
-                # FSRS fields
-                stability=fsrs_initial['stability'],
-                difficulty=fsrs_initial['difficulty'],
-                state=fsrs_initial['state'],
-                step=fsrs_initial['step'],
-                last_review=fsrs_initial['last_review'],
-                card_id=fsrs_initial.get('card_id'),
-                is_active=True,
-            )
-            db.add(fc)
 
     # Auto-generate flashcards from theory
     existing_flashcard_fronts = {

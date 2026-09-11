@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Float, BigInteger
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from backend.database import Base
@@ -16,19 +16,11 @@ class Flashcard(Base):
     back = Column(Text, nullable=False)     # answer / definition
     example = Column(Text, nullable=True)  # code/payload example
 
-    # SM-2 fields (kept for backward compatibility during transition)
+    # SM-2 fields
     ease_factor = Column(Float, default=2.5)
     interval_days = Column(Integer, default=1)
     repetitions = Column(Integer, default=0)
     next_review_date = Column(DateTime, default=datetime.utcnow)
-
-    # FSRS fields
-    stability = Column(Float, nullable=True)        # Core parameter for future scheduling
-    difficulty = Column(Float, nullable=True)       # Core parameter for future scheduling
-    state = Column(Integer, default=1)              # FSRS State: 1=Learning, 2=Review, 3=Relearning
-    step = Column(Integer, nullable=True)           # Current step in learning/relearning
-    last_review = Column(DateTime, nullable=True)   # Last review timestamp
-    card_id = Column(BigInteger, nullable=True)     # FSRS card identifier (epoch ms)
 
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
