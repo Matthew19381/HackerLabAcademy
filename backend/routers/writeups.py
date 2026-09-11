@@ -1,7 +1,6 @@
 import logging
 import json
 import os
-from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -21,7 +20,7 @@ def get_writeup_templates(
     db: Session = Depends(get_db)
 ):
     """List active writeup templates, optionally filtered by category."""
-    query = db.query(WriteupTemplate).filter(WriteupTemplate.is_active == True)
+    query = db.query(WriteupTemplate).filter(WriteupTemplate.is_active is True)
     if category:
         query = query.filter(WriteupTemplate.category == category)
     templates = query.order_by(WriteupTemplate.name).all()
@@ -54,7 +53,7 @@ def generate_writeup(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    template = db.query(WriteupTemplate).filter(WriteupTemplate.id == req.template_id, WriteupTemplate.is_active == True).first()
+    template = db.query(WriteupTemplate).filter(WriteupTemplate.id == req.template_id, WriteupTemplate.is_active is True).first()
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
@@ -137,7 +136,7 @@ def download_writeup_pdf(writeup_id: int, db: Session = Depends(get_db)):
 
 
 def seed_sample_templates(db: Session):
-    """Seed sample writeup templates for labs and CTF."""
+    """Seed sample writeup templates for labs."""
     templates = [
         {
             "name": "Security Lab Report (DVWA)",
@@ -151,7 +150,7 @@ def seed_sample_templates(db: Session):
             "template_md": """# Raport z Laboratorium: {vuln}
 
 ## 1. Opis podatności
-{vuln} jest podatnością pozwalająca na...
+{vuln} jest podatnością pozwalającą na...
 
 ## 2. Kroki reprodukcji
 {steps}
@@ -165,31 +164,6 @@ def seed_sample_templates(db: Session):
 ---
 
 *Wygenerowano przez HackerLabAcademy*""",
-        },
-        {
-            "name": "CTF Write-up",
-            "category": "ctf",
-            "variables_json": json.dumps([
-                {"name": "challenge", "type": "string", "label": "Nazwa challenge'u"},
-                {"name": "category", "type": "string", "label": "Kategoria"},
-                {"name": "flag", "type": "string", "label": "Flaga"},
-                {"name": "solution", "type": "string", "label": "Rozwiązanie (krok po kroku)"},
-                {"name": "tools", "type": "string", "label": "Użyte narzędzia"},
-            ]),
-            "template_md": """# CTF Write-up: {challenge}
-
-## Kategoria: {category}
-## Flaga: `{flag}`
-
-## Rozwiązanie
-{solution}
-
-## Użyte narzędzia
-{tools}
-
----
-
-*HackerLabAcademy CTF Report*""",
         },
     ]
 

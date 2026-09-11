@@ -62,7 +62,7 @@ async def _generate_theory_lesson_UNUSED(topic_name, topic_slug):
     # kept for reference only — fallbacks removed intentionally
     return {
             "flashcards": [
-                {"front": topic_name, "back": f"Typ ataku/podatności w cyberbezpieczeństwie", "example": None}
+                {"front": topic_name, "back": "Typ ataku/podatności w cyberbezpieczeństwie", "example": None}
             ]
         }
 
@@ -136,7 +136,7 @@ async def generate_writeup(
     user_steps: dict,
     lab_instructions: dict
 ) -> dict:
-    prompt = f"""Jesteś mentorem cyberbezpieczeństwa. Na podstawie kroków ucznia wygeneruj profesjonalny writeup CTF-style.
+    prompt = f"""Jesteś mentorem cyberbezpieczeństwa. Na podstawie kroków ucznia wygeneruj profesjonalny writeup.
 
 Temat labu: {topic_name}
 Kroki ucznia:

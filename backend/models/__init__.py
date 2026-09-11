@@ -9,9 +9,35 @@ from .error_item import ErrorItem
 from .achievement import Achievement
 from .cve import Cve
 from .youtube_video import YouTubeVideo
-from .ctf import CtfChallenge, UserCtfAttempt
 from .attack_scenario import AttackScenario, UserAttackProgress
 from .defense import DefenseChallenge, UserDefenseAttempt
 from .certificate import Certificate
 from .article import Article, ArticleRead, ArticleQuiz, ArticleQuizAttempt
 from .writeup_template import WriteupTemplate, Writeup
+
+__all__ = [
+    "User",
+    "Topic",
+    "Exercise",
+    "UserExerciseAttempt",
+    "Flashcard",
+    "FlashcardAttempt",
+    "ConversationSession",
+    "ConversationTurn",
+    "LabAttempt",
+    "ErrorItem",
+    "Achievement",
+    "Cve",
+    "YouTubeVideo",
+    "AttackScenario",
+    "UserAttackProgress",
+    "DefenseChallenge",
+    "UserDefenseAttempt",
+    "Certificate",
+    "Article",
+    "ArticleRead",
+    "ArticleQuiz",
+    "ArticleQuizAttempt",
+    "WriteupTemplate",
+    "Writeup",
+]

@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
 from datetime import datetime
 from backend.database import Base
 
@@ -13,7 +12,7 @@ class YouTubeVideo(Base):
     description = Column(Text, nullable=True)
     channel = Column(String, nullable=True)
     topic_slug = Column(String, nullable=False)  # links to Topic.slug
-    category = Column(String, nullable=True)  # "tutorial", "demo", "defense", "ctf"
+    category = Column(String, nullable=True)  # "tutorial", "demo", "defense"
     duration = Column(Integer, nullable=True)  # seconds
     published_at = Column(DateTime, nullable=True)
     is_active = Column(Boolean, default=True)

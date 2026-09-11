@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getVideosByTopic, getVideos } from '../api/client'
 import { Play, Filter, Globe } from 'lucide-react'
 
-const CATEGORIES = ['tutorial', 'demo', 'defense', 'ctf']
+const CATEGORIES = ['tutorial', 'demo', 'defense']
 
 export default function Videos() {
   const [videosByTopic, setVideosByTopic] = useState({})

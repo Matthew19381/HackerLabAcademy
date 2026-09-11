@@ -15,7 +15,6 @@ import Vocabulary from './pages/Vocabulary'
 import Conversation from './pages/Conversation'
 import Cves from './pages/Cves'
 import Videos from './pages/Videos'
-import CTF from './pages/CTF'
 import Defense from './pages/Defense'
 import Mindmap from './pages/Mindmap'
 import Terminal from './pages/Terminal'
@@ -55,7 +54,6 @@ export default function App() {
                   <Route path="/conversation/:slug?" element={<Conversation />} />
                   <Route path="/cves" element={<Cves />} />
                   <Route path="/videos" element={<Videos />} />
-                  <Route path="/ctf" element={<CTF />} />
                   <Route path="/defense" element={<Defense />} />
                   <Route path="/terminal" element={<Terminal />} />
                   <Route path="/attack" element={<AttackScenario />} />

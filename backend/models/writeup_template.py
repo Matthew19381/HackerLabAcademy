@@ -9,7 +9,7 @@ class WriteupTemplate(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)  # e.g. "DVWA SQLi Report"
-    category = Column(String, nullable=False)  # "lab", "ctf", "general"
+    category = Column(String, nullable=False)  # "lab", "general"
     template_md = Column(Text, nullable=False)  # Markdown template with {{variables}}
     variables_json = Column(Text, nullable=True)  # JSON schema: [{"name": "vuln", "type": "string", "label": "Vulnerability"}]
     is_active = Column(Boolean, default=True)

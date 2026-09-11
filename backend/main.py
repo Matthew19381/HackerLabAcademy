@@ -113,7 +113,7 @@ def seed_topics(db):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Import all models so create_all picks them up
-    from .models import user, topic, flashcard, flashcard_attempt, error_item, lab_attempt, achievement, exercise, conversation, cve, youtube_video, ctf, attack_scenario, defense, certificate, article  # noqa
+    from .models import user, topic, flashcard, flashcard_attempt, error_item, lab_attempt, achievement, exercise, conversation, cve, youtube_video, attack_scenario, defense, certificate, article  # noqa
 
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created")
@@ -128,8 +128,6 @@ async def lifespan(app: FastAPI):
         seed_sample_cves(db)
         from backend.routers.videos import seed_sample_videos
         seed_sample_videos(db)
-        from backend.routers.ctf import seed_sample_challenges
-        seed_sample_challenges(db)
         from backend.routers.defense import seed_sample_defense_challenges
         seed_sample_defense_challenges(db)
         from backend.routers.articles import seed_sample_articles
@@ -196,7 +194,6 @@ app.include_router(exercises.router, prefix="/api/v1")
 app.include_router(conversation.router, prefix="/api/v1")
 app.include_router(cves.router, prefix="/api/v1")
 app.include_router(videos.router, prefix="/api/v1")
-app.include_router(ctf.router, prefix="/api/v1")
 app.include_router(defense.router, prefix="/api/v1")
 app.include_router(attack.router, prefix="/api/v1")
 app.include_router(certificates.router, prefix="/api/v1")
