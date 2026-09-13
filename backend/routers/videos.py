@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database import get_db
@@ -18,7 +17,7 @@ def get_videos(
 ):
     """List YouTube videos, optionally filtered by topic or category."""
     from backend.models.topic import Topic
-    query = db.query(YouTubeVideo).filter(YouTubeVideo.is_active == True)
+    query = db.query(YouTubeVideo).filter(YouTubeVideo.is_active is True)
 
     if topic_slug:
         # Verify topic exists (optional)
@@ -57,7 +56,7 @@ def get_videos_by_topic(db: Session = Depends(get_db)):
     for t in topics:
         videos = db.query(YouTubeVideo).filter(
             YouTubeVideo.topic_slug == t.slug,
-            YouTubeVideo.is_active == True
+            YouTubeVideo.is_active is True
         ).all()
         result[t.slug] = [
             {

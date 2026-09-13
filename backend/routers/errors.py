@@ -16,7 +16,7 @@ def get_due_errors(user_id: int, db: Session = Depends(get_db)):
     now = datetime.utcnow()
     items = db.query(ErrorItem).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved == False,
+        ErrorItem.resolved is False,
         ErrorItem.next_review <= now
     ).order_by(ErrorItem.created_at).all()
 
@@ -38,10 +38,10 @@ def get_due_errors(user_id: int, db: Session = Depends(get_db)):
 @router.get("/stats/{user_id}")
 def get_error_stats(user_id: int, db: Session = Depends(get_db)):
     total = db.query(ErrorItem).filter(ErrorItem.user_id == user_id).count()
-    resolved = db.query(ErrorItem).filter(ErrorItem.user_id == user_id, ErrorItem.resolved == True).count()
+    resolved = db.query(ErrorItem).filter(ErrorItem.user_id == user_id, ErrorItem.resolved is True).count()
     pending = db.query(ErrorItem).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved == False,
+        ErrorItem.resolved is False,
         ErrorItem.next_review <= datetime.utcnow()
     ).count()
     return {"total": total, "resolved": resolved, "pending": pending}

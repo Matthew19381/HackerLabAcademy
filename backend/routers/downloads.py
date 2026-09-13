@@ -3,7 +3,6 @@ Download endpoints: PDF lesson, MP3 audio, Anki deck.
 """
 import json
 import logging
-import os
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -14,7 +13,6 @@ from backend.services.pdf_service import generate_lesson_pdf
 from backend.services.audio_service import generate_lesson_audio, generate_flashcard_audio
 from backend.services.anki_service import export_flashcards_to_anki
 from backend.services.lesson_bundle_service import create_lesson_bundle
-from backend.models.flashcard import Flashcard
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/download", tags=["downloads"])
@@ -90,7 +88,7 @@ async def download_flashcard_audio(card_id: int, db: Session = Depends(get_db)):
 def download_anki(user_id: int, db: Session = Depends(get_db)):
     cards = db.query(Flashcard).filter(
         Flashcard.user_id == user_id,
-        Flashcard.is_active == True
+        Flashcard.is_active is True
     ).all()
 
     if not cards:

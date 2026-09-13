@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.user import User
 from backend.models.topic import UserTopicProgress, Topic
-from backend.models.lab_attempt import LabAttempt
 from backend.models.error_item import ErrorItem
 from backend.models.exercise import UserExerciseAttempt
 from backend.services.achievement_service import (
@@ -29,15 +28,15 @@ def get_stats(user_id: int, db: Session = Depends(get_db)):
     topics_total = db.query(Topic).count()
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.theory_completed == True
+        UserTopicProgress.theory_completed is True
     ).count()
     labs_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.lab_completed == True
+        UserTopicProgress.lab_completed is True
     ).count()
     errors_pending = db.query(ErrorItem).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved == False
+        ErrorItem.resolved is False
     ).count()
 
     new_achievements = get_unnotified_achievements(user_id, db)
@@ -73,8 +72,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         func.count(ErrorItem.id).label("count")
     ).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved == False,
-        ErrorItem.topic_slug != None
+        ErrorItem.resolved is False,
+        ErrorItem.topic_slug is not None
     ).group_by(ErrorItem.topic_slug).order_by(func.count(ErrorItem.id).desc()).limit(5).all()
 
     # Topics in progress: theory completed but lab not done
@@ -82,8 +81,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         UserTopicProgress, Topic.id == UserTopicProgress.topic_id
     ).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.theory_completed == True,
-        UserTopicProgress.lab_completed == False
+        UserTopicProgress.theory_completed is True,
+        UserTopicProgress.lab_completed is False
     ).all()
 
     # Overall exercise accuracy
@@ -92,7 +91,7 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
     ).count()
     correct_exercises = db.query(UserExerciseAttempt).filter(
         UserExerciseAttempt.user_id == user_id,
-        UserExerciseAttempt.is_correct == True
+        UserExerciseAttempt.is_correct is True
     ).count()
     accuracy = round((correct_exercises / total_exercises) * 100) if total_exercises > 0 else 0
 

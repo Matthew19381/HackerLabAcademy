@@ -31,7 +31,6 @@ def db_session(test_db_path):
     # Monkeypatch database module
     original_engine = db_module.engine
     original_SessionLocal = db_module.SessionLocal
-    original_Base = db_module.Base
 
     db_module.engine = test_engine
     db_module.SessionLocal = TestingSessionLocal

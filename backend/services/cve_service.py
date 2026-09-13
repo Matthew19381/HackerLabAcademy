@@ -256,7 +256,6 @@ def refresh_cves(days_back: int = 7) -> dict:
 
 # Optional: Background scheduler (simple in-process)
 import threading
-import time
 
 class CveScheduler:
     """Simple background scheduler for periodic CVE fetching."""

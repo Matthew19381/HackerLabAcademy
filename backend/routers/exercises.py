@@ -6,7 +6,6 @@ from backend.services.exercise_service import (
     get_exercises_for_topic,
     submit_exercise_answer,
 )
-from backend.models.exercise import Exercise
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
 

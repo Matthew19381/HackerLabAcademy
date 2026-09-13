@@ -3,7 +3,6 @@ Certificate generation: award PDF when user completes all topics in a category.
 """
 import logging
 import json
-import uuid
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
@@ -21,7 +20,7 @@ router = APIRouter(prefix="/certificates", tags=["certificates"])
 @router.get("/list")
 def list_certificates(user_id: int, db: Session = Depends(get_db)):
     """List all certificates issued to user."""
-    certs = db.query(Certificate).filter(Certificate.user_id == user_id, Certificate.is_active == True).order_by(Certificate.issued_at.desc()).all()
+    certs = db.query(Certificate).filter(Certificate.user_id == user_id, Certificate.is_active is True).order_by(Certificate.issued_at.desc()).all()
     return [
         {
             "id": c.id,
@@ -73,7 +72,7 @@ def generate_certificate(
     existing = db.query(Certificate).filter(
         Certificate.user_id == user_id,
         Certificate.category == category,
-        Certificate.is_active == True
+        Certificate.is_active is True
     ).first()
     if existing:
         # Return existing PDF if file exists, else regenerate
@@ -125,7 +124,7 @@ def generate_certificate(
 @router.get("/download/{certificate_code}")
 def download_certificate(certificate_code: str, db: Session = Depends(get_db)):
     """Download the PDF for a given certificate code."""
-    cert = db.query(Certificate).filter(Certificate.certificate_code == certificate_code, Certificate.is_active == True).first()
+    cert = db.query(Certificate).filter(Certificate.certificate_code == certificate_code, Certificate.is_active is True).first()
     if not cert:
         raise HTTPException(status_code=404, detail="Certificate not found")
 
