@@ -4,6 +4,7 @@ Integrates with NVD API to fetch latest CVEs and store them in the database.
 """
 import logging
 import json
+import threading
 import requests
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
@@ -255,7 +256,6 @@ def refresh_cves(days_back: int = 7) -> dict:
         }
 
 # Optional: Background scheduler (simple in-process)
-import threading
 
 class CveScheduler:
     """Simple background scheduler for periodic CVE fetching."""

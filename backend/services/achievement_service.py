@@ -149,76 +149,107 @@ def check_and_award_achievements(user, db: Session) -> list:
         if ach_type not in existing and ach_type in ACHIEVEMENT_DEFS:
             candidates.append(ach_type)
 
-    if theory_done >= 1: maybe("first_theory")
-    if theory_done >= 5: maybe("theory_5")
-    if theory_done >= 10: maybe("theory_10")
+    if theory_done >= 1:
+        maybe("first_theory")
+    if theory_done >= 5:
+        maybe("theory_5")
+    if theory_done >= 10:
+        maybe("theory_10")
 
-    if labs_done >= 1: maybe("first_lab")
-    if labs_done >= 3: maybe("labs_3")
-    if labs_done >= 10: maybe("labs_10")
+    if labs_done >= 1:
+        maybe("first_lab")
+    if labs_done >= 3:
+        maybe("labs_3")
+    if labs_done >= 10:
+        maybe("labs_10")
 
-    if errors_fixed >= 1: maybe("first_fix")
-    if errors_fixed >= 10: maybe("fix_10")
+    if errors_fixed >= 1:
+        maybe("first_fix")
+    if errors_fixed >= 10:
+        maybe("fix_10")
 
-    if streak >= 3: maybe("streak_3")
-    if streak >= 7: maybe("streak_7")
-    if streak >= 14: maybe("streak_14")
-    if streak >= 30: maybe("streak_30")
+    if streak >= 3:
+        maybe("streak_3")
+    if streak >= 7:
+        maybe("streak_7")
+    if streak >= 14:
+        maybe("streak_14")
+    if streak >= 30:
+        maybe("streak_30")
 
-    if xp >= 100: maybe("xp_100")
-    if xp >= 500: maybe("xp_500")
-    if xp >= 1000: maybe("xp_1000")
-    if xp >= 5000: maybe("xp_5000")
+    if xp >= 100:
+        maybe("xp_100")
+    if xp >= 500:
+        maybe("xp_500")
+    if xp >= 1000:
+        maybe("xp_1000")
+    if xp >= 5000:
+        maybe("xp_5000")
 
-    if current_level >= 5: maybe("level_5")
-    if current_level >= 10: maybe("level_10")
-    if current_level >= 25: maybe("level_25")
+    if current_level >= 5:
+        maybe("level_5")
+    if current_level >= 10:
+        maybe("level_10")
+    if current_level >= 25:
+        maybe("level_25")
 
     # CTF completions
     ctf_done = db.query(UserCtfAttempt).filter(
         UserCtfAttempt.user_id == user.id,
         UserCtfAttempt.completed is True
     ).count()
-    if ctf_done >= 1: maybe("first_ctf")
-    if ctf_done >= 5: maybe("ctf_5")
-    if ctf_done >= 15: maybe("ctf_15")
+    if ctf_done >= 1:
+        maybe("first_ctf")
+    if ctf_done >= 5:
+        maybe("ctf_5")
+    if ctf_done >= 15:
+        maybe("ctf_15")
 
     # Defense completions
     defense_done = db.query(UserDefenseAttempt).filter(
         UserDefenseAttempt.user_id == user.id,
         UserDefenseAttempt.completed is True
     ).count()
-    if defense_done >= 1: maybe("first_defense")
-    if defense_done >= 5: maybe("defense_5")
+    if defense_done >= 1:
+        maybe("first_defense")
+    if defense_done >= 5:
+        maybe("defense_5")
 
     # Articles read
     articles_read = db.query(ArticleRead).filter(
         ArticleRead.user_id == user.id
     ).count()
-    if articles_read >= 1: maybe("first_article")
-    if articles_read >= 5: maybe("articles_5")
+    if articles_read >= 1:
+        maybe("first_article")
+    if articles_read >= 5:
+        maybe("articles_5")
 
     # Attack scenarios completed
     scenarios_done = db.query(UserAttackProgress).filter(
         UserAttackProgress.user_id == user.id,
         UserAttackProgress.completed is True
     ).count()
-    if scenarios_done >= 1: maybe("first_scenario")
-    if scenarios_done >= 3: maybe("scenarios_3")
+    if scenarios_done >= 1:
+        maybe("first_scenario")
+    if scenarios_done >= 3:
+        maybe("scenarios_3")
 
     # Flashcards reviewed
     flashcards_reviewed = db.query(FlashcardAttempt).filter(
         FlashcardAttempt.user_id == user.id
     ).count()
-    if flashcards_reviewed >= 50: maybe("flashcards_50")
-    if flashcards_reviewed >= 200: maybe("flashcards_200")
+    if flashcards_reviewed >= 50:
+        maybe("flashcards_50")
+    if flashcards_reviewed >= 200:
+        maybe("flashcards_200")
 
     # Conversation sessions completed
     conv_sessions = db.query(ConversationSession).filter(
         ConversationSession.user_id == user.id,
         ConversationSession.completed is True
     ).count()
-    if conv_sessions >= 5: maybe("conversation_5")
+    if conv_sessions >= 5:
+        maybe("conversation_5")
 
     # Check OWASP topic mastery
     _check_owasp_achievements(user.id, db, existing, candidates)

@@ -16,7 +16,7 @@ def test_db_path():
     if os.path.exists(path):
         try:
             os.remove(path)
-        except:
+        except Exception:
             pass
 
 
