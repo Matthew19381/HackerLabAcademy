@@ -71,7 +71,7 @@ async def generate_exercises_for_topic(topic_id: int, db: Session, count: int = 
         return created
 
     except Exception as e:
-        logger.error(f"Failed to generate exercises for {topic_slug}: {e}")
+        logger.error(f"Failed to generate exercises for {topic.name}: {e}")
         raise
 
 

@@ -1,14 +1,14 @@
 import logging
 import json
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from backend.models.user import User
 from backend.database import get_db
 from backend.models.cve import Cve
 from backend.models.flashcard import Flashcard
-from backend.services.ai_service import generate_json
-from backend.services.cve_service import refresh_cves, fetch_nvd_cves
+from backend.services.cve_service import refresh_cves
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/cves", tags=["cves"])
@@ -31,7 +31,7 @@ def get_cves(
     db: Session = Depends(get_db)
 ):
     """List CVEs, optionally filtered by topic or severity."""
-    query = db.query(Cve).filter(Cve.is_active == True)
+    query = db.query(Cve).filter(Cve.is_active is True)
 
     if topic_slug:
         query = query.filter(Cve.topic_slug == topic_slug)
@@ -59,7 +59,7 @@ def get_cves(
 @router.get("/{cve_id}")
 def get_cve(cve_id: str, db: Session = Depends(get_db)):
     """Get details of a specific CVE."""
-    cve = db.query(Cve).filter(Cve.cve_id == cve_id, Cve.is_active == True).first()
+    cve = db.query(Cve).filter(Cve.cve_id == cve_id, Cve.is_active is True).first()
     if not cve:
         raise HTTPException(status_code=404, detail="CVE not found")
 
@@ -96,8 +96,8 @@ def refresh_cves_endpoint(
 @router.get("/meta")
 def get_cves_meta(db: Session = Depends(get_db)):
     """Get metadata about CVE database: total count, last updated."""
-    total = db.query(Cve).filter(Cve.is_active == True).count()
-    latest = db.query(Cve).filter(Cve.is_active == True).order_by(Cve.created_at.desc()).first()
+    total = db.query(Cve).filter(Cve.is_active is True).count()
+    latest = db.query(Cve).filter(Cve.is_active is True).order_by(Cve.created_at.desc()).first()
     last_updated = latest.created_at.isoformat() if latest else None
 
     return {
@@ -118,7 +118,7 @@ def create_flashcard_from_cve(
     db: Session = Depends(get_db)
 ):
     """Create a flashcard from a CVE entry (term = CVE ID + title, def = description, example = affected product)."""
-    cve = db.query(Cve).filter(Cve.cve_id == cve_id, Cve.is_active == True).first()
+    cve = db.query(Cve).filter(Cve.cve_id == cve_id, Cve.is_active is True).first()
     if not cve:
         raise HTTPException(status_code=404, detail="CVE not found")
 
@@ -138,7 +138,7 @@ def create_flashcard_from_cve(
     existing = db.query(Flashcard).filter(
         Flashcard.user_id == req.user_id,
         Flashcard.front == term,
-        Flashcard.is_active == True
+        Flashcard.is_active is True
     ).first()
     if existing:
         raise HTTPException(status_code=400, detail="Fiszka z tym terminem już istnieje")
