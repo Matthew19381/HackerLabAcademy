@@ -2,7 +2,7 @@
 Daily completion status (simple).
 """
 import logging
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from backend.database import get_db
@@ -28,7 +28,7 @@ def get_daily_status(
     # Lab: any completed LabAttempt today
     lab_done = db.query(LabAttempt).filter(
         LabAttempt.user_id == user_id,
-        LabAttempt.completed == True,
+        LabAttempt.completed is True,
         LabAttempt.completed_at >= today_dt,
         LabAttempt.completed_at < tomorrow_dt
     ).first() is not None
@@ -43,7 +43,7 @@ def get_daily_status(
     # Flashcard: any review today
     flashcard_done = db.query(FlashcardAttempt).filter(
         FlashcardAttempt.user_id == user_id,
-        FlashcardAttempt.is_active == True,
+        FlashcardAttempt.is_active is True,
         FlashcardAttempt.reviewed_at >= today_dt,
         FlashcardAttempt.reviewed_at < tomorrow_dt
     ).first() is not None
@@ -51,7 +51,7 @@ def get_daily_status(
     # Article: any read today
     article_done = db.query(ArticleRead).filter(
         ArticleRead.user_id == user_id,
-        ArticleRead.is_active == True,
+        ArticleRead.is_active is True,
         ArticleRead.read_at >= today_dt,
         ArticleRead.read_at < tomorrow_dt
     ).first() is not None

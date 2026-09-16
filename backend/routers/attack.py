@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
@@ -21,7 +21,7 @@ class SubmitAnswerRequest(BaseModel):
 @router.get("/scenarios")
 def list_scenarios(db: Session = Depends(get_db)):
     """List all active attack scenarios (without steps)."""
-    scenarios = db.query(AttackScenario).filter(AttackScenario.is_active == True).order_by(AttackScenario.id).all()
+    scenarios = db.query(AttackScenario).filter(AttackScenario.is_active is True).order_by(AttackScenario.id).all()
     return [
         {
             "id": s.id,
@@ -36,7 +36,7 @@ def list_scenarios(db: Session = Depends(get_db)):
 @router.get("/scenarios/{scenario_id}")
 def get_scenario(scenario_id: int, db: Session = Depends(get_db)):
     """Get scenario details incl. all steps (but not expected answers)."""
-    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active == True).first()
+    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active is True).first()
     if not scenario:
         raise HTTPException(status_code=404, detail="Scenario not found")
     steps = json.loads(scenario.steps_data)
@@ -53,7 +53,7 @@ def get_scenario(scenario_id: int, db: Session = Depends(get_db)):
 @router.get("/scenarios/{scenario_id}/current")
 def get_current_step(scenario_id: int, user_id: int, db: Session = Depends(get_db)):
     """Get current step for a user."""
-    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active == True).first()
+    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active is True).first()
     if not scenario:
         raise HTTPException(status_code=404, detail="Scenario not found")
 
@@ -85,7 +85,7 @@ def get_current_step(scenario_id: int, user_id: int, db: Session = Depends(get_d
 @router.post("/scenarios/{scenario_id}/start")
 def start_scenario(scenario_id: int, user_id: int, db: Session = Depends(get_db)):
     """Initialize or reset progress for a user."""
-    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active == True).first()
+    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active is True).first()
     if not scenario:
         raise HTTPException(status_code=404, detail="Scenario not found")
 
@@ -142,7 +142,7 @@ def start_scenario(scenario_id: int, user_id: int, db: Session = Depends(get_db)
 @router.post("/scenarios/{scenario_id}/submit")
 def submit_step_answer(scenario_id: int, req: SubmitAnswerRequest, db: Session = Depends(get_db)):
     """Submit answer for current step. If correct, advance and award points."""
-    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active == True).first()
+    scenario = db.query(AttackScenario).filter(AttackScenario.id == scenario_id, AttackScenario.is_active is True).first()
     if not scenario:
         raise HTTPException(status_code=404, detail="Scenario not found")
 

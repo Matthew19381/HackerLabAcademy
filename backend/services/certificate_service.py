@@ -37,13 +37,13 @@ def generate_certificate_pdf(user_name: str, category: str, topic_names: list[st
 
     pdf.ln(10)
     pdf.set_font("Helvetica", size=14)
-    pdf.cell(0, 10, f"This certifies that", ln=True, align="C")
+    pdf.cell(0, 10, "This certifies that", ln=True, align="C")
     pdf.set_font("Helvetica", "B", 22)
     pdf.cell(0, 12, f"{user_name}", ln=True, align="C")
     pdf.ln(5)
 
     pdf.set_font("Helvetica", size=14)
-    pdf.cell(0, 10, f"has successfully completed the", ln=True, align="C")
+    pdf.cell(0, 10, "has successfully completed the", ln=True, align="C")
     pdf.set_font("Helvetica", "B", 18)
     pdf.set_text_color(200, 50, 50)
     pdf.cell(0, 12, f"{category}", ln=True, align="C")

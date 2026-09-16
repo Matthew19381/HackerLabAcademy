@@ -28,6 +28,9 @@ frontend/build/
 # IDE
 .vscode/
 .idea/
+
+# Hermes kanban worktrees
+.worktrees/
 *.swp
 *.swo
 

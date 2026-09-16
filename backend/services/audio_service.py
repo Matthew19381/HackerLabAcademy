@@ -2,7 +2,6 @@
 Audio generation using edge-tts (Microsoft Neural TTS, free, no API key needed).
 Voice: pl-PL-ZofiaNeural (Polish female) — clear and natural.
 """
-import asyncio
 import hashlib
 import logging
 import os

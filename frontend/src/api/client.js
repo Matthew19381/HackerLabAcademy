@@ -61,17 +61,6 @@ export const getVideos = (params = {}) => {
 }
 export const getVideosByTopic = () => api.get('/videos/topics')
 
-// --- CTF Challenges ---
-export const getCtfChallenges = (params = {}) => {
-  const search = new URLSearchParams()
-  if (params.category) search.append('category', params.category)
-  if (params.difficulty) search.append('difficulty', params.difficulty)
-  if (params.limit) search.append('limit', params.limit)
-  return api.get(`/ctf/challenges/?${search.toString()}`)
-}
-export const submitFlag = (challengeId, userId, flag) => api.post(`/ctf/challenges/${challengeId}/submit`, { user_id: userId, flag })
-export const getLeaderboard = (limit = 20) => api.get(`/ctf/leaderboard?limit=${limit}`)
-
 // --- Defense Mode ---
 export const getDefenseChallenges = (params = {}) => {
   const search = new URLSearchParams()

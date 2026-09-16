@@ -1,4 +1,3 @@
-import pytest
 from backend.services.achievement_service import calculate_level_from_xp
 
 

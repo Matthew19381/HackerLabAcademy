@@ -3,6 +3,7 @@ CVE Auto-Fetch Service
 Integrates with NVD API to fetch latest CVEs and store them in the database.
 """
 import logging
+import threading
 import json
 import requests
 from datetime import datetime, timedelta
@@ -255,8 +256,6 @@ def refresh_cves(days_back: int = 7) -> dict:
         }
 
 # Optional: Background scheduler (simple in-process)
-import threading
-import time
 
 class CveScheduler:
     """Simple background scheduler for periodic CVE fetching."""

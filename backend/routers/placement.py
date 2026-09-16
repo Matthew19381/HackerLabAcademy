@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
 from backend.models.user import User
-from backend.models.topic import Topic, UserTopicProgress
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/placement", tags=["placement"])

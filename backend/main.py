@@ -3,8 +3,28 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from .database import engine, Base, SessionLocal
+import backend.routers.placement as placement
+import backend.routers.topics as topics
+import backend.routers.labs as labs
+import backend.routers.flashcards as flashcards
+import backend.routers.mentor as mentor
+import backend.routers.errors as errors
+import backend.routers.stats as stats
+import backend.routers.brain as brain
+import backend.routers.downloads as downloads
+import backend.routers.vocabulary as vocabulary
+import backend.routers.exercises as exercises
+import backend.routers.conversation as conversation
+import backend.routers.cves as cves
+import backend.routers.videos as videos
+import backend.routers.defense as defense
+import backend.routers.attack as attack
+import backend.routers.certificates as certificates
+import backend.routers.daily as daily
+import backend.routers.articles as articles
+import backend.routers.writeups as writeups
+import backend.routers.ai_config as ai_config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -157,28 +177,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-import backend.routers.placement as placement
-import backend.routers.topics as topics
-import backend.routers.labs as labs
-import backend.routers.flashcards as flashcards
-import backend.routers.mentor as mentor
-import backend.routers.errors as errors
-import backend.routers.stats as stats
-import backend.routers.brain as brain
-import backend.routers.downloads as downloads
-import backend.routers.vocabulary as vocabulary
-import backend.routers.exercises as exercises
-import backend.routers.conversation as conversation
-import backend.routers.cves as cves
-import backend.routers.videos as videos
-import backend.routers.ctf as ctf
-import backend.routers.defense as defense
-import backend.routers.attack as attack
-import backend.routers.certificates as certificates
-import backend.routers.daily as daily
-import backend.routers.articles as articles
-import backend.routers.writeups as writeups
-import backend.routers.ai_config as ai_config
 
 app.include_router(placement.router, prefix="/api/v1")
 app.include_router(topics.router, prefix="/api/v1")

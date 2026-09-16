@@ -2,7 +2,6 @@
 Lesson bundle service: create ZIP containing PDF + audio for a lesson.
 """
 import os
-import tempfile
 import zipfile
 import logging
 from typing import Optional

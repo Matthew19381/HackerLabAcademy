@@ -16,7 +16,7 @@ def test_db_path():
     if os.path.exists(path):
         try:
             os.remove(path)
-        except:
+        except Exception:
             pass
 
 
@@ -31,7 +31,6 @@ def db_session(test_db_path):
     # Monkeypatch database module
     original_engine = db_module.engine
     original_SessionLocal = db_module.SessionLocal
-    original_Base = db_module.Base
 
     db_module.engine = test_engine
     db_module.SessionLocal = TestingSessionLocal
@@ -48,7 +47,7 @@ def db_session(test_db_path):
     from backend.models import (  # noqa
         user, topic, flashcard, flashcard_attempt, error_item,
         lab_attempt, achievement, exercise, conversation, cve,
-        youtube_video, ctf, attack_scenario, defense, certificate,
+        youtube_video, attack_scenario, defense, certificate,
         article, writeup_template
     )
 
