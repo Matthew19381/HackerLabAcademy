@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getStats, getDueFlashcards, getDueErrors, getUser, getUserId } from '../api/client'
+import { getStats, getDueFlashcards, getDueErrors, getUser, getUserId, getDailyStatus } from '../api/client'
 import { BookOpen, FlaskConical, CreditCard, AlertTriangle, TrendingUp, Lightbulb } from 'lucide-react'
 import { getTipOfTheDay } from '../data/security_tips'
 
