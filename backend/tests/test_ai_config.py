@@ -18,24 +18,29 @@ def test_set_ai_provider_invalid(client):
     assert response.status_code == 400
 
 
-def test_set_ai_provider_valid(client):
-    """Test setting valid AI provider."""
-    # Test openrouter
-    response = client.post(
-        "/api/v1/ai-config/provider",
-        json={"provider": "openrouter"}
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["provider"] == "openrouter"
+def test_set_ai_provider_valid(client, monkeypatch):
+    """Test setting valid AI provider (keys faked: result must not depend on local .env)."""
+    from backend.config import settings
 
-    # Test gemini
-    response = client.post(
-        "/api/v1/ai-config/provider",
-        json={"provider": "gemini"}
-    )
+    monkeypatch.setattr(settings, "OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr(settings, "AI_PROVIDER", settings.AI_PROVIDER)  # restored after test
+
+    response = client.post("/api/v1/ai-config/provider", json={"provider": "openrouter"})
+    assert response.status_code == 200
+    assert response.json()["provider"] == "openrouter"
+
+    response = client.post("/api/v1/ai-config/provider", json={"provider": "gemini"})
     assert response.status_code == 200
     assert response.json()["provider"] == "gemini"
+
+
+def test_set_ai_provider_without_key_is_rejected(client, monkeypatch):
+    from backend.config import settings
+
+    monkeypatch.setattr(settings, "OPENROUTER_API_KEY", None)
+    response = client.post("/api/v1/ai-config/provider", json={"provider": "openrouter"})
+    assert response.status_code == 400
 
 
 def test_test_ai_connection(client):
