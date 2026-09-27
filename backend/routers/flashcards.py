@@ -20,7 +20,7 @@ def get_due_flashcards(user_id: int, db: Session = Depends(get_db)):
     now = datetime.utcnow()
     cards = db.query(Flashcard).filter(
         Flashcard.user_id == user_id,
-        Flashcard.is_active is True,
+        Flashcard.is_active.is_(True),
         Flashcard.next_review_date <= now
     ).all()
 
@@ -49,7 +49,7 @@ def get_due_flashcards(user_id: int, db: Session = Depends(get_db)):
 def get_all_flashcards(user_id: int, db: Session = Depends(get_db)):
     cards = db.query(Flashcard).filter(
         Flashcard.user_id == user_id,
-        Flashcard.is_active is True
+        Flashcard.is_active.is_(True)
     ).order_by(Flashcard.next_review_date).all()
 
     return [

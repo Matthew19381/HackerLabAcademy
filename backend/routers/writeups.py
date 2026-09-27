@@ -20,7 +20,7 @@ def get_writeup_templates(
     db: Session = Depends(get_db)
 ):
     """List active writeup templates, optionally filtered by category."""
-    query = db.query(WriteupTemplate).filter(WriteupTemplate.is_active is True)
+    query = db.query(WriteupTemplate).filter(WriteupTemplate.is_active.is_(True))
     if category:
         query = query.filter(WriteupTemplate.category == category)
     templates = query.order_by(WriteupTemplate.name).all()
@@ -53,7 +53,7 @@ def generate_writeup(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    template = db.query(WriteupTemplate).filter(WriteupTemplate.id == req.template_id, WriteupTemplate.is_active is True).first()
+    template = db.query(WriteupTemplate).filter(WriteupTemplate.id == req.template_id, WriteupTemplate.is_active.is_(True)).first()
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 

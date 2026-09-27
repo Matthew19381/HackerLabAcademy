@@ -116,17 +116,17 @@ def check_and_award_achievements(user, db: Session) -> list:
 
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user.id,
-        UserTopicProgress.theory_completed is True
+        UserTopicProgress.theory_completed.is_(True)
     ).count()
 
     labs_done = db.query(LabAttempt).filter(
         LabAttempt.user_id == user.id,
-        LabAttempt.completed is True
+        LabAttempt.completed.is_(True)
     ).count()
 
     errors_fixed = db.query(ErrorItem).filter(
         ErrorItem.user_id == user.id,
-        ErrorItem.resolved is True
+        ErrorItem.resolved.is_(True)
     ).count()
 
     xp = user.total_xp
@@ -191,7 +191,7 @@ def check_and_award_achievements(user, db: Session) -> list:
     # Defense completions
     defense_done = db.query(UserDefenseAttempt).filter(
         UserDefenseAttempt.user_id == user.id,
-        UserDefenseAttempt.completed is True
+        UserDefenseAttempt.completed.is_(True)
     ).count()
     if defense_done >= 1:
         maybe("first_defense")
@@ -210,7 +210,7 @@ def check_and_award_achievements(user, db: Session) -> list:
     # Attack scenarios completed
     scenarios_done = db.query(UserAttackProgress).filter(
         UserAttackProgress.user_id == user.id,
-        UserAttackProgress.completed is True
+        UserAttackProgress.completed.is_(True)
     ).count()
     if scenarios_done >= 1:
         maybe("first_scenario")
@@ -229,7 +229,7 @@ def check_and_award_achievements(user, db: Session) -> list:
     # Conversation sessions completed
     conv_sessions = db.query(ConversationSession).filter(
         ConversationSession.user_id == user.id,
-        ConversationSession.completed is True
+        ConversationSession.completed.is_(True)
     ).count()
     if conv_sessions >= 5:
         maybe("conversation_5")
@@ -267,7 +267,7 @@ def _check_owasp_achievements(user_id: int, db: Session, existing: set, candidat
         progress = db.query(UserTopicProgress).filter(
             UserTopicProgress.user_id == user_id,
             UserTopicProgress.topic_id == sqli_topic.id,
-            UserTopicProgress.lab_completed is True
+            UserTopicProgress.lab_completed.is_(True)
         ).first()
         if progress:
             maybe("owasp_sqli")
@@ -277,7 +277,7 @@ def _check_owasp_achievements(user_id: int, db: Session, existing: set, candidat
         progress = db.query(UserTopicProgress).filter(
             UserTopicProgress.user_id == user_id,
             UserTopicProgress.topic_id == xss_topic.id,
-            UserTopicProgress.lab_completed is True
+            UserTopicProgress.lab_completed.is_(True)
         ).first()
         if progress:
             maybe("owasp_xss")
@@ -290,7 +290,7 @@ def _check_owasp_achievements(user_id: int, db: Session, existing: set, candidat
             db.query(UserTopicProgress).filter(
                 UserTopicProgress.user_id == user_id,
                 UserTopicProgress.topic_id == t.id,
-                UserTopicProgress.lab_completed is True
+                UserTopicProgress.lab_completed.is_(True)
             ).first() for t in owasp_topics
         )
         if all_completed:
@@ -300,7 +300,7 @@ def _check_owasp_achievements(user_id: int, db: Session, existing: set, candidat
 def get_unnotified_achievements(user_id: int, db: Session) -> list:
     unnotified = db.query(Achievement).filter(
         Achievement.user_id == user_id,
-        Achievement.notified is False
+        Achievement.notified.is_(False)
     ).all()
 
     result = []

@@ -28,15 +28,15 @@ def get_stats(user_id: int, db: Session = Depends(get_db)):
     topics_total = db.query(Topic).count()
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.theory_completed is True
+        UserTopicProgress.theory_completed.is_(True)
     ).count()
     labs_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.lab_completed is True
+        UserTopicProgress.lab_completed.is_(True)
     ).count()
     errors_pending = db.query(ErrorItem).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved is False
+        ErrorItem.resolved.is_(False)
     ).count()
 
     new_achievements = get_unnotified_achievements(user_id, db)
@@ -72,8 +72,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         func.count(ErrorItem.id).label("count")
     ).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved is False,
-        ErrorItem.topic_slug is not None
+        ErrorItem.resolved.is_(False),
+        ErrorItem.topic_slug.isnot(None)
     ).group_by(ErrorItem.topic_slug).order_by(func.count(ErrorItem.id).desc()).limit(5).all()
 
     # Topics in progress: theory completed but lab not done
@@ -81,8 +81,8 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
         UserTopicProgress, Topic.id == UserTopicProgress.topic_id
     ).filter(
         UserTopicProgress.user_id == user_id,
-        UserTopicProgress.theory_completed is True,
-        UserTopicProgress.lab_completed is False
+        UserTopicProgress.theory_completed.is_(True),
+        UserTopicProgress.lab_completed.is_(False)
     ).all()
 
     # Overall exercise accuracy
@@ -91,7 +91,7 @@ def get_analytics(user_id: int, db: Session = Depends(get_db)):
     ).count()
     correct_exercises = db.query(UserExerciseAttempt).filter(
         UserExerciseAttempt.user_id == user_id,
-        UserExerciseAttempt.is_correct is True
+        UserExerciseAttempt.is_correct.is_(True)
     ).count()
     accuracy = round((correct_exercises / total_exercises) * 100) if total_exercises > 0 else 0
 

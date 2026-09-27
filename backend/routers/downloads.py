@@ -88,7 +88,7 @@ async def download_flashcard_audio(card_id: int, db: Session = Depends(get_db)):
 def download_anki(user_id: int, db: Session = Depends(get_db)):
     cards = db.query(Flashcard).filter(
         Flashcard.user_id == user_id,
-        Flashcard.is_active is True
+        Flashcard.is_active.is_(True)
     ).all()
 
     if not cards:

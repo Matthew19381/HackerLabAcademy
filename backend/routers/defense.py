@@ -30,7 +30,7 @@ def list_defense_challenges(
     db: Session = Depends(get_db)
 ):
     """List defense challenges (vulnerable code to fix)."""
-    query = db.query(DefenseChallenge).filter(DefenseChallenge.is_active is True)
+    query = db.query(DefenseChallenge).filter(DefenseChallenge.is_active.is_(True))
     if topic_slug:
         query = query.filter(DefenseChallenge.topic_slug == topic_slug)
     if difficulty:
@@ -54,7 +54,7 @@ def list_defense_challenges(
 @router.get("/challenges/{challenge_id}")
 def get_defense_challenge(challenge_id: int, db: Session = Depends(get_db)):
     """Get full challenge including vulnerable code."""
-    challenge = db.query(DefenseChallenge).filter(DefenseChallenge.id == challenge_id, DefenseChallenge.is_active is True).first()
+    challenge = db.query(DefenseChallenge).filter(DefenseChallenge.id == challenge_id, DefenseChallenge.is_active.is_(True)).first()
     if not challenge:
         raise HTTPException(status_code=404, detail="Challenge not found")
     return {
@@ -74,7 +74,7 @@ def submit_defense_fix(
     db: Session = Depends(get_db)
 ):
     """Submit a code fix. AI evaluates correctness and awards XP."""
-    challenge = db.query(DefenseChallenge).filter(DefenseChallenge.id == req.challenge_id, DefenseChallenge.is_active is True).first()
+    challenge = db.query(DefenseChallenge).filter(DefenseChallenge.id == req.challenge_id, DefenseChallenge.is_active.is_(True)).first()
     if not challenge:
         raise HTTPException(status_code=404, detail="Challenge not found")
 

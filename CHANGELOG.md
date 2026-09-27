@@ -2,6 +2,14 @@
 
 ---
 
+## [Unreleased] — 2026-09-27
+### Naprawione
+- **51 filtrów SQLAlchemy z `Model.pole is True/False/None`** (porównanie tożsamości w Pythonie → stałe False,
+  nie SQL): puste listy CVE, scenariuszy ataku, wyzwań obrony, certyfikatów, wideo, writeupów, statystyk błędów,
+  osiągnięć; „Napraw N błędów” nigdy nie pojawiało się w planie dnia. Teraz `.is_(...)`/`.isnot(None)`, test
+  regresyjny + skan kodu (`tests/test_sql_boolean_filters.py`).
+- `fsrs` brakował w `requirements.txt` — świeża instalacja nie startowała (`ModuleNotFoundError`).
+
 ## [2026-04-06] — Docker Production Deployment (nginx + multi-stage)
 
 ### Deployment & Infrastructure

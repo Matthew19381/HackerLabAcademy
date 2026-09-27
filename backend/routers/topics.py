@@ -78,7 +78,7 @@ async def get_theory(slug: str, user_id: int, db: Session = Depends(get_db)):
                 prog = db.query(UserTopicProgress).filter(
                     UserTopicProgress.user_id == user_id,
                     UserTopicProgress.topic_id == prereq_topic.id,
-                    UserTopicProgress.theory_completed is True
+                    UserTopicProgress.theory_completed.is_(True)
                 ).first()
                 if not prog:
                     raise HTTPException(status_code=403, detail=f"Najpierw ukończ: {prereq_slug}")

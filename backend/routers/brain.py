@@ -39,7 +39,7 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
     # 1. Due error items
     due_errors = db.query(ErrorItem).filter(
         ErrorItem.user_id == user_id,
-        ErrorItem.resolved is False,
+        ErrorItem.resolved.is_(False),
         ErrorItem.next_review <= now
     ).count()
 
@@ -58,7 +58,7 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
     # 2. Due flashcards
     due_cards = db.query(Flashcard).filter(
         Flashcard.user_id == user_id,
-        Flashcard.is_active is True,
+        Flashcard.is_active.is_(True),
         Flashcard.next_review_date <= now
     ).count()
 
