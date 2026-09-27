@@ -33,7 +33,7 @@ start.bat        # CMD
 
 # 3. Otwórz przeglądarkę
 # Frontend: http://localhost:5174
-# Backend API: http://localhost:8001/docs
+# Backend API: http://localhost:8003/docs
 ```
 
 ## Docker (produkcja)

@@ -15,6 +15,7 @@
 - `start.bat`/`start.ps1` uruchamiały backend na :8001 (port LinguaAI), a frontend proxował na :8003 — API nie
   działało przy starcie skryptem. Ścieżka bazy bezwzględna (względna tworzyła pustą bazę przy starcie z `backend/`);
   `DATABASE_URL` z env.
+- Testy mogły wysłać prawdziwe, płatne zapytanie do AI, gdy klucz był w środowisku — klucze AI zerowane w `conftest`.
 - Literówki: „Przepełnij kill chain” → „Przejdź”, „Skryptowa Dziecię” → „Skryptowe dziecko”.
 ### Dodane
 - **Integracja z System-Głównym (F5.1–F5.3)**: `GET /api/v1/summary` (fiszki przejrzane/zaległe, błędy
