@@ -12,7 +12,7 @@ export default function Articles() {
 
   useEffect(() => {
     getArticles().then(data => {
-      setArticles(data)
+      setArticles(Array.isArray(data) ? data : data.items ?? [])  // backend paginates: {items, total}
       setLoading(false)
     }).catch(() => {})
   }, [])

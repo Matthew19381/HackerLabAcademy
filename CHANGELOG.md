@@ -10,6 +10,9 @@
   `POST /api/v1/integrations/flush`; hub niedostępny = event czeka), `POST /api/v1/directives`
   (survival_mode → plan dnia skrócony do 5 minut fiszek, priority, quiet_hours). Testy `tests/test_hub_integration.py`.
 ### Naprawione
+- **Artykuły**: `POST /articles/{slug}/read` i `/quiz/submit` wołane przez UI nie istniały (404); lista artykułów
+  wracała jako `{items}`, a strona oczekiwała tablicy (crash); szczegóły nie zwracały `quiz_questions`. Test kontraktu
+  `tests/test_frontend_contract.py`.
 - **51 filtrów SQLAlchemy z `Model.pole is True/False/None`** (porównanie tożsamości w Pythonie → stałe False,
   nie SQL): puste listy CVE, scenariuszy ataku, wyzwań obrony, certyfikatów, wideo, writeupów, statystyk błędów,
   osiągnięć; „Napraw N błędów” nigdy nie pojawiało się w planie dnia. Teraz `.is_(...)`/`.isnot(None)`, test

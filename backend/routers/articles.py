@@ -1,6 +1,10 @@
+import json
 import logging
-from fastapi import APIRouter, Depends
+
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
 
 logger = logging.getLogger(__name__)
@@ -46,7 +50,108 @@ def get_article(slug: str, db: Session = Depends(get_db)):
         "content_md": article.content_md,
         "read_time_minutes": article.read_time_minutes,
         "created_at": article.created_at.isoformat() if article.created_at else None,
+        # correct_index stays on the server - graded in POST /{slug}/quiz/submit
+        "quiz_questions": [
+            {"id": q.id, "question": q.question, "options": json.loads(q.options)}
+            for q in _quizzes(db, article.id)
+        ],
     }
+
+
+XP_PER_CORRECT = 5
+
+
+class ReadRequest(BaseModel):
+    user_id: int
+    read_time_seconds: int | None = None
+
+
+class QuizSubmitRequest(BaseModel):
+    user_id: int
+    answers: dict[int, int]  # question id -> chosen option index
+
+
+def _quizzes(db: Session, article_id: int):
+    from backend.models.article import ArticleQuiz
+
+    return (
+        db.query(ArticleQuiz)
+        .filter(ArticleQuiz.article_id == article_id)
+        .order_by(ArticleQuiz.question_order, ArticleQuiz.id)
+        .all()
+    )
+
+
+def _article_or_404(db: Session, slug: str):
+    from backend.models.article import Article
+
+    article = db.query(Article).filter(Article.slug == slug).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return article
+
+
+# The frontend called both endpoints below, but they did not exist (404) until 2026-09-27.
+@router.post("/{slug}/read")
+def mark_read(slug: str, req: ReadRequest, db: Session = Depends(get_db)):
+    from backend.models.article import ArticleRead
+
+    article = _article_or_404(db, slug)
+    row = (
+        db.query(ArticleRead)
+        .filter(ArticleRead.user_id == req.user_id, ArticleRead.article_id == article.id)
+        .first()
+    )
+    if row:
+        if req.read_time_seconds:
+            row.read_time_seconds = (row.read_time_seconds or 0) + req.read_time_seconds
+    else:
+        row = ArticleRead(user_id=req.user_id, article_id=article.id, read_time_seconds=req.read_time_seconds)
+        db.add(row)
+    db.commit()
+    return {"status": "read", "article_id": article.id, "read_time_seconds": row.read_time_seconds}
+
+
+@router.post("/{slug}/quiz/submit")
+def submit_quiz(slug: str, req: QuizSubmitRequest, db: Session = Depends(get_db)):
+    from backend.models.article import ArticleQuizAttempt
+    from backend.models.user import User
+
+    article = _article_or_404(db, slug)
+    questions = _quizzes(db, article.id)
+    if not questions:
+        raise HTTPException(status_code=404, detail="This article has no quiz")
+    user = db.query(User).filter(User.id == req.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    ids = [q.id for q in questions]
+    first_time = (
+        db.query(ArticleQuizAttempt)
+        .filter(ArticleQuizAttempt.user_id == user.id, ArticleQuizAttempt.article_quiz_id.in_(ids))
+        .count()
+        == 0
+    )
+    results = []
+    for q in questions:
+        chosen = req.answers.get(q.id)
+        correct = chosen is not None and chosen == q.correct_index
+        if chosen is not None:
+            db.add(ArticleQuizAttempt(user_id=user.id, article_quiz_id=q.id, user_answer=chosen, is_correct=correct))
+        results.append({"id": q.id, "correct": correct, "correct_index": q.correct_index,
+                        "explanation": q.explanation})
+    n_correct = sum(r["correct"] for r in results)
+    xp = n_correct * XP_PER_CORRECT if first_time else 0  # XP only for the first attempt
+    user.total_xp = (user.total_xp or 0) + xp
+    db.commit()
+    return {
+        "correct": n_correct,
+        "total": len(questions),
+        "score_percent": round(n_correct / len(questions) * 100),
+        "xp_awarded": xp,
+        "results": results,
+    }
+
 
 def seed_sample_articles(db: Session):
     from backend.models.article import Article
