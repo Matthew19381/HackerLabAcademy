@@ -38,10 +38,11 @@ export default function Errors() {
   if (loading) return <div className="p-8 text-[#8b949e] text-center animate-pulse">Ładowanie błędów...</div>
 
   const ERROR_TYPE_LABELS = {
-    no_knowledge: { label: 'Brak wiedzy', color: 'text-[#f85149]' },
-    misunderstanding: { label: 'Złe rozumienie', color: 'text-[#e3b341]' },
-    guessing: { label: 'Zgadywanie', color: 'text-[#bc8cff]' },
-    unknown: { label: 'Błąd', color: 'text-[#8b949e]' },
+    // labels describe the item, not the person (ecosystem rule: task-level feedback)
+    no_knowledge: { label: 'Nowe pojęcie', color: 'text-[#58a6ff]' },
+    misunderstanding: { label: 'Do doprecyzowania', color: 'text-[#e3b341]' },
+    guessing: { label: 'Do utrwalenia', color: 'text-[#bc8cff]' },
+    unknown: { label: 'Do powtórki', color: 'text-[#8b949e]' },
   }
 
   return (

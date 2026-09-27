@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { getUserId } from './api/client'
 import Layout from './components/Layout'
+import PageErrorBoundary from './components/PageErrorBoundary'
 import Setup from './pages/Setup'
 import Dashboard from './pages/Dashboard'
 import Topics from './pages/Topics'
@@ -38,6 +39,7 @@ export default function App() {
           element={
             <RequireAuth>
               <Layout>
+                <PageErrorBoundary>
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/topics" element={<Topics />} />
@@ -59,6 +61,7 @@ export default function App() {
                   <Route path="/attack" element={<AttackScenario />} />
                   <Route path="/articles" element={<Articles />} />
                 </Routes>
+                </PageErrorBoundary>
               </Layout>
             </RequireAuth>
           }

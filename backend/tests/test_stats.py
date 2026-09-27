@@ -4,7 +4,7 @@ from backend.services.achievement_service import calculate_level_from_xp
 def test_calculate_level_from_xp_zero():
     result = calculate_level_from_xp(0)
     assert result["level"] == 1
-    assert result["level_name"] == "Skryptowa Dziecię"
+    assert result["level_name"] == "Skryptowe dziecko"
     assert result["xp"] == 0
 
 
@@ -12,14 +12,14 @@ def test_calculate_level_from_xp_level_2():
     # Level 2 requires (2-1)^2 * 20 = 20 XP
     result = calculate_level_from_xp(20)
     assert result["level"] == 2
-    assert result["level_name"] == "Skryptowa Dziecię"  # Level 2 is in 1-5 range
+    assert result["level_name"] == "Skryptowe dziecko"  # Level 2 is in 1-5 range
 
 
 def test_calculate_level_from_xp_level_5():
     # Level 5 requires (5-1)^2 * 20 = 320 XP
     result = calculate_level_from_xp(320)
     assert result["level"] == 5
-    assert result["level_name"] == "Skryptowa Dziecię"  # Level 5 is in 1-5 range
+    assert result["level_name"] == "Skryptowe dziecko"  # Level 5 is in 1-5 range
 
 
 def test_calculate_level_from_xp_level_10():

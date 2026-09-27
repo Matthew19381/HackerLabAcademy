@@ -6,7 +6,18 @@ from backend.config import settings
 logger = logging.getLogger(__name__)
 
 _OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-_DEFAULT_MODEL = "google/gemini-2.0-flash-001"  # Default, can be overridden via config
+_DEFAULT_MODEL = "google/gemini-2.5-flash"  # Default, can be overridden via config
+# OpenRouter answers 404 for retired models (gemini-2.0-flash-001 was the configured
+# default and every call failed, 2026-09-27) - retry once with a current one.
+_FALLBACK_MODEL = "google/gemini-2.5-flash"
+
+
+async def _post(client: httpx.AsyncClient, payload: dict, headers: dict) -> httpx.Response:
+    response = await client.post(_OPENROUTER_URL, json=payload, headers=headers)
+    if response.status_code == 404 and payload.get("model") != _FALLBACK_MODEL:
+        logger.warning("OpenRouter model %s unavailable, retrying with %s", payload.get("model"), _FALLBACK_MODEL)
+        response = await client.post(_OPENROUTER_URL, json={**payload, "model": _FALLBACK_MODEL}, headers=headers)
+    return response
 
 
 async def generate_text(prompt: str) -> str:
@@ -26,7 +37,7 @@ async def generate_text(prompt: str) -> str:
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         try:
-            response = await client.post(_OPENROUTER_URL, json=payload, headers=headers)
+            response = await _post(client, payload, headers)
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
@@ -57,7 +68,7 @@ async def generate_json(prompt: str) -> dict:
 
     async with httpx.AsyncClient(timeout=180.0) as client:
         try:
-            response = await client.post(_OPENROUTER_URL, json=payload, headers=headers)
+            response = await _post(client, payload, headers)
             response.raise_for_status()
             data = response.json()
             text = data["choices"][0]["message"]["content"].strip()

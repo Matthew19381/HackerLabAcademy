@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import * as d3 from 'd3'
 import { getTopics } from '../api/client'
 import { Network, CircleDot, Lock, CheckCircle } from 'lucide-react'
 
@@ -48,7 +49,7 @@ export default function Mindmap() {
 
     const links = []
     topics.forEach(t => {
-      const prereqs = JSON.parse(t.prerequisites || '[]')
+      const prereqs = Array.isArray(t.prerequisites) ? t.prerequisites : JSON.parse(t.prerequisites || '[]')  // API already sends a list
       prereqs.forEach(prereqSlug => {
         const source = nodeMap.get(prereqSlug)
         const target = nodeMap.get(t.slug)

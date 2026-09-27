@@ -222,11 +222,16 @@ Zwróć JSON:
             "user_answer": "co odpowiedział",
             "correct_answer": "poprawna odpowiedź",
             "error_type": "no_knowledge|misunderstanding|guessing",
-            "explanation": "krótkie wyjaśnienie błędu po polsku"
+            "explanation": "1-2 zdania po polsku: dlaczego poprawna odpowiedź jest poprawna"
         }}
     ],
-    "summary": "Ogólna ocena po polsku"
-}}"""
+    "summary": "1-2 zdania po polsku: które pojęcia powtórzyć"
+}}
+
+Zasady języka (feedback o zadaniu, nie o osobie):
+- "explanation" tłumaczy POJĘCIE, zwracając się do czytelnika w 2. osobie ("Cookie wysyła przeglądarka w żądaniu...").
+- Nigdy nie oceniaj osoby ani jej wiedzy: bez "uczeń", "zgadywał", "brak wiedzy", "nie rozumie".
+- error_type to tylko techniczna etykieta do harmonogramu powtórek - nie komentuj jej w tekście."""
 
     try:
         result = await generate_json(prompt)

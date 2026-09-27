@@ -282,7 +282,7 @@ export default function TheoryLesson() {
                     <div className="flex gap-4 text-xs">
                       <span className="text-[#f85149]">Twoja: {e.user_answer}</span>
                       <span className="text-[#39d353]">Poprawna: {e.correct_answer}</span>
-                      <span className="text-[#8b949e] capitalize">[{e.error_type?.replace('_', ' ')}]</span>
+                      <span className="text-[#8b949e]">[{({ no_knowledge: 'nowe pojęcie', misunderstanding: 'do doprecyzowania', guessing: 'do utrwalenia' })[e.error_type] ?? 'do powtórki'}]</span>
                     </div>
                     {e.explanation && (
                       <div className="text-xs text-[#8b949e] mt-2 border-t border-[#30363d] pt-2">{e.explanation}</div>

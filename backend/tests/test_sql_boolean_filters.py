@@ -46,3 +46,34 @@ def test_no_identity_comparisons_in_queries():
             if re.search(r"\b[A-Z]\w*\.\w+ is (not )?(True|False|None)\b", line):
                 bad.append(f"{f.name}:{n}")
     assert not bad, bad
+
+
+def test_achievements_check_runs(db_session):
+    """check_and_award_achievements referenced UserDefenseAttempt.completed (no such column):
+    every quiz submission ended in 500 at the very end (2026-09-27)."""
+    from backend.services.achievement_service import check_and_award_achievements
+
+    user = User(name="a")
+    db_session.add(user)
+    db_session.commit()
+    assert isinstance(check_and_award_achievements(user, db_session), list)
+
+
+def test_openrouter_retries_retired_model(monkeypatch):
+    import asyncio
+
+    import httpx as _httpx
+
+    from backend.services import openrouter_service as ors
+
+    seen = []
+
+    class FakeClient:
+        async def post(self, url, json, headers):
+            seen.append(json["model"])
+            if json["model"] != ors._FALLBACK_MODEL:
+                return _httpx.Response(404, request=_httpx.Request("POST", url))
+            return _httpx.Response(200, json={"ok": 1}, request=_httpx.Request("POST", url))
+
+    resp = asyncio.run(ors._post(FakeClient(), {"model": "google/gemini-2.0-flash-001"}, {}))
+    assert resp.status_code == 200 and seen == ["google/gemini-2.0-flash-001", ors._FALLBACK_MODEL]

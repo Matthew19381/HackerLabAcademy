@@ -3,6 +3,19 @@
 ---
 
 ## [Unreleased] — 2026-09-27
+### Naprawione (przejście aplikacji w przeglądarce)
+- **Każde wysłanie quizu kończyło się 500**: osiągnięcia odwoływały się do nieistniejących pól
+  (`UserDefenseAttempt.completed`, `ConversationSession.completed`) — teraz `is_correct` / `ended_at`; test.
+- Analiza AI quizu zawsze padała: domyślny model OpenRouter `gemini-2.0-flash-001` wycofany (404) — domyślnie
+  `gemini-2.5-flash`, a przy 404 automatyczne ponowienie z aktualnym modelem.
+- Informacja zwrotna po quizie oceniała osobę („uczeń zgadywał”, „brak wiedzy”) — prompt i etykiety opisują
+  pojęcie („nowe pojęcie”, „do utrwalenia”).
+- Mindmap: brak importu d3 wywracał całą aplikację (pusta strona); do tego podwójne `JSON.parse`. Dodany
+  ErrorBoundary — błąd jednej strony nie gasi menu.
+- `start.bat`/`start.ps1` uruchamiały backend na :8001 (port LinguaAI), a frontend proxował na :8003 — API nie
+  działało przy starcie skryptem. Ścieżka bazy bezwzględna (względna tworzyła pustą bazę przy starcie z `backend/`);
+  `DATABASE_URL` z env.
+- Literówki: „Przepełnij kill chain” → „Przejdź”, „Skryptowa Dziecię” → „Skryptowe dziecko”.
 ### Dodane
 - **Integracja z System-Głównym (F5.1–F5.3)**: `GET /api/v1/summary` (fiszki przejrzane/zaległe, błędy
   zalogowane/otwarte, XP; bez streaku), kolejka eventów wychodzących `outbound_events` + `services/hub_publisher.py`

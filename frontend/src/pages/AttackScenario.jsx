@@ -123,7 +123,7 @@ export default function AttackScenario() {
         <Skull size={24} className="text-[#f85149]" />
         Attack Scenario
       </h1>
-      <p className="text-[#8b949e] mb-6">Przepełnij pełny kill chain krok po kroku. Rozwiązuj zadania, zdobywaj punkty.</p>
+      <p className="text-[#8b949e] mb-6">Przejdź pełny kill chain krok po kroku. Rozwiązuj zadania, zdobywaj punkty.</p>
 
       <div className="flex gap-2 mb-6">
         <select

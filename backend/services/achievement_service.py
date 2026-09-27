@@ -83,7 +83,7 @@ def calculate_level_from_xp(xp: int) -> dict:
 
 def _get_level_name(level: int) -> str:
     if level <= 5:
-        return "Skryptowa Dziecię"
+        return "Skryptowe dziecko"
     elif level <= 10:
         return "Nowy Haker"
     elif level <= 15:
@@ -191,7 +191,7 @@ def check_and_award_achievements(user, db: Session) -> list:
     # Defense completions
     defense_done = db.query(UserDefenseAttempt).filter(
         UserDefenseAttempt.user_id == user.id,
-        UserDefenseAttempt.completed.is_(True)
+        UserDefenseAttempt.is_correct.is_(True)
     ).count()
     if defense_done >= 1:
         maybe("first_defense")
@@ -229,7 +229,7 @@ def check_and_award_achievements(user, db: Session) -> list:
     # Conversation sessions completed
     conv_sessions = db.query(ConversationSession).filter(
         ConversationSession.user_id == user.id,
-        ConversationSession.completed.is_(True)
+        ConversationSession.ended_at.isnot(None)
     ).count()
     if conv_sessions >= 5:
         maybe("conversation_5")
