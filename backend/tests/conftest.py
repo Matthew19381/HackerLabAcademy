@@ -1,3 +1,10 @@
+import os as _os
+
+# No test may reach a paid AI API: blank the keys before the app (and its .env) is imported.
+# LookCoach's tests were found sending real OpenRouter requests with the owner's key (2026-09-27).
+for _key in ("OPENROUTER_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ANTHROPIC_API_KEY"):
+    _os.environ[_key] = ""
+
 import pytest
 import tempfile
 import os
