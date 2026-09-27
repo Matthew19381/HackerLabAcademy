@@ -13,6 +13,7 @@ from backend.models.topic import Topic, UserTopicProgress
 from backend.models.error_item import ErrorItem
 from backend.models.flashcard import Flashcard
 from backend.services.achievement_service import calculate_level_from_xp
+from backend.routers.directives import get_state as get_directive_state
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/brain", tags=["brain"])
@@ -34,6 +35,30 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     now = datetime.utcnow()
+
+    # INT-3 survival_mode from the hub: one small, neutral task instead of the full agenda
+    state = get_directive_state(db, user_id)
+    if state and state.survival_mode:
+        agenda = [{
+            "type": "flashcards",
+            "priority": 1,
+            "title": "5 minut fiszek",
+            "description": "Krótka powtórka na dziś. Reszta może poczekać.",
+            "action_url": "/flashcards",
+            "minutes": 5,
+            "xp_potential": 0,
+            "icon": "🃏",
+        }]
+        return {
+            "agenda": agenda,
+            "summary": _build_summary(agenda),
+            "survival_mode": True,
+            # counters hidden on purpose (no pressure); keys kept - DailyBrain.jsx reads them
+            "stats": {"topics_done": None, "labs_done": None, "errors_pending": None,
+                      "flashcards_due": None, "streak": None},
+            "level_info": calculate_level_from_xp(user.total_xp or 0),
+        }
+
     agenda = []
 
     # 1. Due error items

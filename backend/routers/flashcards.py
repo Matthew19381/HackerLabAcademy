@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
@@ -9,6 +9,7 @@ from backend.models.flashcard import Flashcard
 from backend.models.flashcard_attempt import FlashcardAttempt
 from backend.services.fsrs_service import fsrs_update, initialize_new_card
 from backend.services.ai_service import generate_json
+from backend.services.hub_publisher import flush_in_background, queue_event
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/flashcards", tags=["flashcards"])
@@ -79,7 +80,9 @@ class ReviewRequest(BaseModel):
 
 
 @router.post("/{card_id}/review")
-def review_flashcard(card_id: int, req: ReviewRequest, db: Session = Depends(get_db)):
+def review_flashcard(
+    card_id: int, req: ReviewRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+):
     """Apply FSRS update after review."""
     card = db.query(Flashcard).filter(Flashcard.id == card_id).first()
     if not card:
@@ -137,7 +140,10 @@ def review_flashcard(card_id: int, req: ReviewRequest, db: Session = Depends(get
         is_active=True
     )
     db.add(attempt)
+    queue_event(db, "flashcard_reviewed", card.user_id, {"flashcard_id": card.id, "rating": req.rating,
+                                                          "topic_slug": card.topic_slug})
     db.commit()
+    background_tasks.add_task(flush_in_background)
 
     return {
         "next_review_date": card.next_review_date.isoformat(),

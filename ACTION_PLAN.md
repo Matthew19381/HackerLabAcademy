@@ -419,7 +419,7 @@ Kolejność: krytyczny dług techniczny i fundamenty → zgodność ze standarde
 
 ## Faza 5 — Integracja z Systemem Głównym (INT-1, INT-2, INT-3)
 
-- [ ] **F5.1 Zaimplementować `GET /api/v1/summary`.**
+- [x] **F5.1 Zaimplementować `GET /api/v1/summary`.** — ZROBIONE 2026-09-27 (bez streaku — standard huba)
   Opis: wzorem `LinguaAI/backend/routers/integration.py` (plik referencyjny, przeczytać przed pisaniem — struktura funkcji `get_ecosystem_summary`, obsługa `_parse_date`, agregacja eventów dnia). Metryki specyficzne dla HackerLabAcademy: liczba ukończonych pokoi THM danego dnia (po Fazie 6 — jeśli F5 robione przed F6, zwrócić `0`/pominąć pole i dopisać w F6.6), liczba fiszek przejrzanych, liczba błędów zalogowanych, liczba zaległych powtórek, XP total, streak (jeśli istnieje pole streak w modelu User — sprawdzić `backend/models/user.py`).
   Plik nowy: `backend/routers/integration.py`.
   Szkielet:
@@ -476,7 +476,7 @@ Kolejność: krytyczny dług techniczny i fundamenty → zgodność ze standarde
   Kryterium akceptacji: `curl "http://localhost:8003/api/v1/summary?user_id=1"` zwraca 200 i JSON zgodny z kontraktem (pole `module` = `"hackerlab-academy"`); nowy test `backend/tests/test_integration_summary.py` (wzorem `LinguaAI/backend/tests/test_integration_summary.py`) przechodzi.
   Zależności: F3.1 (baza poprawna), F4.1 (port).
 
-- [ ] **F5.2 Zaimplementować publisher eventów.**
+- [x] **F5.2 Zaimplementować publisher eventów.** — ZROBIONE 2026-09-27: `flashcard_reviewed`, `quiz_completed` (jeden na quiz zamiast `error_logged` per błąd), `error_resolved`; kolejka `outbound_events`, flush w tle, przy starcie i `POST /api/v1/integrations/flush`
   Opis: po zdarzeniach `flashcard reviewed`, `error logged`, `thm_room_completed` (po F6) wysłać event do Systemu Głównego. Błąd sieci nie może blokować UX — kolejka + retry.
   Plik nowy: `backend/models/outbound_event.py` (tabela kolejki, analogicznie do `SyncEvent` w LinguaAI, ale dla eventów WYCHODZĄCYCH do huba, nie przychodzących z klienta):
   ```python
@@ -537,7 +537,7 @@ Kolejność: krytyczny dług techniczny i fundamenty → zgodność ze standarde
   Kryterium akceptacji: test `backend/tests/test_hub_publisher.py` z `httpx` zamockowanym (np. `respx` lub `unittest.mock.patch`) — sprawdza że `queue_event` zapisuje wiersz, `flush_pending` z mockowaną odpowiedzią 200 oznacza `sent_at`, z mockowanym `ConnectError` zostawia rekord niewysłany i NIE rzuca wyjątku dalej. `pytest backend/tests -q` przechodzi.
   Zależności: F5.1.
 
-- [ ] **F5.3 Zaimplementować `POST /api/v1/directives`.**
+- [x] **F5.3 Zaimplementować `POST /api/v1/directives`.** — ZROBIONE 2026-09-27 (survival_mode → 1 zadanie 5 min w brain; pola `from`/`to` jak w kontrakcie huba)
   Opis: minimalny endpoint przyjmujący dyrektywy z huba, zapisujący stan lokalnie.
   Plik nowy: `backend/models/directive_state.py` (singleton-per-user tabela: `user_id`, `survival_mode: bool`, `priority_topic: str|None`, `quiet_hours_from: str|None`, `quiet_hours_to: str|None`).
   Plik nowy: `backend/routers/directives.py`:

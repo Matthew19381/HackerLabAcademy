@@ -25,6 +25,8 @@ import backend.routers.daily as daily
 import backend.routers.articles as articles
 import backend.routers.writeups as writeups
 import backend.routers.ai_config as ai_config
+import backend.routers.integration as integration
+import backend.routers.directives as directives
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -154,6 +156,9 @@ async def lifespan(app: FastAPI):
         seed_sample_articles(db)
         from backend.routers.writeups import seed_sample_templates
         seed_sample_templates(db)
+        # INT-2: send whatever queued while the hub or this app was down
+        from .services.hub_publisher import flush_pending
+        flush_pending(db)
     finally:
         db.close()
 
@@ -199,6 +204,8 @@ app.include_router(daily.router, prefix="/api/v1")
 app.include_router(articles.router, prefix="/api/v1")
 app.include_router(writeups.router, prefix="/api/v1")
 app.include_router(ai_config.router, prefix="/api/v1")
+app.include_router(integration.router, prefix="/api/v1")
+app.include_router(directives.router, prefix="/api/v1")
 
 
 @app.get("/api/health")

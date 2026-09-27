@@ -14,8 +14,12 @@ from .defense import DefenseChallenge, UserDefenseAttempt
 from .certificate import Certificate
 from .article import Article, ArticleRead, ArticleQuiz, ArticleQuizAttempt
 from .writeup_template import WriteupTemplate, Writeup
+from .outbound_event import OutboundEvent
+from .directive_state import DirectiveState
 
 __all__ = [
+    "OutboundEvent",
+    "DirectiveState",
     "User",
     "Topic",
     "Exercise",

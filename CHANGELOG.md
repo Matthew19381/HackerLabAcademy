@@ -3,6 +3,12 @@
 ---
 
 ## [Unreleased] — 2026-09-27
+### Dodane
+- **Integracja z System-Głównym (F5.1–F5.3)**: `GET /api/v1/summary` (fiszki przejrzane/zaległe, błędy
+  zalogowane/otwarte, XP; bez streaku), kolejka eventów wychodzących `outbound_events` + `services/hub_publisher.py`
+  (`flashcard_reviewed`, `quiz_completed`, `error_resolved`; wysyłka w tle, przy starcie i ręcznie
+  `POST /api/v1/integrations/flush`; hub niedostępny = event czeka), `POST /api/v1/directives`
+  (survival_mode → plan dnia skrócony do 5 minut fiszek, priority, quiet_hours). Testy `tests/test_hub_integration.py`.
 ### Naprawione
 - **51 filtrów SQLAlchemy z `Model.pole is True/False/None`** (porównanie tożsamości w Pythonie → stałe False,
   nie SQL): puste listy CVE, scenariuszy ataku, wyzwań obrony, certyfikatów, wideo, writeupów, statystyk błędów,

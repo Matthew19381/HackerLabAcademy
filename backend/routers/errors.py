@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
 from backend.models.error_item import ErrorItem
+from backend.services.hub_publisher import flush_in_background, queue_event
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/errors", tags=["errors"])
@@ -52,7 +53,9 @@ class ErrorReviewRequest(BaseModel):
 
 
 @router.post("/{error_id}/review")
-def review_error(error_id: int, req: ErrorReviewRequest, db: Session = Depends(get_db)):
+def review_error(
+    error_id: int, req: ErrorReviewRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+):
     """
     Review an error item.
     Must answer correctly 3 times in a row to resolve it.
@@ -62,6 +65,7 @@ def review_error(error_id: int, req: ErrorReviewRequest, db: Session = Depends(g
     if not item:
         raise HTTPException(status_code=404, detail="Error item not found")
 
+    was_resolved = item.resolved
     if req.correct:
         item.correct_streak += 1
         if item.correct_streak >= 3:
@@ -74,5 +78,10 @@ def review_error(error_id: int, req: ErrorReviewRequest, db: Session = Depends(g
         item.correct_streak = 0
         item.next_review = datetime.utcnow() + timedelta(days=1)
 
+    newly_resolved = item.resolved and not was_resolved
+    if newly_resolved:
+        queue_event(db, "error_resolved", item.user_id, {"error_id": item.id, "topic_slug": item.topic_slug})
     db.commit()
+    if newly_resolved:
+        background_tasks.add_task(flush_in_background)
     return {"resolved": item.resolved, "correct_streak": item.correct_streak}

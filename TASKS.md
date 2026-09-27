@@ -30,9 +30,9 @@ pod istniejące mechanizmy i włącza moduł do ekosystemu._
 ### INT — Integracja z Systemem Głównym
 - [ ] INT-1: `GET /api/v1/summary` (sesje, ukończone laby/tematy, błędy, zaległe
       powtórki, `wellbeing_contribution`)
-- [ ] INT-2: Publisher eventów (`lab_completed`, `topic_completed`, `session_skipped`,
+- [x] INT-2 (2026-09-27, zakres w ACTION_PLAN F5.2): Publisher eventów (`lab_completed`, `topic_completed`, `session_skipped`,
       `ctf_solved`) → `:8000` z `X-Module-Key`
-- [ ] INT-3: `POST /api/v1/directives` (survival_mode → 1 sesja fiszek 5 min; priorytety)
+- [x] INT-3 (2026-09-27): `POST /api/v1/directives` (survival_mode → 1 sesja fiszek 5 min; priorytety)
 - [ ] INT-4: Zaległe powtórki → wspólna kolejka planera dnia
 - [ ] INT-5: Profil umiejętności → moduł Edukacja (web security jako kompetencja)
 

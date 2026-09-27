@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from backend.database import get_db
@@ -11,6 +11,7 @@ from backend.models.flashcard import Flashcard
 from backend.models.error_item import ErrorItem
 from backend.services.lesson_service import generate_theory_lesson, generate_lab_instructions, analyze_quiz_errors
 from backend.services.achievement_service import check_and_award_achievements, calculate_level_from_xp
+from backend.services.hub_publisher import flush_in_background, queue_event
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/topics", tags=["topics"])
@@ -120,7 +121,9 @@ class QuizSubmitRequest(BaseModel):
 
 
 @router.post("/{slug}/quiz")
-async def submit_quiz(slug: str, req: QuizSubmitRequest, db: Session = Depends(get_db)):
+async def submit_quiz(
+    slug: str, req: QuizSubmitRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+):
     """Submit quiz answers, get analysis, save errors, award XP."""
     topic = db.query(Topic).filter(Topic.slug == slug).first()
     if not topic:
@@ -230,7 +233,12 @@ async def submit_quiz(slug: str, req: QuizSubmitRequest, db: Session = Depends(g
     user.total_xp = (user.total_xp or 0) + xp_awarded
     progress.xp_awarded = (progress.xp_awarded or 0) + xp_awarded
 
+    # INT-2: one event per quiz (score + number of mistakes), not one per mistake
+    queue_event(db, "quiz_completed", user.id,
+                {"topic_slug": slug, "score": score, "errors": len(analysis.get("errors", []))},
+                score=score)
     db.commit()
+    background_tasks.add_task(flush_in_background)
 
     new_achievements = check_and_award_achievements(user, db)
 
