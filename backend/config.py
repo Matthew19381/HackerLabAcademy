@@ -8,7 +8,7 @@ AUDIO_DIR = "audio"
 
 class Settings(BaseSettings):
     # Gemini (cloud)
-    GEMINI_API_KEY: str = None
+    GEMINI_API_KEY: str = ""
 
     # Ollama (local)
     OLLAMA_BASE_URL: str = "http://localhost:11434"

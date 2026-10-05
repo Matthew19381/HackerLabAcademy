@@ -17,14 +17,31 @@ def _norm(path: str) -> str:
     return path.rstrip("/") or "/"
 
 
+def _collect_all_routes(router, prefix=""):
+    """Recursively collect all routes from an APIRouter including included routers."""
+    routes = []
+    for r in router.routes:
+        if hasattr(r, 'routes'):  # APIRouter
+            routes.extend(_collect_all_routes(r, prefix + r.prefix))
+        elif hasattr(r, 'path'):  # APIRoute
+            methods = getattr(r, 'methods', None) or []
+            routes.append((methods, prefix + r.path))
+        elif type(r).__name__ == '_IncludedRouter':
+            # Expand included router
+            if hasattr(r, 'original_router'):
+                routes.extend(_collect_all_routes(r.original_router, prefix + r.include_context.prefix))
+    return routes
+
+
 @pytest.mark.skipif(not CLIENT.exists(), reason="frontend not checked out")
 def test_every_client_call_has_a_route():
+    # Collect all routes including those from included routers
+    all_routes = _collect_all_routes(app.router)
     routes = []
-    for r in app.routes:
-        if getattr(r, "path", None):
-            rx = re.compile("^" + re.sub(r"\{[^}]+\}", "[^/]+", _norm(r.path)) + "$")
-            routes += [(m, rx) for m in (getattr(r, "methods", None) or [])]
-    calls = re.findall(r"\bapi\.(get|post|put|patch|delete)\(\s*[`'\"](/[^`'\"]*)[`'\"]", CLIENT.read_text(encoding="utf-8"))
+    for methods, path in all_routes:
+        rx = re.compile("^" + re.sub(r"\{[^}]+\}", "[^/]+", _norm(path)) + "$")
+        routes += [(m, rx) for m in methods]
+    calls = re.findall(r"\bapi\.(get|post|put|patch|delete)\(\s*[`\"'](/[^`\"']*)[`\"']", CLIENT.read_text(encoding="utf-8"))
     assert len(calls) > 30
     missing = []
     for meth, path in calls:

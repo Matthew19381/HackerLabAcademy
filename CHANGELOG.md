@@ -2,6 +2,14 @@
 
 ---
 
+## [Unreleased] — 2026-10-05
+- Testy mogły wysłać eventy do prawdziwego huba Systemu Głównego (prawdziwy `SYSTEM_GLOWNY_MODULE_KEY`
+  z `backend/.env`, `flush_in_background` po każdej ocenie fiszki); `tests/conftest.py` zeruje klucz.
+- `config.py`: `GEMINI_API_KEY: str = ""` zamiast `None` (typ zgodny z adnotacją; kod sprawdza `not ...`,
+  więc działanie bez zmian).
+- `test_frontend_contract.py`: trasy zbierane rekurencyjnie, także z zagnieżdżonych routerów — dziś ten sam
+  zbiór 83 tras co wcześniej, odporne na routery dołączane w routerach.
+
 ## [Unreleased] — 2026-09-27
 ### Naprawione (przejście aplikacji w przeglądarce)
 - **Każde wysłanie quizu kończyło się 500**: osiągnięcia odwoływały się do nieistniejących pól
