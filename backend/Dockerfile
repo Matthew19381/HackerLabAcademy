@@ -19,6 +19,6 @@ COPY . .
 RUN mkdir -p audio exports
 
 # Expose port
-EXPOSE 8001
+EXPOSE 8003
 
 # Run with uvicorn

@@ -2,6 +2,13 @@
 
 ---
 
+## [Unreleased] — 2026-10-08 (B7: port Dockera)
+- Stack Dockera wystawiał backend na `:8001` (port LinguaAI), choć `start.bat`/`start.ps1`, proxy Vite i hub
+  (`MODULE_ENDPOINTS`) używają `:8003` — kolizja z LinguaAI, a hub nie widział backendu w kontenerze. Teraz
+  `docker-compose.yml` (ports, command, healthcheck), `backend/Dockerfile` (`EXPOSE`), `frontend/nginx.conf`
+  (`proxy_pass`), `frontend/Dockerfile` (`VITE_API_BASE_URL`) i dokumentacja (`CLAUDE.md`, `CODE_MAP.md`) → `:8003`.
+  Obrazu nie budowano. Test: `backend/tests/test_ports.py`.
+
 ## [Unreleased] — 2026-10-05
 - Testy mogły wysłać eventy do prawdziwego huba Systemu Głównego (prawdziwy `SYSTEM_GLOWNY_MODULE_KEY`
   z `backend/.env`, `flush_in_background` po każdej ocenie fiszki); `tests/conftest.py` zeruje klucz.

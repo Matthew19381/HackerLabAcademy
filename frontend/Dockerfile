@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 # Build arg for API URL (default to backend service name)
-ARG VITE_API_BASE_URL=http://backend:8001
+ARG VITE_API_BASE_URL=http://backend:8003
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 EXPOSE 5173

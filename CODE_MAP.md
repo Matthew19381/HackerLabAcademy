@@ -9,7 +9,7 @@ Production-ready deployment using **multi-stage builds** and **nginx reverse pro
 ┌─────────────────────────────────────────────────────────────┐
 │                    Docker Host (Windows)                    │
 │  Port 80  →  Frontend (nginx)                              │
-│  Port 8001 → Backend (FastAPI)                             │
+│  Port 8003 → Backend (FastAPI)                             │
 └─────────────────────────────────────────────────────────────┘
                          │
                     Docker Network (hackerlabacademy_default)
@@ -19,7 +19,7 @@ Production-ready deployment using **multi-stage builds** and **nginx reverse pro
   ┌─────────┐                     ┌─────────┐
   │ frontend│  /api → proxy       │ backend │
   │  nginx  │ ──────────────────→ │ FastAPI │
-  │  port 80│                     │ port8001│
+  │  port 80│                     │ port8003│
   └─────────┘                     └─────────┘
 ```
 
@@ -30,7 +30,7 @@ Production-ready deployment using **multi-stage builds** and **nginx reverse pro
 - **Stage 2 (runtime):** nginx:alpine → copies `/app/dist` → `/usr/share/nginx/html`
 - **Nginx config:**
   - SPA fallback: `try_files $uri $uri/ /index.html`
-  - API proxy: `/api` → `http://backend:8001`
+  - API proxy: `/api` → `http://backend:8003`
   - Static caching: `expires 1y` for assets
 - **Port mapping:** `80:80` (host:container)
 - **No environment variables** (proxy handles API routing)
@@ -50,7 +50,7 @@ Production-ready deployment using **multi-stage builds** and **nginx reverse pro
   - `backend_audio` → `/app/audio` (TTS outputs)
   - `backend_exports` → `/app/exports` (PDFs, Anki decks)
 - **Healthcheck:** `GET /api/health` every 30s, timeout 40s
-- **Port:** `8001:8001`
+- **Port:** `8003:8003`
 - **Lifespan:** Auto-creates tables, seeds topics/CVEs/videos/CTF/defense/articles
 
 **Docker Compose**
@@ -59,10 +59,10 @@ version: '3.8'  # (obsolete but harmless)
 services:
   backend:
     build: ./backend
-    ports: ["8001:8001"]
+    ports: ["8003:8003"]
     volumes: [backend_data:/app/data, backend_audio:/app/audio, backend_exports:/app/exports]
     environment: [GEMINI_API_KEY, AI_PROVIDER, OLLAMA_*, CVE_SCHEDULED_FETCH]
-    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health').read()"], timeout: 40s}
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/api/health').read()"], timeout: 40s}
     restart: unless-stopped
 
   frontend:
@@ -94,8 +94,8 @@ docker-compose up --build
 
 **Access:**
 - Frontend: http://localhost
-- Backend API docs: http://localhost:8001/docs
-- Health: http://localhost:8001/api/health
+- Backend API docs: http://localhost:8003/docs
+- Health: http://localhost:8003/api/health
 
 ### Post-Deployment Steps
 
