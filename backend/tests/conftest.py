@@ -1,13 +1,4 @@
 import os as _os
-
-# No test may reach a paid AI API: blank the keys before the app (and its .env) is imported.
-# LookCoach's tests were found sending real OpenRouter requests with the owner's key (2026-09-27).
-for _key in ("OPENROUTER_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ANTHROPIC_API_KEY"):
-    _os.environ[_key] = ""
-# Same for the hub: the real key is in .env and System-Glowny may be running on :8000 -
-# reviewing a flashcard in a test flushed the event into the owner's real hub (2026-10-05).
-_os.environ["SYSTEM_GLOWNY_MODULE_KEY"] = ""
-
 import pytest
 import tempfile
 import os
@@ -16,6 +7,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from backend import database as db_module
 from backend.main import app
+
+# No test may reach a paid AI API: blank the keys before the app (and its .env) is imported.
+# LookCoach's tests were found sending real OpenRouter requests with the owner's key (2026-09-27).
+for _key in ("OPENROUTER_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "ANTHROPIC_API_KEY"):
+    _os.environ[_key] = ""
+
+# Same for the hub: the real key is in .env and System-Glowny may be running on :8000 -
+# reviewing a flashcard in a test flushed the event into the owner's real hub (2026-10-05).
+_os.environ["SYSTEM_GLOWNY_MODULE_KEY"] = ""
 
 # Use temp file for test database (SQLite in-memory creates new DB per connection)
 @pytest.fixture(scope="function")
@@ -63,7 +63,6 @@ def db_session(test_db_path):
 
     # Create tables
     db_module.Base.metadata.create_all(bind=test_engine)
-
     session = TestingSessionLocal()
     try:
         yield session

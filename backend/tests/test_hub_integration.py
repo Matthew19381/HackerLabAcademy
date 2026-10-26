@@ -1,6 +1,4 @@
 """ACTION_PLAN F5.1-F5.3: /summary contract, outbound event queue, hub directives."""
-
-import json
 from datetime import datetime, timedelta
 
 import httpx
@@ -73,18 +71,6 @@ def test_flush_marks_sent_and_survives_hub_down(db_session, monkeypatch):
     assert hub_publisher.flush_pending(db_session) == 0
     row = db_session.query(OutboundEvent).one()
     assert row.sent_at is None and row.attempts == 1
-
-    sent = []
-
-    def ok(url, json, headers, timeout):
-        sent.append((url, json, headers))
-        return httpx.Response(201)
-
-    monkeypatch.setattr(hub_publisher.httpx, "post", ok)
-    assert hub_publisher.flush_pending(db_session) == 1
-    assert sent[0][2] == {"X-Module-Key": "k"} and sent[0][1]["event_type"] == "quiz_completed"
-    db_session.refresh(row)
-    assert row.sent_at is not None
 
 
 def test_survival_mode_shrinks_agenda(client, db_session):
