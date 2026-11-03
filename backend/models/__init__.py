@@ -11,6 +11,7 @@ from .exercise import Exercise, UserExerciseAttempt
 from .flashcard import Flashcard
 from .flashcard_attempt import FlashcardAttempt
 from .lab_attempt import LabAttempt
+from .mentor_message import MentorMessage
 from .outbound_event import OutboundEvent
 from .topic import Topic
 from .user import User
@@ -29,6 +30,7 @@ __all__ = [
     "ConversationSession",
     "ConversationTurn",
     "LabAttempt",
+    "MentorMessage",
     "ErrorItem",
     "Achievement",
     "Cve",

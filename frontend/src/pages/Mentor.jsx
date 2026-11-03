@@ -1,19 +1,40 @@
 import { useState, useRef, useEffect } from 'react'
-import { mentorChat } from '../api/client'
+import { mentorChat, getMentorSession, clearMentorSession } from '../api/client'
 import { Bot, Send, Loader, Trash2 } from 'lucide-react'
 
-const SESSION_ID = `mentor_${Date.now()}`
+// The conversation is stored by the backend (plan B3); the session id survives a page reload.
+const SESSION_KEY = 'hackerlabacademy_mentor_session'
+const newSessionId = () => `mentor_${Date.now()}`
+
+function storedSessionId() {
+  try {
+    const existing = localStorage.getItem(SESSION_KEY)
+    if (existing) return existing
+    const created = newSessionId()
+    localStorage.setItem(SESSION_KEY, created)
+    return created
+  } catch {
+    return newSessionId()
+  }
+}
+
+const GREETING = {
+  role: 'assistant',
+  content: 'Cześć! Jestem Twoim AI Mentorem cyberbezpieczeństwa. Pytaj o cokolwiek — ataki, obrony, pojęcia. Wyjaśnię prosto i po polsku. 🛡️'
+}
 
 export default function Mentor() {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'Cześć! Jestem Twoim AI Mentorem cyberbezpieczeństwa. Pytaj o cokolwiek — ataki, obrony, pojęcia. Wyjaśnię prosto i po polsku. 🛡️'
-    }
-  ])
+  const [sessionId, setSessionId] = useState(storedSessionId)
+  const [messages, setMessages] = useState([GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef(null)
+
+  useEffect(() => {
+    getMentorSession(sessionId)
+      .then(data => { if (data.messages?.length) setMessages([GREETING, ...data.messages]) })
+      .catch(() => {})
+  }, [sessionId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -26,7 +47,7 @@ export default function Mentor() {
     setMessages(prev => [...prev, { role: 'user', content: msg }])
     setLoading(true)
     try {
-      const res = await mentorChat(SESSION_ID, msg)
+      const res = await mentorChat(sessionId, msg)
       setMessages(prev => [...prev, { role: 'assistant', content: res.response }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Błąd połączenia. Spróbuj ponownie.' }])
@@ -35,7 +56,11 @@ export default function Mentor() {
     }
   }
 
-  const clearChat = () => {
+  const clearChat = async () => {
+    await clearMentorSession(sessionId).catch(() => {})
+    const fresh = newSessionId()
+    try { localStorage.setItem(SESSION_KEY, fresh) } catch { /* private mode: session lives until reload */ }
+    setSessionId(fresh)
     setMessages([{
       role: 'assistant',
       content: 'Rozmowa wyczyszczona. O co chcesz zapytać? 🛡️'

@@ -97,6 +97,7 @@ export const listConversationSessions = (userId) =>
 // --- Mentor ---
 export const mentorChat = (sessionId, message, topicContext = null) =>
   api.post('/mentor/chat', { session_id: sessionId, message, topic_context: topicContext })
+export const getMentorSession = (sessionId) => api.get(`/mentor/session/${sessionId}`)
 export const clearMentorSession = (sessionId) => api.delete(`/mentor/session/${sessionId}`)
 
 // --- Error Loop ---
