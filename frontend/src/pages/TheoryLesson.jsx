@@ -310,7 +310,7 @@ export default function TheoryLesson() {
             >
               ← Wróć do tematów
             </button>
-            {topic.lab_type && (
+            {topic.practice_hint && (
               <button
                 onClick={() => navigate('/practice')}
                 className="bg-[#238636] hover:bg-[#2ea043] text-white px-4 py-2 rounded-lg text-sm"

@@ -124,7 +124,7 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
         if prog is None or not prog.theory_completed:
             if next_topic is None:
                 next_topic = t
-        elif prog.theory_completed and not prog.lab_completed and t.lab_type:
+        elif prog.theory_completed and not prog.lab_completed and t.practice_hint:
             if incomplete_topic is None:
                 incomplete_topic = t
         elif prog.quiz_score is not None and prog.quiz_score < weakest_score:

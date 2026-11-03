@@ -49,3 +49,21 @@ def test_upgrade_is_repeatable(tmp_path):
     con = sqlite3.connect(tmp_path / "twice.db")
     assert con.execute("SELECT count(*) FROM alembic_version").fetchone() == (1,)
     con.close()
+
+
+def test_practice_hint_is_mapped_from_old_dvwa_lab_type(tmp_path):
+    """C3: lab_type stays (decision 4 of 2026-08-09), practice_hint gets the TryHackMe phrase."""
+    path = tmp_path / "topics.db"
+    con = sqlite3.connect(path)
+    con.execute("CREATE TABLE topics (id INTEGER PRIMARY KEY, slug TEXT, name TEXT, lab_type TEXT)")
+    con.execute("INSERT INTO topics VALUES (1, 'sql-injection', 'SQL Injection', 'dvwa_sqli')")
+    con.execute("INSERT INTO topics VALUES (2, 'http-basics', 'HTTP', NULL)")
+    con.commit()
+    con.close()
+
+    upgrade_database(_engine(path))
+
+    con = sqlite3.connect(path)
+    rows = con.execute("SELECT slug, lab_type, practice_hint FROM topics ORDER BY id").fetchall()
+    con.close()
+    assert rows == [("sql-injection", "dvwa_sqli", "SQL Injection"), ("http-basics", None, None)]

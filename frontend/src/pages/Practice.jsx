@@ -4,7 +4,7 @@ import { FlaskConical, ExternalLink, CheckCircle, Loader, FileText, Download } f
 
 // Practice step of a topic (plan C1, 2026-11-03): the self-hosted DVWA lab is gone - practice happens
 // on TryHackMe; here the user writes the write-up and marks the topic's practice step as done.
-const thmSearchUrl = (topic) => `https://tryhackme.com/hacktivities/search?searchText=${encodeURIComponent(topic.name)}`
+const thmSearchUrl = (topic) => `https://tryhackme.com/hacktivities/search?searchText=${encodeURIComponent(topic.practice_hint || topic.name)}`
 
 export default function Practice() {
   const userId = getUserId()
@@ -22,7 +22,7 @@ export default function Practice() {
 
   useEffect(() => {
     getTopics(userId).then(ts => {
-      const withLabs = ts.filter(t => t.lab_type && t.unlocked && t.theory_completed)
+      const withLabs = ts.filter(t => t.practice_hint && t.unlocked && t.theory_completed)
       setTopics(withLabs)
       if (withLabs.length > 0) setSelectedTopic(withLabs[0])
     })
@@ -145,7 +145,7 @@ export default function Practice() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[#bc8cff] text-sm mb-4 hover:underline"
           >
-            Szukaj pokoi na TryHackMe: {selectedTopic.name} <ExternalLink size={14} />
+            Szukaj pokoi na TryHackMe: {selectedTopic.practice_hint || selectedTopic.name} <ExternalLink size={14} />
           </a>
 
           <div className="space-y-4">

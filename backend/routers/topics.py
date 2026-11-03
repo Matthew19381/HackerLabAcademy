@@ -13,7 +13,7 @@ from backend.models.topic import Topic, UserTopicProgress
 from backend.models.user import User
 from backend.services.achievement_service import calculate_level_from_xp, check_and_award_achievements
 from backend.services.hub_publisher import flush_in_background, queue_event
-from backend.services.lesson_service import analyze_quiz_errors, generate_lab_instructions, generate_theory_lesson
+from backend.services.lesson_service import analyze_quiz_errors, generate_theory_lesson
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/topics", tags=["topics"])
@@ -54,7 +54,7 @@ def get_all_topics(user_id: int, db: Session = Depends(get_db)):
             "difficulty": t.difficulty,
             "description": t.description,
             "prerequisites": prereqs,
-            "lab_type": t.lab_type,
+            "practice_hint": t.practice_hint,
             "order_index": t.order_index,
             "unlocked": unlocked,
             "theory_completed": prog.theory_completed if prog else False,
@@ -104,15 +104,12 @@ async def get_theory(slug: str, user_id: int, db: Session = Depends(get_db)):
 
     content = json.loads(topic.theory_content)
 
-    # Generate lab instructions if topic has a lab
-    lab_instructions = None
-    if topic.lab_type:
-        lab_instructions = await generate_lab_instructions(topic.name, topic.slug, topic.lab_type)
-
+    # Until 2026-11-03 every theory load also generated DVWA lab instructions with an AI call that
+    # no screen displayed; the practice step now links to TryHackMe via practice_hint.
     return {
-        "topic": {"id": topic.id, "slug": topic.slug, "name": topic.name, "difficulty": topic.difficulty},
+        "topic": {"id": topic.id, "slug": topic.slug, "name": topic.name, "difficulty": topic.difficulty,
+                  "practice_hint": topic.practice_hint},
         "content": content,
-        "lab_instructions": lab_instructions
     }
 
 
@@ -278,7 +275,7 @@ async def complete_lab(slug: str, req: LabCompleteRequest, db: Session = Depends
     attempt = LabAttempt(
         user_id=user.id,
         topic_slug=slug,
-        lab_type=topic.lab_type or "manual",
+        lab_type=topic.lab_type or "thm",
         completed=True,
         flag_captured=True,
         score=100.0,
