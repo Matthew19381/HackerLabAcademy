@@ -1,0 +1,12 @@
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/*.db
+**/*.db.backup.*
+**/.env
+frontend
+.git
+.worktrees
+audio
+exports
