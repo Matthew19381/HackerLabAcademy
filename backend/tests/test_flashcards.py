@@ -97,3 +97,15 @@ def test_tool_deck_is_added_once(client, db_session):
     assert second["added"] == 0
     due = client.get(f"/api/v1/flashcards/due/{user.id}").json()
     assert any(c["front"].startswith("nmap:") for c in due)
+
+
+def test_due_queue_interleaves_categories():
+    """D4: no block of one topic when several are due."""
+    from types import SimpleNamespace
+
+    from backend.routers.flashcards import interleave
+
+    cards = [SimpleNamespace(id=i, topic_slug=slug) for i, slug in
+             enumerate(["xss", "xss", "xss", "tools", "tools", "thm"])]
+    assert [c.topic_slug for c in interleave(cards)] == ["xss", "tools", "thm", "xss", "tools", "xss"]
+    assert interleave([]) == []

@@ -17,6 +17,22 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/flashcards", tags=["flashcards"])
 
 
+def interleave(cards: list) -> list:
+    """Plan D4 (HL-5, interleaving): alternate categories (topic_slug) instead of blocks of one
+    topic; inside a category the most overdue card comes first. Round-robin, order is stable."""
+    groups: dict = {}
+    for card in cards:
+        groups.setdefault(card.topic_slug or "", []).append(card)
+    queues = list(groups.values())
+    mixed = []
+    while queues:
+        for queue in list(queues):
+            mixed.append(queue.pop(0))
+            if not queue:
+                queues.remove(queue)
+    return mixed
+
+
 @router.get("/due/{user_id}")
 def get_due_flashcards(user_id: int, db: Session = Depends(get_db)):
     """Return flashcards due for review today."""
@@ -25,7 +41,7 @@ def get_due_flashcards(user_id: int, db: Session = Depends(get_db)):
         Flashcard.user_id == user_id,
         Flashcard.is_active.is_(True),
         Flashcard.next_review_date <= now
-    ).all()
+    ).order_by(Flashcard.next_review_date).all()
 
     return [
         {
@@ -44,7 +60,7 @@ def get_due_flashcards(user_id: int, db: Session = Depends(get_db)):
             "step": c.step,
             "last_review": c.last_review.isoformat() if c.last_review else None,
         }
-        for c in cards
+        for c in interleave(cards)
     ]
 
 

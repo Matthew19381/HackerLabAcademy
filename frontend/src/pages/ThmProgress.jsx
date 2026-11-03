@@ -74,6 +74,11 @@ function EntryCard({ entry, onChange, onDelete }) {
             rows={3}
             className="mt-3 w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-[#c9d1d9] placeholder-[#484f58] text-sm focus:outline-none focus:border-[#58a6ff] resize-y"
           />
+          {entry.done && !message && notes.trim().length >= MIN_NOTES && (
+            <p className="mt-2 text-xs text-[#39d353]">
+              Pokój zrobiony — zamień notatki w pytania. Odpowiadanie z pamięci w kolejnych dniach utrwala więcej niż ponowne czytanie.
+            </p>
+          )}
           <div className="flex items-center gap-3 mt-2">
             <button
               onClick={makeCards}
