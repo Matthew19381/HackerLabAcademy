@@ -11,6 +11,7 @@ a tutaj notujesz, powtarzasz i sprawdzasz, co pamiętasz. Moduł ekosystemu Syst
 - **Teoria**: tematy (Fundamentals → OWASP Top 10 → Advanced) z lekcjami generowanymi przez AI
 - **Praktyka**: krok tematu po teorii — link do pokoi THM, writeup własnymi słowami (PDF)
 - **Ćwiczenia**: quiz MC, uzupełnianie luk, code review
+- **CTF**: zagadki z flagą do znalezienia w treści (Base64, JWT, hash, logi…), podpowiedź za pół punktów, bez rankingu
 - **Defense Mode**: napraw podatny kod, ocena AI
 - **Terminal Simulator**: nmap, curl, sqlmap, bash
 - **CVE Explorer**: bieżące podatności (NVD API), dodawanie do fiszek

@@ -11,6 +11,9 @@
   Przycisk „Przejdź do praktyki” w lekcji nigdy się nie pokazywał (odpowiedź nie miała `lab_type`) — naprawione.
 - **Tracker TryHackMe** (`/api/v1/thm`, strona „TryHackMe”): pokoje i ścieżki, zrobione/niezrobione, notatki, bez XP;
   event `thm_room_completed`/`thm_path_completed` do huba, `thm_completed` w `/summary`.
+- **CTF przywrócony bez rankingu** (usunięty przez pomyłkę w `1b1f2ff` wbrew decyzji z 2026-08-09): 7 nowych zadań
+  rozwiązywalnych z treści; kara za podpowiedź (połowa punktów) wreszcie naliczana; 5 starych zadań z DVWA i zmyślonymi
+  flagami wyłączonych.
 - **Fiszki z notatek** (`/flashcards/from-notes`, max 5) i **talia składni narzędzi** (`/flashcards/decks/tools`, 24 karty).
 ### Nauka
 - Mentor AI: rozmowy w bazie (wcześniej w pamięci procesu — restart je kasował; „Wyczyść” czyścił tylko ekran),
@@ -22,7 +25,7 @@
 - Porządki: kopie bazy (22 MB), pliki `.bak` i jednorazowe skrypty usunięte z repo; lockfile zgodny (`npm ci`
   padał); `.env.example` kompletny; domyślny model OpenRouter `gemini-2.5-flash` (2.0 wycofany → 404 przy każdym wywołaniu).
 - Jakość: ruff (konfiguracja w `pyproject.toml`) i ESLint bez błędów, CI (`.github/workflows/ci.yml`), pre-commit.
-- Testy: backend 100 → 107 (−10 usuniętych z labami/atakami, +17 nowych), frontend 4 → 13.
+- Testy: backend 100 → 112 (−10 usuniętych z labami/atakami, +22 nowe), frontend 4 → 15.
 
 ## [Unreleased] — 2026-10-08 (B7: port Dockera)
 - Stack Dockera wystawiał backend na `:8001` (port LinguaAI), choć `start.bat`/`start.ps1`, proxy Vite i hub

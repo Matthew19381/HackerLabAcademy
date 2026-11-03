@@ -62,6 +62,7 @@ Every function calling Gemini has a hardcoded fallback dict/string for graceful 
 | `thm.py` | `/thm` | TryHackMe tracker: rooms/paths, done, notes (no XP); `thm_*_completed` events |
 | `topics.py` | `/topics` | Topics, theory generation, quiz submit, practice step (`/{slug}/lab/complete`, `practice_hint`) |
 | `flashcards.py` | `/flashcards` | FSRS only, interleaved due queue, quick-create, `/from-notes`, `/decks/tools`, Anki export |
+| `ctf.py` | `/ctf` | CTF puzzles solvable from their text, hint = half points (`hint_used`), **no leaderboard** |
 | `mentor.py` | `/mentor` | AI mentor; conversation in DB (`mentor_messages`), modes guide/hint/answer, daily usage notice |
 | `exercises.py` | `/exercises` | Exercises CRUD, AI generation, submit |
 | `conversation.py` | `/conversation` | Structured AI Q&A sessions |
@@ -78,8 +79,8 @@ Every function calling Gemini has a hardcoded fallback dict/string for graceful 
 | `integration.py` | — | Hub contract: `GET /summary`, `POST /integrations/flush` |
 | `directives.py` | `/directives` | Hub directives (survival_mode, priority, quiet_hours) |
 
-Removed in the THM pivot (2026-11-03): `labs.py` (DVWA containers), `attack.py` (kill chain), CTF + leaderboard
-(`1b1f2ff`; old `ctf_*` tables stay in existing databases).
+Removed in the THM pivot (2026-11-03): `labs.py` (DVWA containers), `attack.py` (kill chain), the CTF leaderboard.
+CTF itself was restored 2026-11-03 (removed by mistake in `1b1f2ff`); the 5 old DVWA challenges are deactivated.
 
 ### Frontend
 
@@ -111,6 +112,7 @@ docker-compose up --build
 | Exercise submission XP | `score × 0.5` (max 50) | `services/exercise_service.py` |
 | Defense completion XP | +25 | `services/defense_service.py` |
 | Level curve | `(n-1)² × 20` XP, 50 levels | `services/achievement_service.py` |
+| CTF solve | challenge points (50–100), half after a hint | `routers/ctf.py` |
 | TryHackMe tracker XP | **none** (decision 2026-08-09) | `routers/thm.py` |
 | Mentor daily notice threshold | 100 calls (`MENTOR_DAILY_WARN`) | `config.py` |
 | Cards from notes | max 5 | `routers/flashcards.py` |

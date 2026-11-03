@@ -49,7 +49,7 @@ Lokalnie i na GitHubie `master` = `ea7190d` (sprawdzone 2026-11-03, brak niewys�
 
 ## 2. Decyzje do podjęcia przez właściciela
 
-- [ ] **D-HLA-1 CTF** (2026-11-03: właściciel poprosił o wyjaśnienie — czeka): (a) zostawić usunięty, (b) przywrócić zagadki CTF bez rankingu (zgodnie z decyzją z 2026-08-09).
+- [x] **D-HLA-1 CTF** — 2026-11-03: (b) przywrócić zagadki CTF bez rankingu.
 - [x] **D-HLA-2 Kopie bazy w historii git** — 2026-11-03: wybrane (a) tylko `git rm` (zostają w historii, dane nieprywatne — zalecane),
       (b) przepisanie historii (force push — zmienia hashe wszystkich commitów).
 - [x] **D-HLA-3 Start i kopie w ekosystemie** — 2026-11-03: NIE TERAZ (sesja lokalna): dopisać HackerLabAcademy (i Edukację) do `start-ekosystem.ps1`
@@ -98,7 +98,7 @@ Punkty niezależne od decyzji wykonuję od razu po akceptacji planu.
 - [x] **C5** (2026-11-03) Fiszki z notatek THM: `quick-create` przyjmuje `source_notes` + nazwę pokoju jako źródło.
 - [x] **C6** (2026-11-03) Talia składni narzędzi (nmap, gobuster, burp, metasploit, hydra) — seed fiszek w osobnej kategorii.
 - [x] **C7** (2026-11-03) `/api/v1/summary` + eventy: pokoje THM ukończone danego dnia (`thm_room_completed`).
-- [ ] **C8** CTF wg D-HLA-1.
+- [x] **C8** (2026-11-03) CTF bez rankingu: nowe zadania rozwiązywalne z treści, kara za podpowiedź, stare zadania DVWA wyłączone.
 
 ### Faza D — Nauka (ACTION_PLAN Faza 7)
 

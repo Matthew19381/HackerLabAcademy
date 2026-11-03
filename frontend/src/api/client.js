@@ -177,3 +177,9 @@ export const deleteThmEntry = (id) => api.delete(`/thm/${id}`)
 export const flashcardsFromNotes = (userId, source, notes) =>
   api.post('/flashcards/from-notes', { user_id: userId, source, notes })
 export const addToolDeck = (userId) => api.post('/flashcards/decks/tools', { user_id: userId })
+
+// --- CTF (restored 2026-11-03, no leaderboard) ---
+export const getCtfChallenges = (userId) => api.get('/ctf/challenges', { params: { user_id: userId } })
+export const takeCtfHint = (challengeId, userId) => api.post(`/ctf/challenges/${challengeId}/hint`, { user_id: userId })
+export const submitCtfFlag = (challengeId, userId, flag) =>
+  api.post(`/ctf/challenges/${challengeId}/submit`, { user_id: userId, flag })
