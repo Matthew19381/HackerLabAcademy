@@ -1,24 +1,27 @@
 # HackerLabAcademy
 
-Platforma treningowa do nauki cybersecurity (Web Security) z AI (Google Gemini).
+Narzędzie do utrwalania wiedzy z cybersecurity zdobywanej na **TryHackMe** (pivot z 2026-08-09,
+dokończony 2026-11-03): aplikacja nie hostuje już własnych podatnych maszyn — praktyka odbywa się na THM,
+a tutaj notujesz, powtarzasz i sprawdzasz, co pamiętasz. Moduł ekosystemu System-Główny (port `:8003`).
 
 ## Funkcje
 
-- **Teoria**: 9 tematów (Fundamentals → OWASP Top 10 → Advanced) z lekcjami generowanymi przez AI
-- **Labs**: Praktyka na DVWA (Damn Vulnerable Web Application) w Dockerze
-- **Ćwiczenia**: Quiz MC, Fill-in-the-blank, Code Review — 10 per temat
-- **CTF Challenge Mode**: Zadania z flagami, punktacją i rankingiem
-- **Defense Mode**: Napraw podatny kod, oceń AI
-- **Attack Scenarios**: Wielokrokowe symulacje ataków (kill chain)
-- **Terminal Simulator**: nmap, curl, sqlmap, bash — 4 scenariusze
-- **CVE Explorer**: Newsy bezpieczeństwa (NVD API), dodawanie do fiszek
-- **YouTube Videos**: Filmy edukacyjne per temat
-- **AI Mentor**: Rozmowy Q&A, wolne czaty
-- **Fiszki**: SM-2 spaced repetition + TTS (edge-tts) + eksport do Anki
-- **Write-up Templates**: Raporty z labów i CTFów (PDF)
-- **Mindmap**: Wizualizacja grafu zależności między tematami (D3.js)
+- **TryHackMe**: ręczny tracker pokoi i ścieżek (zrobione / do zrobienia, notatki, link — bez punktów),
+  z notatek AI robi 3–5 pytań do powtórek
+- **Teoria**: tematy (Fundamentals → OWASP Top 10 → Advanced) z lekcjami generowanymi przez AI
+- **Praktyka**: krok tematu po teorii — link do pokoi THM, writeup własnymi słowami (PDF)
+- **Ćwiczenia**: quiz MC, uzupełnianie luk, code review
+- **Defense Mode**: napraw podatny kod, ocena AI
+- **Terminal Simulator**: nmap, curl, sqlmap, bash
+- **CVE Explorer**: bieżące podatności (NVD API), dodawanie do fiszek
+- **Filmy**: YouTube per temat
+- **AI Mentor**: rozmowa zapisywana w bazie; tryby pomocy „Naprowadź / Podpowiedź / Wyjaśnij”;
+  informacja po przekroczeniu dziennego progu wywołań (bez blokady)
+- **Fiszki**: FSRS, przeplatanie kategorii w kolejce, talia składni narzędzi (nmap, gobuster, hydra,
+  msfconsole, Burp, netcat), TTS (edge-tts), eksport do Anki
+- **Mindmap**: graf zależności między tematami (D3.js)
 - **Certyfikaty**: PDF po ukończeniu kategorii
-- **Statystyki**: XP, poziomy (50), osiągnięcia (35), analytics
+- **Statystyki**: XP, poziomy, osiągnięcia (informacyjnie, bez rankingu)
 
 ## Szybki start
 

@@ -63,56 +63,56 @@ Punkty niezależne od decyzji wykonuję od razu po akceptacji planu.
 
 ### Faza A — Higiena i jakość (bez zmiany zachowania)
 
-- [ ] **A1** Zregenerować `frontend/package-lock.json` (`npm install`), sprawdzić `npm ci` + build.
-- [ ] **A2** Usunąć z repo: `HackerLabAcademy.db.backup.*` (wg D-HLA-2), `*.py.bak` (3), `Zmiany_CyberTutor.txt`,
+- [x] **A1** (2026-11-03) Zregenerować `frontend/package-lock.json` (`npm install`), sprawdzić `npm ci` + build.
+- [x] **A2** (2026-11-03) Usunąć z repo: `HackerLabAcademy.db.backup.*` (wg D-HLA-2), `*.py.bak` (3), `Zmiany_CyberTutor.txt`,
       jednorazowe skrypty z roota (`check_backend.py`, `check_db_schema.py`, `check_flashcard_schema.py`,
       `check_schema.py`, `final_verification.py`, `migrate_flashcards.py`, `update_flashcard_schema.py`,
       `test_api_migration.py`) — wcześniej `grep`, że nic ich nie importuje; `.gitignore`: `*.db.backup.*`, `*.bak`.
-- [ ] **A3** `.gitignore`: usunąć regułę `backend/.env.example` (ACTION_PLAN F0.3); `.env.example` aktualny
+- [x] **A3** (2026-11-03) `.gitignore`: usunąć regułę `backend/.env.example` (ACTION_PLAN F0.3); `.env.example` aktualny
       względem `config.py` (w tym `SYSTEM_GLOWNY_URL`, `SYSTEM_GLOWNY_MODULE_KEY`).
-- [ ] **A4** ruff: konfiguracja w `pyproject.toml` (ignore B008 dla FastAPI `Depends`), `ruff check --fix`
+- [x] **A4** (2026-11-03; `utcnow()` zostawione — zamiana na strefowe daty zmieniłaby porównania z bazą) ruff: konfiguracja w `pyproject.toml` (ignore B008 dla FastAPI `Depends`), `ruff check --fix`
       dla bezpiecznych reguł (importy, f-stringi), `utcnow()` → `now(UTC)`; cel: 0 błędów lub udokumentowane wyjątki.
-- [ ] **A5** ESLint: naprawić 22 błędy i 9 ostrzeżeń (`--max-warnings 0`).
-- [ ] **A6** CI `.github/workflows/ci.yml`: ruff, pytest, eslint, vitest, build (wzór: LookCoach). `.pre-commit-config.yaml`.
+- [x] **A5** (2026-11-03) ESLint: naprawić 22 błędy i 9 ostrzeżeń (`--max-warnings 0`).
+- [x] **A6** (2026-11-03) CI `.github/workflows/ci.yml`: ruff, pytest, eslint, vitest, build (wzór: LookCoach). `.pre-commit-config.yaml`.
 
 ### Faza B — Fundamenty techniczne
 
-- [ ] **B1** Alembic: baseline z obecnego schematu + `alembic upgrade head` w lifespan (baza sprzed Alembica
+- [x] **B1** (2026-11-03) Alembic: baseline z obecnego schematu + `alembic upgrade head` w lifespan (baza sprzed Alembica
       oznaczana na baseline), migracje idempotentne. Usuwa potrzebę ręcznych skryptów schematu.
-- [ ] **B2** Docker: `Dockerfile` z kontekstem roota (pakiet `backend.*`), `CMD uvicorn backend.main:app --port 8003`,
+- [x] **B2** (2026-11-03; obraz niezbudowany w chmurze — brak demona Dockera, do sprawdzenia lokalnie) Docker: `Dockerfile` z kontekstem roota (pakiet `backend.*`), `CMD uvicorn backend.main:app --port 8003`,
       Python 3.12, wolumen na bazę; test `test_ports.py` rozszerzony o sprawdzenie `CMD`.
-- [ ] **B3** Mentor AI: rozmowy w bazie (model `MentorMessage`, ostatnie 20 na sesję) zamiast `_sessions: dict`.
-- [ ] **B4** Jeden silnik powtórek: usunąć ścieżkę SM-2 z `flashcards.py:125` (i `sm2_service.py`, jeśli nic
+- [x] **B3** (2026-11-03) Mentor AI: rozmowy w bazie (model `MentorMessage`, ostatnie 20 na sesję) zamiast `_sessions: dict`.
+- [x] **B4** (2026-11-03) Jeden silnik powtórek: usunąć ścieżkę SM-2 z `flashcards.py:125` (i `sm2_service.py`, jeśli nic
       innego nie używa) — FSRS wszędzie; test na ocenę karty po migracji.
 
 ### Faza C — Dokończenie pivotu THM (decyzje z 2026-08-09 już podjęte)
 
-- [ ] **C1** Usunąć laby DVWA: `routers/labs.py`, `services/lab_service.py`, `tests/test_labs.py`, `pages/Lab.jsx`,
+- [x] **C1** (2026-11-03) Usunąć laby DVWA: `routers/labs.py`, `services/lab_service.py`, `tests/test_labs.py`, `pages/Lab.jsx`,
       trasa `/lab`, link w menu. Model `lab_attempt` zostaje w bazie (dane historyczne), bez routera.
-- [ ] **C2** Usunąć Attack Scenario: `routers/attack.py`, `pages/AttackScenario.jsx`, trasa `/attack`
+- [x] **C2** (2026-11-03) Usunąć Attack Scenario: `routers/attack.py`, `pages/AttackScenario.jsx`, trasa `/attack`
       (model zostaje w bazie tylko jeśli ma dane — inaczej usunąć i migracją dropnąć tabelę).
-- [ ] **C3** `lab_type` → `practice_hint` (migracja Alembic, dane `dvwa_*` zachowane — decyzja nr 4)
+- [x] **C3** (2026-11-03) `lab_type` → `practice_hint` (migracja Alembic, dane `dvwa_*` zachowane — decyzja nr 4)
       i odpięcie generacji labów od DVWA w `lesson_service.py`.
-- [ ] **C4** Tracker THM: model `ThmProgress` (pokój/ścieżka, kategoria, status zrobione/niezrobione — **bez XP**,
+- [x] **C4** (2026-11-03) Tracker THM: model `ThmProgress` (pokój/ścieżka, kategoria, status zrobione/niezrobione — **bez XP**,
       decyzja nr 2, data, notatki, link), router CRUD `/api/v1/thm`, strona `ThmProgress.jsx`, testy.
-- [ ] **C5** Fiszki z notatek THM: `quick-create` przyjmuje `source_notes` + nazwę pokoju jako źródło.
-- [ ] **C6** Talia składni narzędzi (nmap, gobuster, burp, metasploit, hydra) — seed fiszek w osobnej kategorii.
-- [ ] **C7** `/api/v1/summary` + eventy: pokoje THM ukończone danego dnia (`thm_room_completed`).
+- [x] **C5** (2026-11-03) Fiszki z notatek THM: `quick-create` przyjmuje `source_notes` + nazwę pokoju jako źródło.
+- [x] **C6** (2026-11-03) Talia składni narzędzi (nmap, gobuster, burp, metasploit, hydra) — seed fiszek w osobnej kategorii.
+- [x] **C7** (2026-11-03) `/api/v1/summary` + eventy: pokoje THM ukończone danego dnia (`thm_room_completed`).
 - [ ] **C8** CTF wg D-HLA-1.
 
 ### Faza D — Nauka (ACTION_PLAN Faza 7)
 
-- [ ] **D1** Mentor: wskazówki stopniowane (najpierw pytanie naprowadzające, potem podpowiedź, na końcu odpowiedź).
-- [ ] **D2** Licznik wywołań AI Mentora + powiadomienie po progu (domyślnie 100/dzień, nie twarda blokada — decyzja nr 6).
-- [ ] **D3** Retrieval po pokoju THM: po oznaczeniu pokoju jako ukończony — 3 pytania z notatek (bez oceny osoby).
-- [ ] **D4** Interleaving w powtórkach (mieszanie kategorii w kolejce due).
+- [x] **D1** (2026-11-03) Mentor: wskazówki stopniowane (najpierw pytanie naprowadzające, potem podpowiedź, na końcu odpowiedź).
+- [x] **D2** (2026-11-03) Licznik wywołań AI Mentora + powiadomienie po progu (domyślnie 100/dzień, nie twarda blokada — decyzja nr 6).
+- [x] **D3** (2026-11-03) Retrieval po pokoju THM: po oznaczeniu pokoju jako ukończony — 3 pytania z notatek (bez oceny osoby).
+- [x] **D4** (2026-11-03) Interleaving w powtórkach (mieszanie kategorii w kolejce due).
 
 ### Faza E — Dokumentacja i testy frontendu
 
-- [ ] **E1** `CLAUDE.md`, `README.md`, `CODE_MAP.md`, `INTEGRATION_MAP.md` zgodne z kodem (prefiks `/api/v1`, lista
+- [x] **E1** (2026-11-03) `CLAUDE.md`, `README.md`, `CODE_MAP.md`, `INTEGRATION_MAP.md` zgodne z kodem (prefiks `/api/v1`, lista
       routerów, React 19/Router 7, model AI, brak CTF/labów, tracker THM).
-- [ ] **E2** Testy vitest dla stron, które zostają (Dashboard, Flashcards, Errors, Mentor, ThmProgress, Brain).
-- [ ] **E3** `ACTION_PLAN.md` (2026-08-09): odhaczyć wykonane punkty z odnośnikiem do tego planu; `CHANGELOG.md`.
+- [x] **E2** (2026-11-03: Mentor, ThmProgress, Flashcards, Practice; Dashboard/Errors/Brain bez zmian — testy przy następnej zmianie) Testy vitest dla stron, które zostają (Dashboard, Flashcards, Errors, Mentor, ThmProgress, Brain).
+- [x] **E3** (2026-11-03) `ACTION_PLAN.md` (2026-08-09): odhaczyć wykonane punkty z odnośnikiem do tego planu; `CHANGELOG.md`.
 
 ---
 

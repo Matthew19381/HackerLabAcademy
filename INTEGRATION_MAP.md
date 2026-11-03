@@ -1,3 +1,6 @@
+> **Nieaktualne (stan sprzed 2026-11-03).** Aktualny opis: `CLAUDE.md`, zmiany: `CHANGELOG.md`,
+> plan: `decisions/ACTION_PLAN_2026-11-03.md`.
+
 # Personal AI OS — Mapa Integracji
 
 Data: 2026-03-28
