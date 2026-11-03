@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import backend.routers.ai_config as ai_config
 import backend.routers.articles as articles
-import backend.routers.attack as attack
 import backend.routers.brain as brain
 import backend.routers.certificates as certificates
 import backend.routers.conversation as conversation
@@ -20,7 +19,6 @@ import backend.routers.errors as errors
 import backend.routers.exercises as exercises
 import backend.routers.flashcards as flashcards
 import backend.routers.integration as integration
-import backend.routers.labs as labs
 import backend.routers.mentor as mentor
 import backend.routers.placement as placement
 import backend.routers.stats as stats
@@ -189,7 +187,6 @@ app.add_middleware(
 
 app.include_router(placement.router, prefix="/api/v1")
 app.include_router(topics.router, prefix="/api/v1")
-app.include_router(labs.router, prefix="/api/v1")
 app.include_router(flashcards.router, prefix="/api/v1")
 app.include_router(mentor.router, prefix="/api/v1")
 app.include_router(errors.router, prefix="/api/v1")
@@ -202,7 +199,6 @@ app.include_router(conversation.router, prefix="/api/v1")
 app.include_router(cves.router, prefix="/api/v1")
 app.include_router(videos.router, prefix="/api/v1")
 app.include_router(defense.router, prefix="/api/v1")
-app.include_router(attack.router, prefix="/api/v1")
 app.include_router(certificates.router, prefix="/api/v1")
 app.include_router(daily.router, prefix="/api/v1")
 app.include_router(articles.router, prefix="/api/v1")

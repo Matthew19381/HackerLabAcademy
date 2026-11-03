@@ -55,7 +55,7 @@ export default function Stats() {
       <div className="grid grid-cols-4 gap-4 mb-6">
         {[
           { value: progress.theory_completed, label: 'Lekcji teorii', color: 'text-[#58a6ff]' },
-          { value: progress.labs_completed, label: 'Labów', color: 'text-[#bc8cff]' },
+          { value: progress.labs_completed, label: 'Praktyk', color: 'text-[#bc8cff]' },
           { value: `${progress.topics_total - progress.theory_completed}`, label: 'Pozostałych tematów', color: 'text-[#e3b341]' },
           { value: stats.user.streak_days, label: 'Dni streak 🔥', color: 'text-[#39d353]' },
         ].map(s => (

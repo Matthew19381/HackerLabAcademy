@@ -311,10 +311,10 @@ export default function TheoryLesson() {
             </button>
             {topic.lab_type && (
               <button
-                onClick={() => navigate('/lab')}
+                onClick={() => navigate('/practice')}
                 className="bg-[#238636] hover:bg-[#2ea043] text-white px-4 py-2 rounded-lg text-sm"
               >
-                Przejdź do labu →
+                Przejdź do praktyki →
               </button>
             )}
           </div>

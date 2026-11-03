@@ -6,7 +6,7 @@ import Setup from './pages/Setup'
 import Dashboard from './pages/Dashboard'
 import Topics from './pages/Topics'
 import TheoryLesson from './pages/TheoryLesson'
-import Lab from './pages/Lab'
+import Practice from './pages/Practice'
 import Flashcards from './pages/Flashcards'
 import Errors from './pages/Errors'
 import Mentor from './pages/Mentor'
@@ -19,7 +19,6 @@ import Videos from './pages/Videos'
 import Defense from './pages/Defense'
 import Mindmap from './pages/Mindmap'
 import Terminal from './pages/Terminal'
-import AttackScenario from './pages/AttackScenario'
 import Certificates from './pages/Certificates'
 import Articles from './pages/Articles'
 
@@ -45,7 +44,8 @@ export default function App() {
                   <Route path="/topics" element={<Topics />} />
                   <Route path="/mindmap" element={<Mindmap />} />
                   <Route path="/topics/:slug" element={<TheoryLesson />} />
-                  <Route path="/lab" element={<Lab />} />
+                  <Route path="/practice" element={<Practice />} />
+                  <Route path="/lab" element={<Navigate to="/practice" replace />} />
                   <Route path="/flashcards" element={<Flashcards />} />
                   <Route path="/errors" element={<Errors />} />
                   <Route path="/mentor" element={<Mentor />} />
@@ -58,7 +58,6 @@ export default function App() {
                   <Route path="/videos" element={<Videos />} />
                   <Route path="/defense" element={<Defense />} />
                   <Route path="/terminal" element={<Terminal />} />
-                  <Route path="/attack" element={<AttackScenario />} />
                   <Route path="/articles" element={<Articles />} />
                 </Routes>
                 </PageErrorBoundary>

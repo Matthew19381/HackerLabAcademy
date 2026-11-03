@@ -148,9 +148,9 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
         agenda.append({
             "type": "complete_lab",
             "priority": 4,
-            "title": f"Lab do ukończenia: {incomplete_topic.name}",
+            "title": f"Praktyka do zrobienia: {incomplete_topic.name}",
             "description": "Teoria zaliczona — czas na praktykę w Docker labie.",
-            "action_url": "/lab",
+            "action_url": "/practice",
             "topic_slug": incomplete_topic.slug,
             "topic_name": incomplete_topic.name,
             "xp_potential": 50,

@@ -27,12 +27,6 @@ export const submitQuiz = (slug, userId, answers, responseTimes = {}) =>
 export const completeLab = (slug, userId, writeupSteps) =>
   api.post(`/topics/${slug}/lab/complete`, { user_id: userId, writeup_steps: writeupSteps })
 
-// --- Labs ---
-export const getLabStatus = () => api.get('/labs/status')
-export const startLab = () => api.post('/labs/start')
-export const stopLab = () => api.post('/labs/stop')
-export const resetLab = () => api.post('/labs/reset')
-export const getLabUrl = (labType) => api.get(`/labs/url/${labType}`)
 
 // --- Flashcards ---
 export const getDueFlashcards = (userId) => api.get(`/flashcards/due/${userId}`)
@@ -80,11 +74,6 @@ export const generateCertificate = (category, userId) =>
 export const downloadCertificate = (certificateCode) =>
   axios.get(`/certificates/download/${certificateCode}`, { responseType: 'blob' })
 
-// --- Attack Scenarios ---
-export const getAttackScenarios = () => api.get('/attack/scenarios')
-export const getCurrentStep = (scenarioId, userId) => api.get(`/attack/scenarios/${scenarioId}/current?user_id=${userId}`)
-export const startAttackScenario = (scenarioId, userId) => api.post(`/attack/scenarios/${scenarioId}/start`, { user_id: userId })
-export const submitAttackAnswer = (scenarioId, userId, answer) => api.post(`/attack/scenarios/${scenarioId}/submit`, { user_id: userId, answer })
 
 // --- Exercises ---
 export const getExercises = (topicId) => api.get(`/exercises/topics/${topicId}`)

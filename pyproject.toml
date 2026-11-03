@@ -10,5 +10,3 @@ ignore = ["B008", "B904"]
 
 [tool.ruff.lint.per-file-ignores]
 "backend/tests/**" = ["S110"]
-# removed together with the DVWA labs (pivot, plan C1)
-"backend/services/lab_service.py" = ["S110", "PLW1510"]

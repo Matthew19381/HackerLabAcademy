@@ -71,7 +71,7 @@ export default function Dashboard() {
             <span>{dailyStatus.completion_percent}%</span>
           </div>
           <div className="text-xs text-[#8b949e] mt-1 flex gap-3 flex-wrap">
-            <span>Lab: {dailyStatus.lab_done ? '✅' : '❌'}</span>
+            <span>Praktyka: {dailyStatus.lab_done ? '✅' : '❌'}</span>
             <span>Quiz: {dailyStatus.quiz_done ? '✅' : '❌'}</span>
             <span>Fiszki: {dailyStatus.flashcard_done ? '✅' : '❌'}</span>
             <span>Artykuł: {dailyStatus.article_done ? '✅' : '❌'}</span>
@@ -110,10 +110,10 @@ export default function Dashboard() {
           color="blue"
         />
         <ActionCard
-          to="/lab"
+          to="/practice"
           icon={<FlaskConical size={24} className="text-[#bc8cff]" />}
-          title="Docker Lab"
-          subtitle={`${progress.labs_completed} labów ukończonych`}
+          title="Praktyka"
+          subtitle={`${progress.labs_completed} tematów przećwiczonych`}
           color="purple"
         />
         <ActionCard
@@ -142,7 +142,7 @@ export default function Dashboard() {
         </h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <Stat value={progress.theory_completed} label="Lekcji teorii" />
-          <Stat value={progress.labs_completed} label="Labów" />
+          <Stat value={progress.labs_completed} label="Praktyk" />
           <Stat value={stats.user.streak_days} label="Dni streak" suffix="🔥" />
         </div>
       </div>
