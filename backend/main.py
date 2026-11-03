@@ -10,6 +10,7 @@ import backend.routers.articles as articles
 import backend.routers.brain as brain
 import backend.routers.certificates as certificates
 import backend.routers.conversation as conversation
+import backend.routers.ctf as ctf
 import backend.routers.cves as cves
 import backend.routers.daily as daily
 import backend.routers.defense as defense
@@ -157,6 +158,8 @@ async def lifespan(app: FastAPI):
         seed_sample_articles(db)
         from backend.routers.writeups import seed_sample_templates
         seed_sample_templates(db)
+        from backend.routers.ctf import seed_challenges
+        seed_challenges(db)
         # INT-2: send whatever queued while the hub or this app was down
         from .services.hub_publisher import flush_pending
         flush_pending(db)
@@ -206,6 +209,7 @@ app.include_router(ai_config.router, prefix="/api/v1")
 app.include_router(integration.router, prefix="/api/v1")
 app.include_router(directives.router, prefix="/api/v1")
 app.include_router(thm.router, prefix="/api/v1")
+app.include_router(ctf.router, prefix="/api/v1")
 
 
 @app.get("/api/health")

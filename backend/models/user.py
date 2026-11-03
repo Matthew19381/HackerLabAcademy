@@ -25,4 +25,5 @@ class User(Base):
     exercise_attempts = relationship("UserExerciseAttempt", back_populates="user", cascade="all, delete-orphan")
     conversation_sessions = relationship("ConversationSession", back_populates="user", cascade="all, delete-orphan")
     attack_progress = relationship("UserAttackProgress", back_populates="user", cascade="all, delete-orphan")
+    ctf_attempts = relationship("UserCtfAttempt", back_populates="user", cascade="all, delete-orphan")
     certificates = relationship("Certificate", back_populates="user", cascade="all, delete-orphan")

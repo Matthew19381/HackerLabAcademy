@@ -3,6 +3,7 @@ from .article import Article, ArticleQuiz, ArticleQuizAttempt, ArticleRead
 from .attack_scenario import AttackScenario, UserAttackProgress
 from .certificate import Certificate
 from .conversation import ConversationSession, ConversationTurn
+from .ctf import CtfChallenge, UserCtfAttempt
 from .cve import Cve
 from .defense import DefenseChallenge, UserDefenseAttempt
 from .directive_state import DirectiveState
@@ -42,6 +43,8 @@ __all__ = [
     "DefenseChallenge",
     "UserDefenseAttempt",
     "Certificate",
+    "CtfChallenge",
+    "UserCtfAttempt",
     "Article",
     "ArticleRead",
     "ArticleQuiz",
