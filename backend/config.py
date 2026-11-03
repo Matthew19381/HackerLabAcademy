@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # AI Provider selection: "gemini", "ollama", "openrouter", "auto" (gemini → fallback openrouter → fallback ollama)
     AI_PROVIDER: str = "gemini"
 
+    # Mentor AI calls per day after which the UI shows a notice (plan D2; not a limit)
+    MENTOR_DAILY_WARN: int = 100
+
     # Database
     DATABASE_URL: str = "sqlite:///./HackerLabAcademy.db"
 

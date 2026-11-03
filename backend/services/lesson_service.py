@@ -185,13 +185,23 @@ Zasady języka (feedback o zadaniu, nie o osobie):
         }
 
 
-async def mentor_chat(message: str, history: list, topic_context: str = None) -> str:
+# Plan D1 (HL-4): graded help - the learner chooses how much the mentor gives away.
+MENTOR_MODES = {
+    "guide": "Nie podawaj odpowiedzi. Zadaj JEDNO pytanie naprowadzające, które pomoże uczniowi samemu dojść do rozwiązania.",
+    "hint": "Daj jedną konkretną podpowiedź (kierunek, narzędzie albo pojęcie), ale nie podawaj gotowej odpowiedzi ani komendy.",
+    "answer": "Wyjaśnij w pełni, z przykładem.",
+}
+
+
+async def mentor_chat(message: str, history: list, topic_context: str = None, mode: str = "answer") -> str:
     context = f"Kontekst tematu: {topic_context}\n\n" if topic_context else ""
+    instruction = MENTOR_MODES.get(mode, MENTOR_MODES["answer"])
     history_str = "\n".join([f"{m['role']}: {m['content']}" for m in history[-6:]])
 
     prompt = f"""Jesteś AI Mentorem cyberbezpieczeństwa. Pomagasz początkującemu uczniowi zrozumieć tematy z web security.
 Odpowiadaj po polsku, prosto i zrozumiale. Używaj analogii i przykładów z życia codziennego.
 Jeśli pytanie dotyczy ataków — zawsze tłumacz w kontekście EDUKACYJNYM i etycznym pentestingu.
+Tryb tej odpowiedzi: {instruction}
 
 {context}Historia rozmowy:
 {history_str}
