@@ -13,6 +13,7 @@ export default function Certificates() {
 
   useEffect(() => {
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount
   }, [])
 
   const load = async () => {

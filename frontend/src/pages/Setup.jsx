@@ -15,7 +15,7 @@ export default function Setup() {
       const data = await createUser(name.trim())
       setUserId(data.user_id)
       navigate('/')
-    } catch (e) {
+    } catch {
       alert('Błąd podczas tworzenia konta. Sprawdź czy backend działa.')
     } finally {
       setLoading(false)

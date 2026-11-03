@@ -9,7 +9,7 @@ export default function Dashboard() {
   const [dueCards, setDueCards] = useState(0)
   const [dueErrors, setDueErrors] = useState(0)
   const [user, setUser] = useState(null)
-  const [dailyTip, setDailyTip] = useState('')
+  const [dailyTip] = useState(() => getTipOfTheDay())
   const [dailyStatus, setDailyStatus] = useState(null)
   const userId = getUserId()
 
@@ -20,7 +20,6 @@ export default function Dashboard() {
     getDueErrors(userId).then(errors => setDueErrors(errors.length)).catch(() => {})
     getUser(userId).then(setUser).catch(() => {})
     getDailyStatus(userId).then(setDailyStatus).catch(() => {})
-    setDailyTip(getTipOfTheDay())
   }, [userId])
 
   if (!stats) return (

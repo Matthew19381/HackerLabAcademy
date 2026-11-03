@@ -3,6 +3,9 @@ import { getArticles, getArticle, markArticleRead, submitArticleQuiz, getUserId 
 import { BookOpen, Clock, CheckCircle, Award } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 
+// module scope: React's purity rule treats Date.now() inside the component as a render-time call
+const nowMs = () => Date.now()
+
 export default function Articles() {
   const userId = getUserId()
   const [articles, setArticles] = useState([])
@@ -21,8 +24,8 @@ export default function Articles() {
     try {
       const data = await getArticle(slug)
       setSelectedArticle(data)
-      setReadTimeStart(Date.now())
-    } catch (e) {
+      setReadTimeStart(nowMs())
+    } catch {
       alert('Błąd ładowania artykułu')
     }
   }
@@ -72,12 +75,6 @@ export default function Articles() {
           )}
         </div>
 
-        {/* Read time timer */}
-        {readTimeStart && (
-          <div className="mb-4 text-sm text-[#8b949e]">
-            Czas czytania: {Math.round((Date.now() - readTimeStart) / 1000)} s
-          </div>
-        )}
 
         {/* Mark as read button */}
         <div className="mb-6">

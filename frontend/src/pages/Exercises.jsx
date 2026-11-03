@@ -45,7 +45,7 @@ export default function Exercises({ topicId }) {
       const res = await submitExercise(currentEx.id, userId, userAnswer)
       setResult(res)
       setTotalXp(prev => prev + res.xp_awarded)
-    } catch (e) {
+    } catch {
       alert('Błąd wysyłania odpowiedzi')
     } finally {
       setSubmitting(false)

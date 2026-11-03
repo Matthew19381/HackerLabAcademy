@@ -56,7 +56,6 @@ export default function Videos() {
     }
   }
 
-  const currentVideos = selectedTopic ? videosByTopic[selectedTopic] || [] : []
 
   if (loading && Object.keys(videosByTopic).length === 0) {
     return (

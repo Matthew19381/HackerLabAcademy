@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { mentorChat, getUserId } from '../api/client'
+import { mentorChat } from '../api/client'
 import { Bot, Send, Loader, Trash2 } from 'lucide-react'
 
 const SESSION_ID = `mentor_${Date.now()}`

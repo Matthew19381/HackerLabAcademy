@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { startConversationSession, getNextQuestion, submitAnswer, endConversationSession, listConversationSessions } from '../api/client'
 import { getUserId } from '../api/client'
 import { Bot, Send, Loader, ChevronRight, Trophy, RotateCcw, CheckCircle, XCircle } from 'lucide-react'
 
 export default function Conversation({ topicSlug: initialTopicSlug }) {
   const { slug: paramSlug } = useParams()
-  const navigate = useNavigate()
   const userId = getUserId()
   const topicSlug = initialTopicSlug || paramSlug
 
@@ -37,7 +36,7 @@ export default function Conversation({ topicSlug: initialTopicSlug }) {
       setTotalXp(0)
       // Get first question
       await fetchQuestion()
-    } catch (e) {
+    } catch {
       alert('Błąd rozpoczęcia sesji')
     } finally {
       setLoading(false)
@@ -75,7 +74,7 @@ export default function Conversation({ topicSlug: initialTopicSlug }) {
       }
       // Record turn
       setTurns(prev => [...prev, { answer: userAnswer, correct: res.correct }])
-    } catch (e) {
+    } catch {
       alert('Błąd wysyłania odpowiedzi')
     } finally {
       setLoading(false)
@@ -88,12 +87,12 @@ export default function Conversation({ topicSlug: initialTopicSlug }) {
 
   const endSession = async () => {
     try {
-      const res = await endConversationSession(sessionId)
+      await endConversationSession(sessionId)
       setSessionState('ended')
       setFeedback(null)
       // Refresh history
       listConversationSessions(userId).then(data => setHistory(data))
-    } catch (e) {
+    } catch {
       alert('Błąd kończenia sesji')
     }
   }

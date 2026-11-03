@@ -25,6 +25,7 @@ export default function Cves() {
 
   useEffect(() => {
     loadCves()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount
   }, [])
 
   const loadCves = async () => {
