@@ -118,18 +118,10 @@ def review_flashcard(
     card.state = updated['state']
     card.step = updated['step']
 
-    # Keep SM-2 fields updated for backward compatibility (approximate)
-    # We can compute approximate SM-2 values from FSRS state or keep them as is.
-    # For now, we'll update them based on the rating as in the original SM-2, but note: this is not accurate.
-    # Alternatively, we can leave the SM-2 fields as they are and only use FSRS for scheduling.
-    # Since we are keeping both, let's update the SM-2 fields in a way that is consistent with the rating.
-    # We'll use the same SM-2 update function for the SM-2 fields to keep them updated (even though we don't use them for scheduling).
-    from backend.services.sm2_service import sm2_update
-    sm2_updated = sm2_update(card.ease_factor, card.interval_days, card.repetitions, req.rating)
-    card.ease_factor = sm2_updated["ease_factor"]
-    card.interval_days = sm2_updated["interval_days"]
-    card.repetitions = sm2_updated["repetitions"]
-    # Note: next_review_date is already set by FSRS, so we don't overwrite it with SM-2.
+    # FSRS is the only scheduler (plan B4, 2026-11-03). The legacy SM-2 columns are kept in the table
+    # and in the response, but derived from the FSRS result instead of a second, competing algorithm.
+    card.interval_days = max(0, (card.next_review_date - card.last_review).days) if card.last_review else 0
+    card.repetitions = (card.repetitions or 0) + 1
 
     db.commit()
 

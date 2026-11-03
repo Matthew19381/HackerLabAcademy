@@ -29,3 +29,25 @@ def test_flashcards_review_empty(client):
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
+
+
+def test_review_uses_fsrs_only_and_reports_its_interval(client, db_session):
+    """B4 (2026-11-03): SM-2 ran next to FSRS on every review and overwrote interval_days."""
+    from datetime import datetime, timedelta
+
+    from backend.models.flashcard import Flashcard
+    from backend.models.user import User
+
+    user = User(name="fsrs")
+    db_session.add(user)
+    db_session.commit()
+    card = Flashcard(user_id=user.id, front="nmap -sV", back="wersje usług",
+                     next_review_date=datetime.utcnow() - timedelta(days=1))
+    db_session.add(card)
+    db_session.commit()
+
+    body = client.post(f"/api/v1/flashcards/{card.id}/review", json={"rating": 4}).json()
+    due = datetime.fromisoformat(body["next_review_date"])
+    last = datetime.fromisoformat(body["last_review"])
+    assert body["interval_days"] == max(0, (due - last).days)
+    assert body["repetitions"] == 1
