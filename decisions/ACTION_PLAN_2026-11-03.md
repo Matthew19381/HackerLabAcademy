@@ -49,10 +49,10 @@ Lokalnie i na GitHubie `master` = `ea7190d` (sprawdzone 2026-11-03, brak niewys�
 
 ## 2. Decyzje do podjęcia przez właściciela
 
-- [ ] **D-HLA-1 CTF**: (a) zostawić usunięty, (b) przywrócić zagadki CTF bez rankingu (zgodnie z decyzją z 2026-08-09).
-- [ ] **D-HLA-2 Kopie bazy w historii git**: (a) tylko `git rm` (zostają w historii, dane nieprywatne — zalecane),
+- [ ] **D-HLA-1 CTF** (2026-11-03: właściciel poprosił o wyjaśnienie — czeka): (a) zostawić usunięty, (b) przywrócić zagadki CTF bez rankingu (zgodnie z decyzją z 2026-08-09).
+- [x] **D-HLA-2 Kopie bazy w historii git** — 2026-11-03: wybrane (a) tylko `git rm` (zostają w historii, dane nieprywatne — zalecane),
       (b) przepisanie historii (force push — zmienia hashe wszystkich commitów).
-- [ ] **D-HLA-3 Start i kopie w ekosystemie**: dopisać HackerLabAcademy (i Edukację) do `start-ekosystem.ps1`
+- [x] **D-HLA-3 Start i kopie w ekosystemie** — 2026-11-03: NIE TERAZ (sesja lokalna): dopisać HackerLabAcademy (i Edukację) do `start-ekosystem.ps1`
       i `backup_baz.py` w System-Glowny (zmiana w innym repo, osobny PR).
 
 Punkty niezależne od decyzji wykonuję od razu po akceptacji planu.

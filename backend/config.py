@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     # OpenRouter (cloud - multiple models)
     OPENROUTER_API_KEY: Optional[str] = None
-    OPENROUTER_MODEL: str = "google/gemini-2.0-flash-001"  # Can use any model supported by OpenRouter
+    OPENROUTER_MODEL: str = "google/gemini-2.5-flash"  # 2.0-flash-001 is retired (404 on OpenRouter)
 
     # AI Provider selection: "gemini", "ollama", "openrouter", "auto" (gemini → fallback openrouter → fallback ollama)
     AI_PROVIDER: str = "gemini"
