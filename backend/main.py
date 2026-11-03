@@ -27,7 +27,8 @@ import backend.routers.videos as videos
 import backend.routers.vocabulary as vocabulary
 import backend.routers.writeups as writeups
 
-from .database import Base, SessionLocal, engine
+from .database import SessionLocal, engine
+from .migrations_runner import upgrade_database
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -136,11 +137,8 @@ def seed_topics(db):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Import all models so create_all picks them up
-    from .models import user, topic, flashcard, flashcard_attempt, error_item, lab_attempt, achievement, exercise, conversation, cve, youtube_video, attack_scenario, defense, certificate, article  # noqa
-
-    Base.metadata.create_all(bind=engine)
-    logger.info("Database tables created")
+    upgrade_database(engine)
+    logger.info("Database schema at Alembic head")
 
     for d in ["audio", "exports"]:
         os.makedirs(d, exist_ok=True)
