@@ -4,8 +4,10 @@ Resources Engine — curated learning resources per topic.
 """
 import json
 import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
 from backend.models.topic import Topic
 from backend.services.ai_service import generate_json

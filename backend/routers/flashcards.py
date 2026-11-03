@@ -1,14 +1,16 @@
 import logging
 from datetime import datetime
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.user import User
 from backend.models.flashcard import Flashcard
 from backend.models.flashcard_attempt import FlashcardAttempt
-from backend.services.fsrs_service import fsrs_update, initialize_new_card
+from backend.models.user import User
 from backend.services.ai_service import generate_json
+from backend.services.fsrs_service import fsrs_update, initialize_new_card
 from backend.services.hub_publisher import flush_in_background, queue_event
 
 logger = logging.getLogger(__name__)

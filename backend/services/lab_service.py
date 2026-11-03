@@ -7,6 +7,7 @@ DVWA image: vulnerables/web-dvwa
 import logging
 import subprocess
 import time
+
 import requests
 
 logger = logging.getLogger(__name__)

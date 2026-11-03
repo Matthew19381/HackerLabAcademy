@@ -1,4 +1,5 @@
 import logging
+
 from backend.services.ai_service import generate_json, generate_text
 
 logger = logging.getLogger(__name__)

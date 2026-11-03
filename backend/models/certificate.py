@@ -2,10 +2,12 @@
 Certificate model for HackerLabAcademy.
 Certificates awarded when a user completes all topics in a category.
 """
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
-from backend.database import Base
 from datetime import datetime
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import relationship
+
+from backend.database import Base
 
 
 class Certificate(Base):

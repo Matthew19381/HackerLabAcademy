@@ -3,14 +3,16 @@ Defense Mode: Submit code fixes for vulnerable snippets.
 """
 import logging
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from backend.database import get_db
 from backend.models.defense import DefenseChallenge, UserDefenseAttempt
 from backend.models.user import User
-from backend.services.ai_service import generate_json
 from backend.services.achievement_service import check_and_award_achievements
+from backend.services.ai_service import generate_json
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/defense", tags=["defense"])

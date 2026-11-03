@@ -1,8 +1,9 @@
 """Anki deck export using genanki."""
-import genanki
 import hashlib
 import logging
 import os
+
+import genanki
 
 logger = logging.getLogger(__name__)
 EXPORTS_DIR = "exports"

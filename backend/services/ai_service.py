@@ -3,6 +3,7 @@ AI Service Router — selects provider based on config (Gemini, Ollama, or OpenR
 All services should import from here instead of direct gemini_service.
 """
 import logging
+
 from backend.config import settings
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,8 @@ def _load_gemini():
     global _gemini_text, _gemini_json
     if _gemini_text is None:
         try:
-            from backend.services.gemini_service import generate_text as gemini_text, generate_json as gemini_json
+            from backend.services.gemini_service import generate_json as gemini_json
+            from backend.services.gemini_service import generate_text as gemini_text
             _gemini_text = gemini_text
             _gemini_json = gemini_json
             logger.info("Gemini AI service loaded")
@@ -33,7 +35,8 @@ def _load_ollama():
     global _ollama_text, _ollama_json
     if _ollama_text is None:
         try:
-            from backend.services.ollama_service import generate_text as ollama_text, generate_json as ollama_json
+            from backend.services.ollama_service import generate_json as ollama_json
+            from backend.services.ollama_service import generate_text as ollama_text
             _ollama_text = ollama_text
             _ollama_json = ollama_json
             logger.info("Ollama AI service loaded")
@@ -46,7 +49,8 @@ def _load_openrouter():
     global _openrouter_text, _openrouter_json
     if _openrouter_text is None:
         try:
-            from backend.services.openrouter_service import generate_text as openrouter_text, generate_json as openrouter_json
+            from backend.services.openrouter_service import generate_json as openrouter_json
+            from backend.services.openrouter_service import generate_text as openrouter_text
             _openrouter_text = openrouter_text
             _openrouter_json = openrouter_json
             logger.info("OpenRouter AI service loaded")
@@ -79,8 +83,8 @@ async def generate_text(prompt: str) -> str:
                     try:
                         logger.info("Falling back to OpenRouter...")
                         return await _openrouter_text(prompt)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.debug("fallback failed: %s", exc)
                 if _ollama_text:
                     logger.info("Falling back to Ollama...")
                     return await _ollama_text(prompt)
@@ -113,8 +117,8 @@ async def generate_text(prompt: str) -> str:
                 if _openrouter_text:
                     try:
                         return await _openrouter_text(prompt)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.debug("fallback failed: %s", exc)
         if _openrouter_text:
             try:
                 return await _openrouter_text(prompt)
@@ -153,8 +157,8 @@ async def generate_json(prompt: str) -> dict:
                     try:
                         logger.info("Falling back to OpenRouter...")
                         return await _openrouter_json(prompt)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.debug("fallback failed: %s", exc)
                 if _ollama_json:
                     logger.info("Falling back to Ollama...")
                     return await _ollama_json(prompt)
@@ -187,8 +191,8 @@ async def generate_json(prompt: str) -> dict:
                 if _openrouter_json:
                     try:
                         return await _openrouter_json(prompt)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.debug("fallback failed: %s", exc)
         if _openrouter_json:
             try:
                 return await _openrouter_json(prompt)

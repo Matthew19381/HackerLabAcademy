@@ -1,17 +1,19 @@
 import json
 import logging
 from datetime import datetime
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.user import User
-from backend.models.topic import Topic, UserTopicProgress
-from backend.models.flashcard import Flashcard
 from backend.models.error_item import ErrorItem
-from backend.services.lesson_service import generate_theory_lesson, generate_lab_instructions, analyze_quiz_errors
-from backend.services.achievement_service import check_and_award_achievements, calculate_level_from_xp
+from backend.models.flashcard import Flashcard
+from backend.models.topic import Topic, UserTopicProgress
+from backend.models.user import User
+from backend.services.achievement_service import calculate_level_from_xp, check_and_award_achievements
 from backend.services.hub_publisher import flush_in_background, queue_event
+from backend.services.lesson_service import analyze_quiz_errors, generate_lab_instructions, generate_theory_lesson
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/topics", tags=["topics"])

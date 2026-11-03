@@ -3,13 +3,15 @@ Daily completion status (simple).
 """
 import logging
 from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.lab_attempt import LabAttempt
+from backend.models.article import ArticleRead
 from backend.models.exercise import UserExerciseAttempt
 from backend.models.flashcard_attempt import FlashcardAttempt
-from backend.models.article import ArticleRead
+from backend.models.lab_attempt import LabAttempt
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/daily", tags=["daily"])

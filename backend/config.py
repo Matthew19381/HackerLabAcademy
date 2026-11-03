@@ -1,4 +1,4 @@
-from typing import Optional
+
 from pydantic_settings import BaseSettings
 
 # Export directories (relative to working directory /app)
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3"
 
     # OpenRouter (cloud - multiple models)
-    OPENROUTER_API_KEY: Optional[str] = None
+    OPENROUTER_API_KEY: str | None = None
     OPENROUTER_MODEL: str = "google/gemini-2.5-flash"  # 2.0-flash-001 is retired (404 on OpenRouter)
 
     # AI Provider selection: "gemini", "ollama", "openrouter", "auto" (gemini → fallback openrouter → fallback ollama)

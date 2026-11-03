@@ -1,6 +1,8 @@
 import logging
+
 from fastapi import APIRouter
 from pydantic import BaseModel
+
 from backend.services.lesson_service import mentor_chat
 
 logger = logging.getLogger(__name__)

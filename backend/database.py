@@ -1,9 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
-
 import os
 from pathlib import Path
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 # The DB lives in the project root. The old relative "./HackerLabAcademy.db" depended on
 # the working directory - started from backend/ it silently used an empty file.

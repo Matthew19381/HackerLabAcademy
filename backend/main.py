@@ -1,32 +1,35 @@
 import logging
 import os
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base, SessionLocal
-import backend.routers.placement as placement
-import backend.routers.topics as topics
-import backend.routers.labs as labs
-import backend.routers.flashcards as flashcards
-import backend.routers.mentor as mentor
-import backend.routers.errors as errors
-import backend.routers.stats as stats
+
+import backend.routers.ai_config as ai_config
+import backend.routers.articles as articles
+import backend.routers.attack as attack
 import backend.routers.brain as brain
-import backend.routers.downloads as downloads
-import backend.routers.vocabulary as vocabulary
-import backend.routers.exercises as exercises
+import backend.routers.certificates as certificates
 import backend.routers.conversation as conversation
 import backend.routers.cves as cves
-import backend.routers.videos as videos
-import backend.routers.defense as defense
-import backend.routers.attack as attack
-import backend.routers.certificates as certificates
 import backend.routers.daily as daily
-import backend.routers.articles as articles
-import backend.routers.writeups as writeups
-import backend.routers.ai_config as ai_config
-import backend.routers.integration as integration
+import backend.routers.defense as defense
 import backend.routers.directives as directives
+import backend.routers.downloads as downloads
+import backend.routers.errors as errors
+import backend.routers.exercises as exercises
+import backend.routers.flashcards as flashcards
+import backend.routers.integration as integration
+import backend.routers.labs as labs
+import backend.routers.mentor as mentor
+import backend.routers.placement as placement
+import backend.routers.stats as stats
+import backend.routers.topics as topics
+import backend.routers.videos as videos
+import backend.routers.vocabulary as vocabulary
+import backend.routers.writeups as writeups
+
+from .database import Base, SessionLocal, engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -110,6 +113,7 @@ TOPICS_SEED = [
 
 def seed_topics(db):
     import json
+
     from backend.models.topic import Topic
     existing_slugs = {t.slug for t in db.query(Topic).all()}
     added = 0
