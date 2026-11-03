@@ -22,6 +22,7 @@ import backend.routers.integration as integration
 import backend.routers.mentor as mentor
 import backend.routers.placement as placement
 import backend.routers.stats as stats
+import backend.routers.thm as thm
 import backend.routers.topics as topics
 import backend.routers.videos as videos
 import backend.routers.vocabulary as vocabulary
@@ -204,6 +205,7 @@ app.include_router(writeups.router, prefix="/api/v1")
 app.include_router(ai_config.router, prefix="/api/v1")
 app.include_router(integration.router, prefix="/api/v1")
 app.include_router(directives.router, prefix="/api/v1")
+app.include_router(thm.router, prefix="/api/v1")
 
 
 @app.get("/api/health")

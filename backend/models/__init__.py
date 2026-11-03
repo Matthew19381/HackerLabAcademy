@@ -13,6 +13,7 @@ from .flashcard_attempt import FlashcardAttempt
 from .lab_attempt import LabAttempt
 from .mentor_message import MentorMessage
 from .outbound_event import OutboundEvent
+from .thm_progress import ThmProgress
 from .topic import Topic
 from .user import User
 from .writeup_template import Writeup, WriteupTemplate
@@ -20,6 +21,7 @@ from .youtube_video import YouTubeVideo
 
 __all__ = [
     "OutboundEvent",
+    "ThmProgress",
     "DirectiveState",
     "User",
     "Topic",

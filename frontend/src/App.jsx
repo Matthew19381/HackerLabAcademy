@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Topics from './pages/Topics'
 import TheoryLesson from './pages/TheoryLesson'
 import Practice from './pages/Practice'
+import ThmProgress from './pages/ThmProgress'
 import Flashcards from './pages/Flashcards'
 import Errors from './pages/Errors'
 import Mentor from './pages/Mentor'
@@ -45,6 +46,7 @@ export default function App() {
                   <Route path="/mindmap" element={<Mindmap />} />
                   <Route path="/topics/:slug" element={<TheoryLesson />} />
                   <Route path="/practice" element={<Practice />} />
+                  <Route path="/thm" element={<ThmProgress />} />
                   <Route path="/lab" element={<Navigate to="/practice" replace />} />
                   <Route path="/flashcards" element={<Flashcards />} />
                   <Route path="/errors" element={<Errors />} />

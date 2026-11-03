@@ -168,3 +168,11 @@ export const triggerDownload = (blob, filename) => {
   a.click()
   window.URL.revokeObjectURL(url)
 }
+
+// --- TryHackMe tracker (plan C4/C5) ---
+export const getThmEntries = (userId) => api.get('/thm', { params: { user_id: userId } })
+export const createThmEntry = (data) => api.post('/thm', data)
+export const updateThmEntry = (id, data) => api.patch(`/thm/${id}`, data)
+export const deleteThmEntry = (id) => api.delete(`/thm/${id}`)
+export const flashcardsFromNotes = (userId, source, notes) =>
+  api.post('/flashcards/from-notes', { user_id: userId, source, notes })

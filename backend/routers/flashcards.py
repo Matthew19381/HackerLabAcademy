@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -167,6 +167,30 @@ def delete_flashcard(card_id: int, db: Session = Depends(get_db)):
     return {"success": True}
 
 
+def _new_card(user_id: int, front: str, back: str, example: str | None = None,
+              topic_slug: str | None = None) -> Flashcard:
+    """A new card in the FSRS initial state (legacy SM-2 columns at their defaults)."""
+    fsrs_initial = initialize_new_card()
+    return Flashcard(
+        user_id=user_id,
+        topic_slug=topic_slug,
+        front=front,
+        back=back,
+        example=example,
+        ease_factor=2.5,
+        interval_days=1,
+        repetitions=0,
+        next_review_date=fsrs_initial["due"],
+        stability=fsrs_initial["stability"],
+        difficulty=fsrs_initial["difficulty"],
+        state=fsrs_initial["state"],
+        step=fsrs_initial["step"],
+        last_review=fsrs_initial["last_review"],
+        card_id=fsrs_initial.get("card_id"),
+        is_active=True,
+    )
+
+
 class QuickCreateRequest(BaseModel):
     user_id: int
     term: str
@@ -203,28 +227,7 @@ Uwagi:
         logger.error(f"Gemini flashcard generation failed: {e}")
         raise HTTPException(status_code=503, detail="Nie udało się wygenerować definicji")
 
-    # Initialize a new card with FSRS state
-    fsrs_initial = initialize_new_card()
-
-    card = Flashcard(
-        user_id=req.user_id,
-        front=req.term,
-        back=back,
-        example=example,
-        # SM-2 fields (initial values)
-        ease_factor=2.5,
-        interval_days=1,
-        repetitions=0,
-        next_review_date=fsrs_initial['due'],
-        # FSRS fields
-        stability=fsrs_initial['stability'],
-        difficulty=fsrs_initial['difficulty'],
-        state=fsrs_initial['state'],
-        step=fsrs_initial['step'],
-        last_review=fsrs_initial['last_review'],
-        card_id=fsrs_initial.get('card_id'),  # Note: we don't have card_id in initialize_new_card, but we can set it to None or generate
-        is_active=True,
-    )
+    card = _new_card(req.user_id, req.term, back, example)
     db.add(card)
     db.commit()
     db.refresh(card)
@@ -245,3 +248,50 @@ Uwagi:
         "step": card.step,
         "last_review": card.last_review.isoformat() if card.last_review else None,
     }
+
+MAX_NOTE_CARDS = 5
+
+
+class FromNotesRequest(BaseModel):
+    user_id: int
+    notes: str = Field(min_length=20, max_length=8000)
+    source: str = Field(min_length=1, max_length=200)  # e.g. TryHackMe room name
+
+
+@router.post("/from-notes")
+async def flashcards_from_notes(req: FromNotesRequest, db: Session = Depends(get_db)):
+    """Plan C5: 3-5 recall questions from the user's own TryHackMe notes (not from a bare term)."""
+    if not db.query(User).filter(User.id == req.user_id).first():
+        raise HTTPException(status_code=404, detail="User not found")
+
+    prompt = f"""Jesteś ekspertem cyberbezpieczeństwa. Na podstawie NOTATEK ucznia z pokoju TryHackMe
+"{req.source}" przygotuj od 3 do {MAX_NOTE_CARDS} fiszek do powtórek.
+
+Zasady:
+- Front to pytanie wymagające przypomnienia (komenda, flaga narzędzia, pojęcie), nie zdanie do rozpoznania.
+- Back to krótka, poprawna odpowiedź po polsku. Używaj tylko tego, co wynika z notatek; popraw oczywiste błędy.
+- Example to konkretna komenda lub payload z notatek albo null.
+
+NOTATKI:
+{req.notes}
+
+Zwróć JSON: {{"cards": [{{"front": "...", "back": "...", "example": "..." }}]}}"""
+
+    try:
+        result = await generate_json(prompt)
+        raw_cards = (result or {}).get("cards") or []
+    except Exception as e:
+        logger.error(f"Flashcards from notes failed: {e}")
+        raise HTTPException(status_code=503, detail="Nie udało się wygenerować fiszek")
+
+    cards = []
+    for item in raw_cards[:MAX_NOTE_CARDS]:
+        front, back = (item.get("front") or "").strip(), (item.get("back") or "").strip()
+        if front and back:
+            card = _new_card(req.user_id, front, back, item.get("example"), topic_slug="thm")
+            db.add(card)
+            cards.append(card)
+    if not cards:
+        raise HTTPException(status_code=503, detail="Model nie zwrócił żadnej fiszki")
+    db.commit()
+    return {"created": len(cards), "cards": [{"id": c.id, "front": c.front, "back": c.back} for c in cards]}

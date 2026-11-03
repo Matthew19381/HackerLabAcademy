@@ -13,6 +13,7 @@ from backend.models.error_item import ErrorItem
 from backend.models.flashcard import Flashcard
 from backend.models.flashcard_attempt import FlashcardAttempt
 from backend.models.outbound_event import OutboundEvent
+from backend.models.thm_progress import ThmProgress
 from backend.models.user import User
 from backend.services.hub_publisher import MODULE_NAME, flush_pending
 
@@ -56,6 +57,11 @@ def get_ecosystem_summary(
         .filter(ErrorItem.user_id == user_id, ErrorItem.created_at >= start, ErrorItem.created_at < end)
         .count()
     )
+    thm_done = (
+        db.query(ThmProgress)
+        .filter(ThmProgress.user_id == user_id, ThmProgress.completed_at >= start, ThmProgress.completed_at < end)
+        .count()
+    )
     errors_open = db.query(ErrorItem).filter(ErrorItem.user_id == user_id, ErrorItem.resolved.is_(False)).count()
     events = [
         json.loads(e.payload_json)
@@ -73,6 +79,7 @@ def get_ecosystem_summary(
             "flashcards_due": due,
             "errors_logged": errors_logged,
             "errors_open": errors_open,
+            "thm_completed": thm_done,
             "total_xp": user.total_xp or 0,
         },
         "events": events,
