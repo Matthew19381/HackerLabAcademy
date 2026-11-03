@@ -295,3 +295,24 @@ Zwróć JSON: {{"cards": [{{"front": "...", "back": "...", "example": "..." }}]}
         raise HTTPException(status_code=503, detail="Model nie zwrócił żadnej fiszki")
     db.commit()
     return {"created": len(cards), "cards": [{"id": c.id, "front": c.front, "back": c.back} for c in cards]}
+
+
+class DeckRequest(BaseModel):
+    user_id: int
+
+
+@router.post("/decks/tools")
+def add_tool_deck(req: DeckRequest, db: Session = Depends(get_db)):
+    """Plan C6: tool syntax deck (nmap, gobuster, hydra, msfconsole, Burp, netcat); idempotent."""
+    from backend.services.tool_deck import TOOL_DECK
+
+    if not db.query(User).filter(User.id == req.user_id).first():
+        raise HTTPException(status_code=404, detail="User not found")
+    existing = {front for (front,) in db.query(Flashcard.front).filter(Flashcard.user_id == req.user_id)}
+    added = 0
+    for front, back, example in TOOL_DECK:
+        if front not in existing:
+            db.add(_new_card(req.user_id, front, back, example, topic_slug="tools"))
+            added += 1
+    db.commit()
+    return {"added": added, "deck_size": len(TOOL_DECK)}

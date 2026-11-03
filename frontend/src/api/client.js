@@ -176,3 +176,4 @@ export const updateThmEntry = (id, data) => api.patch(`/thm/${id}`, data)
 export const deleteThmEntry = (id) => api.delete(`/thm/${id}`)
 export const flashcardsFromNotes = (userId, source, notes) =>
   api.post('/flashcards/from-notes', { user_id: userId, source, notes })
+export const addToolDeck = (userId) => api.post('/flashcards/decks/tools', { user_id: userId })

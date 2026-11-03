@@ -81,3 +81,19 @@ def test_flashcards_from_thm_notes(client, db_session, monkeypatch):
 def test_flashcards_from_notes_requires_real_notes(client):
     assert client.post("/api/v1/flashcards/from-notes",
                        json={"user_id": 1, "source": "x", "notes": "za krótko"}).status_code == 422
+
+
+def test_tool_deck_is_added_once(client, db_session):
+    """C6: the tool syntax deck can be added again without duplicates."""
+    from backend.models.user import User
+    from backend.services.tool_deck import TOOL_DECK
+
+    user = User(name="deck")
+    db_session.add(user)
+    db_session.commit()
+    first = client.post("/api/v1/flashcards/decks/tools", json={"user_id": user.id}).json()
+    second = client.post("/api/v1/flashcards/decks/tools", json={"user_id": user.id}).json()
+    assert first == {"added": len(TOOL_DECK), "deck_size": len(TOOL_DECK)}
+    assert second["added"] == 0
+    due = client.get(f"/api/v1/flashcards/due/{user.id}").json()
+    assert any(c["front"].startswith("nmap:") for c in due)
