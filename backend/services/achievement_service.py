@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
+
 from sqlalchemy.orm import Session
+
 from backend.models.achievement import Achievement
 
 logger = logging.getLogger(__name__)
@@ -105,14 +107,14 @@ def _get_level_name(level: int) -> str:
 
 
 def check_and_award_achievements(user, db: Session) -> list:
-    from backend.models.topic import UserTopicProgress
-    from backend.models.lab_attempt import LabAttempt
-    from backend.models.error_item import ErrorItem
-    from backend.models.defense import UserDefenseAttempt
     from backend.models.article import ArticleRead
     from backend.models.attack_scenario import UserAttackProgress
-    from backend.models.flashcard_attempt import FlashcardAttempt
     from backend.models.conversation import ConversationSession
+    from backend.models.defense import UserDefenseAttempt
+    from backend.models.error_item import ErrorItem
+    from backend.models.flashcard_attempt import FlashcardAttempt
+    from backend.models.lab_attempt import LabAttempt
+    from backend.models.topic import UserTopicProgress
 
     theory_done = db.query(UserTopicProgress).filter(
         UserTopicProgress.user_id == user.id,
@@ -256,7 +258,7 @@ def check_and_award_achievements(user, db: Session) -> list:
 
 
 def _check_owasp_achievements(user_id: int, db: Session, existing: set, candidates: list):
-    from backend.models.topic import UserTopicProgress, Topic
+    from backend.models.topic import Topic, UserTopicProgress
 
     def maybe(ach_type):
         if ach_type not in existing and ach_type in ACHIEVEMENT_DEFS:

@@ -2,14 +2,16 @@
 CVE Auto-Fetch Service
 Integrates with NVD API to fetch latest CVEs and store them in the database.
 """
+import json
 import logging
 import threading
-import json
-import requests
 from datetime import datetime, timedelta
+
+import requests
 from sqlalchemy.orm import Session
-from backend.models.cve import Cve
+
 from backend.database import SessionLocal
+from backend.models.cve import Cve
 
 logger = logging.getLogger(__name__)
 
@@ -104,8 +106,8 @@ def extract_references(refs_data: list) -> list:
             url = ref.get("url")
             if url:
                 urls.append(url)
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.debug("reference URLs failed: %s", exc)
     return urls
 
 def get_cvss_severity(vuln_data: dict) -> str:

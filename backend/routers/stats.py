@@ -1,16 +1,18 @@
 import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.user import User
-from backend.models.topic import UserTopicProgress, Topic
 from backend.models.error_item import ErrorItem
 from backend.models.exercise import UserExerciseAttempt
+from backend.models.topic import Topic, UserTopicProgress
+from backend.models.user import User
 from backend.services.achievement_service import (
     calculate_level_from_xp,
     get_all_achievements_for_user,
-    get_unnotified_achievements
+    get_unnotified_achievements,
 )
 
 logger = logging.getLogger(__name__)

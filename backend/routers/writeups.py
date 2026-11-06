@@ -1,13 +1,15 @@
-import logging
 import json
+import logging
 import os
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.writeup_template import WriteupTemplate, Writeup
 from backend.models.user import User
+from backend.models.writeup_template import Writeup, WriteupTemplate
 from backend.services.pdf_service import generate_pdf_from_markdown
 
 logger = logging.getLogger(__name__)

@@ -1,21 +1,14 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { getScenario, listScenarios } from '../data/terminal_scenarios'
 import { Terminal as TerminalIcon, ChevronRight } from 'lucide-react'
 
 export default function Terminal() {
-  const [scenarios, setScenarios] = useState([])
-  const [selectedId, setSelectedId] = useState(null)
+  const [scenarios] = useState(() => listScenarios())
+  const [selectedId, setSelectedId] = useState(() => listScenarios()[0]?.id ?? null)
   const [stepIndex, setStepIndex] = useState(0)
   const [history, setHistory] = useState([])
   const [command, setCommand] = useState('')
   const inputRef = useRef(null)
-
-  useEffect(() => {
-    setScenarios(listScenarios())
-    if (listScenarios().length > 0) {
-      setSelectedId(listScenarios()[0].id)
-    }
-  }, [])
 
   const scenario = selectedId ? getScenario(selectedId) : null
 
@@ -23,12 +16,6 @@ export default function Terminal() {
     setStepIndex(0)
     setHistory([])
   }
-
-  useEffect(() => {
-    if (scenario) {
-      resetScenario()
-    }
-  }, [selectedId])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -73,7 +60,7 @@ export default function Terminal() {
         </h1>
         <select
           value={selectedId}
-          onChange={e => setSelectedId(e.target.value)}
+          onChange={e => { setSelectedId(e.target.value); resetScenario() }}
           className="bg-[#161b22] border border-[#30363d] rounded px-3 py-1.5 text-sm text-[#c9d1d9]"
         >
           {scenarios.map(s => (

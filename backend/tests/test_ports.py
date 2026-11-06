@@ -35,3 +35,19 @@ def test_local_launchers_and_vite_proxy_use_the_same_port():
     assert f"--port {PORT}" in _read("start.bat")
     assert f"--port {PORT}" in _read("start.ps1")
     assert f"localhost:{PORT}" in _read("frontend/vite.config.js")
+
+
+def test_backend_image_runs_the_package_layout():
+    """B2 (2026-11-03): the old image had no CMD and copied backend/ as /app, so neither
+    `main:app` (relative imports) nor `backend.main:app` (no package) could start."""
+    dockerfile = _read("backend/Dockerfile")
+    compose = _read("docker-compose.yml")
+    assert "COPY backend/ backend/" in dockerfile
+    assert 'CMD ["uvicorn", "backend.main:app"' in dockerfile
+    assert "uvicorn backend.main:app" in compose
+    assert "dockerfile: backend/Dockerfile" in compose
+
+
+def test_frontend_image_serves_on_the_published_port():
+    assert "EXPOSE 80" in _read("frontend/Dockerfile")
+    assert '"80:80"' in _read("docker-compose.yml")

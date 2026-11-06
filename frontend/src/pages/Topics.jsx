@@ -29,7 +29,7 @@ export default function Topics() {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold text-[#f0f6fc] mb-2">Mapa tematów</h2>
-      <p className="text-[#8b949e] mb-8">Odblokuj tematy wykonując poprzednie. Każdy temat: Teoria → Quiz → Lab.</p>
+      <p className="text-[#8b949e] mb-8">Odblokuj tematy wykonując poprzednie. Każdy temat: Teoria → Quiz → Praktyka (TryHackMe).</p>
 
       {CATEGORY_ORDER.map(cat => {
         const catTopics = grouped[cat] || []
@@ -92,7 +92,7 @@ function TopicRow({ topic }) {
         )}
         {topic.lab_completed && (
           <span className="flex items-center gap-1 text-xs text-[#39d353]">
-            <FlaskConical size={12} /> Lab
+            <FlaskConical size={12} /> Praktyka
           </span>
         )}
         {topic.quiz_score !== null && (

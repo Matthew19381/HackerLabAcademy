@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { getDefenseChallenges, getDefenseChallenge, submitDefenseFix, getUserId } from '../api/client'
 import { Shield, Code2, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
@@ -16,6 +16,7 @@ export default function Defense() {
 
   useEffect(() => {
     loadChallenges()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount
   }, [])
 
   const loadChallenges = async () => {

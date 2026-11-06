@@ -7,7 +7,7 @@ cwd-relative ".env", which silently misses the key when started from the repo ro
 """
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -36,7 +36,7 @@ def queue_event(db: Session, event_type: str, user_id, data: dict, **extra) -> O
         "event_type": event_type,
         "module": MODULE_NAME,
         "user_id": str(user_id),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "data": data,
         **extra,
     }

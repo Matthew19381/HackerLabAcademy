@@ -1,16 +1,18 @@
 """
 Certificate generation: award PDF when user completes all topics in a category.
 """
-import logging
 import json
+import logging
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
+from backend.models.certificate import Certificate
 from backend.models.topic import Topic, UserTopicProgress
 from backend.models.user import User
-from backend.models.certificate import Certificate
 from backend.services.certificate_service import generate_certificate_pdf
 
 logger = logging.getLogger(__name__)

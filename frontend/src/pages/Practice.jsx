@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getLabStatus, startLab, stopLab, resetLab, getTopics, completeLab, getUserId, getWriteupTemplates, generateWriteup, downloadWriteupPdf } from '../api/client'
-import { FlaskConical, Play, Square, RefreshCw, ExternalLink, CheckCircle, Loader, FileText, Download } from 'lucide-react'
+import { getTopics, completeLab, getUserId, getWriteupTemplates, generateWriteup, downloadWriteupPdf } from '../api/client'
+import { FlaskConical, ExternalLink, CheckCircle, Loader, FileText, Download } from 'lucide-react'
 
-export default function Lab() {
+// Practice step of a topic (plan C1, 2026-11-03): the self-hosted DVWA lab is gone - practice happens
+// on TryHackMe; here the user writes the write-up and marks the topic's practice step as done.
+const thmSearchUrl = (topic) => `https://tryhackme.com/hacktivities/search?searchText=${encodeURIComponent(topic.practice_hint || topic.name)}`
+
+export default function Practice() {
   const userId = getUserId()
-  const navigate = useNavigate()
-  const [labStatus, setLabStatus] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [topics, setTopics] = useState([])
   const [selectedTopic, setSelectedTopic] = useState(null)
   const [writeup, setWriteup] = useState({ reconnaissance: '', exploitation: '', result: '', lesson: '' })
@@ -21,9 +21,8 @@ export default function Lab() {
   const [generatedWriteupId, setGeneratedWriteupId] = useState(null)
 
   useEffect(() => {
-    getLabStatus().then(setLabStatus)
     getTopics(userId).then(ts => {
-      const withLabs = ts.filter(t => t.lab_type && t.unlocked && t.theory_completed)
+      const withLabs = ts.filter(t => t.practice_hint && t.unlocked && t.theory_completed)
       setTopics(withLabs)
       if (withLabs.length > 0) setSelectedTopic(withLabs[0])
     })
@@ -42,25 +41,6 @@ export default function Lab() {
       }).catch(() => {})
     }
   }, [showTemplateModal])
-
-  const handleStart = async () => {
-    setLoading(true)
-    try {
-      const res = await startLab()
-      setLabStatus({ running: res.success, url: res.url })
-    } catch {
-      alert('Błąd uruchamiania Dockera')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleStop = async () => {
-    setLoading(true)
-    await stopLab()
-    setLabStatus({ running: false })
-    setLoading(false)
-  }
 
   const handleComplete = async () => {
     if (!selectedTopic || !writeup.exploitation.trim()) {
@@ -89,7 +69,7 @@ export default function Lab() {
     if (!selectedTemplate) return
     setGeneratingWriteup(true)
     try {
-      const res = await generateWriteup(userId, selectedTemplate.id, templateVars, `Lab: ${selectedTopic?.name || 'DVWA'}`)
+      const res = await generateWriteup(userId, selectedTemplate.id, templateVars, `Praktyka: ${selectedTopic?.name || 'TryHackMe'}`)
       setGeneratedWriteupId(res.id)
     } catch {
       alert('Błąd generowania raportu')
@@ -117,65 +97,9 @@ export default function Lab() {
     <div className="p-8 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold text-[#f0f6fc] mb-2 flex items-center gap-2">
         <FlaskConical size={24} className="text-[#bc8cff]" />
-        Docker Labs
+        Praktyka
       </h2>
-      <p className="text-[#8b949e] mb-6">Praktyczne ćwiczenia na DVWA (Damn Vulnerable Web Application)</p>
-
-      {/* Lab control panel */}
-      <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-2.5 h-2.5 rounded-full ${labStatus?.running ? 'bg-[#39d353]' : 'bg-[#f85149]'}`} />
-            <span className="text-[#c9d1d9] font-medium">
-              {labStatus?.running ? 'Lab działa' : 'Lab zatrzymany'}
-            </span>
-            {labStatus?.running && labStatus.url && (
-              <a
-                href={labStatus.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[#58a6ff] text-sm hover:underline"
-              >
-                {labStatus.url} <ExternalLink size={12} />
-              </a>
-            )}
-          </div>
-
-          <div className="flex gap-2">
-            {!labStatus?.running ? (
-              <button
-                onClick={handleStart}
-                disabled={loading}
-                className="flex items-center gap-2 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm"
-              >
-                {loading ? <Loader size={14} className="animate-spin" /> : <Play size={14} />}
-                Uruchom
-              </button>
-            ) : (
-              <>
-                <button
-                  onClick={() => resetLab().then(() => getLabStatus().then(setLabStatus))}
-                  className="flex items-center gap-2 bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-3 py-2 rounded-lg text-sm"
-                >
-                  <RefreshCw size={14} /> Reset
-                </button>
-                <button
-                  onClick={handleStop}
-                  className="flex items-center gap-2 bg-[#da3633]/20 hover:bg-[#da3633]/30 text-[#f85149] border border-[#f85149]/30 px-3 py-2 rounded-lg text-sm"
-                >
-                  <Square size={14} /> Stop
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {!labStatus?.running && (
-          <div className="text-[#8b949e] text-sm bg-[#0d1117] rounded-lg p-3">
-            💡 Wymagany Docker Desktop. Po kliknięciu "Uruchom" pobierze się obraz DVWA (~500MB, tylko pierwszy raz).
-          </div>
-        )}
-      </div>
+      <p className="text-[#8b949e] mb-6">Ćwicz temat na TryHackMe, a potem opisz, co zrobiłeś — opisanie własnymi słowami utrwala wiedzę.</p>
 
       {/* Topic selector */}
       {topics.length > 0 && (
@@ -201,7 +125,7 @@ export default function Lab() {
 
       {topics.length === 0 && (
         <div className="bg-[#161b22] border border-[#e3b341]/30 rounded-xl p-5 mb-6 text-[#e3b341] text-sm">
-          ⚠️ Brak odblokowanych labów. Ukończ teorię dla tematów z labem (np. SQL Injection).
+          ⚠️ Brak tematów do praktyki. Ukończ teorię dla tematu z ćwiczeniem praktycznym (np. SQL Injection).
         </div>
       )}
 
@@ -209,22 +133,20 @@ export default function Lab() {
       {selectedTopic && !completed && (
         <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5">
           <h3 className="text-[#f0f6fc] font-semibold mb-1">
-            Lab: {selectedTopic.name}
+            Praktyka: {selectedTopic.name}
           </h3>
           <p className="text-[#8b949e] text-sm mb-4">
-            Otwórz DVWA, wykonaj atak, a potem wypełnij writeup poniżej.
+            Znajdź pokój na TryHackMe do tego tematu, przećwicz go, a potem wypełnij writeup poniżej.
           </p>
 
-          {labStatus?.running && selectedTopic.lab_type && (
-            <a
-              href={`http://localhost:8080`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[#bc8cff] text-sm mb-4 hover:underline"
-            >
-              Otwórz DVWA w przeglądarce <ExternalLink size={14} />
-            </a>
-          )}
+          <a
+            href={thmSearchUrl(selectedTopic)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[#bc8cff] text-sm mb-4 hover:underline"
+          >
+            Szukaj pokoi na TryHackMe: {selectedTopic.practice_hint || selectedTopic.name} <ExternalLink size={14} />
+          </a>
 
           <div className="space-y-4">
             {[
@@ -252,7 +174,7 @@ export default function Lab() {
             className="mt-4 bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2"
           >
             {completing ? <Loader size={14} className="animate-spin" /> : <CheckCircle size={14} />}
-            Ukończ lab i wygeneruj writeup
+            Zapisz praktykę i wygeneruj writeup
           </button>
         </div>
       )}
@@ -262,7 +184,7 @@ export default function Lab() {
         <div className="bg-[#161b22] border border-[#39d353]/30 rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <CheckCircle size={20} className="text-[#39d353]" />
-            <h3 className="text-[#39d353] font-bold">Lab ukończony! +{completed.xp_awarded} XP</h3>
+            <h3 className="text-[#39d353] font-bold">Praktyka zapisana! +{completed.xp_awarded} XP</h3>
           </div>
 
           <div className="bg-[#0d1117] rounded-lg p-4 mb-4 font-mono text-sm">
@@ -295,7 +217,7 @@ export default function Lab() {
             onClick={() => { setCompleted(null); setWriteup({ reconnaissance: '', exploitation: '', result: '', lesson: '' }) }}
             className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-4 py-2 rounded-lg text-sm"
           >
-            Następny lab
+            Następny temat
           </button>
         </div>
       )}

@@ -2,6 +2,31 @@
 
 ---
 
+## [Unreleased] — 2026-11-03 (przegląd i dokończenie pivotu THM, plan `decisions/ACTION_PLAN_2026-11-03.md`)
+### Pivot TryHackMe
+- Usunięte laby DVWA (`labs.py`, `lab_service.py` uruchamiający kontenery przez `subprocess`) i Attack Scenario
+  (`attack.py`, strona, trasa). Krok tematu „Lab” → **Praktyka**: link do pokoi THM, writeup jak wcześniej.
+- `topics.lab_type` → nowa kolumna `practice_hint` (fraza do wyszukiwarki THM); `lab_type` zostaje (dane historyczne).
+  Lekcja teorii nie generuje już niewidocznych instrukcji labu DVWA (płatne wywołanie AI przy każdym otwarciu).
+  Przycisk „Przejdź do praktyki” w lekcji nigdy się nie pokazywał (odpowiedź nie miała `lab_type`) — naprawione.
+- **Tracker TryHackMe** (`/api/v1/thm`, strona „TryHackMe”): pokoje i ścieżki, zrobione/niezrobione, notatki, bez XP;
+  event `thm_room_completed`/`thm_path_completed` do huba, `thm_completed` w `/summary`.
+- **CTF przywrócony bez rankingu** (usunięty przez pomyłkę w `1b1f2ff` wbrew decyzji z 2026-08-09): 7 nowych zadań
+  rozwiązywalnych z treści; kara za podpowiedź (połowa punktów) wreszcie naliczana; 5 starych zadań z DVWA i zmyślonymi
+  flagami wyłączonych.
+- **Fiszki z notatek** (`/flashcards/from-notes`, max 5) i **talia składni narzędzi** (`/flashcards/decks/tools`, 24 karty).
+### Nauka
+- Mentor AI: rozmowy w bazie (wcześniej w pamięci procesu — restart je kasował; „Wyczyść” czyścił tylko ekran),
+  tryby pomocy Naprowadź/Podpowiedź/Wyjaśnij, informacja po przekroczeniu dziennego progu (100) bez blokady.
+- Fiszki: tylko FSRS (usunięty równoległy SM-2), kolejka do powtórki przeplata kategorie.
+### Fundamenty
+- **Alembic przy starcie** zamiast `create_all` (idempotentny baseline sprawdzony na kopii bazy z 2026-09-16).
+- **Docker**: obraz backendu startuje (`backend.main:app`, kontekst roota, Python 3.12), frontend przez nginx na :80.
+- Porządki: kopie bazy (22 MB), pliki `.bak` i jednorazowe skrypty usunięte z repo; lockfile zgodny (`npm ci`
+  padał); `.env.example` kompletny; domyślny model OpenRouter `gemini-2.5-flash` (2.0 wycofany → 404 przy każdym wywołaniu).
+- Jakość: ruff (konfiguracja w `pyproject.toml`) i ESLint bez błędów, CI (`.github/workflows/ci.yml`), pre-commit.
+- Testy: backend 100 → 112 (−10 usuniętych z labami/atakami, +22 nowe), frontend 4 → 15.
+
 ## [Unreleased] — 2026-10-08 (B7: port Dockera)
 - Stack Dockera wystawiał backend na `:8001` (port LinguaAI), choć `start.bat`/`start.ps1`, proxy Vite i hub
   (`MODULE_ENDPOINTS`) używają `:8003` — kolizja z LinguaAI, a hub nie widział backendu w kontenerze. Teraz

@@ -1,9 +1,10 @@
 """
 PDF generation for theory lessons using fpdf2.
 """
+import hashlib
 import logging
 import os
-import hashlib
+
 from fpdf import FPDF
 
 logger = logging.getLogger(__name__)

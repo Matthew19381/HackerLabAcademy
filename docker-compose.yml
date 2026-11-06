@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "8003:8003"
     environment:
@@ -10,14 +10,17 @@ services:
       - AI_PROVIDER=${AI_PROVIDER:-gemini}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
-      - DATABASE_URL=sqlite:///./data/HackerLabAcademy.db
+      - DATABASE_URL=sqlite:////app/data/HackerLabAcademy.db
+      - SYSTEM_GLOWNY_URL=${SYSTEM_GLOWNY_URL:-http://host.docker.internal:8000}
+      - SYSTEM_GLOWNY_MODULE_KEY=${SYSTEM_GLOWNY_MODULE_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
       - CVE_SCHEDULED_FETCH=${CVE_SCHEDULED_FETCH:-false}
     volumes:
       - backend_data:/app/data
-      - backend_audio:/app/backend/audio
-      - backend_exports:/app/backend/exports
+      - backend_audio:/app/audio
+      - backend_exports:/app/exports
     command: >
-      uvicorn main:app
+      uvicorn backend.main:app
       --host 0.0.0.0
       --port 8003
     healthcheck:

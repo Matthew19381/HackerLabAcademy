@@ -24,59 +24,67 @@ Frontend dev server runs on `:5174` and proxies `/api` to `http://localhost:8003
 
 ## Environment
 
-Copy `backend/.env.example` → `backend/.env` and set `GEMINI_API_KEY`. The SQLite database (`HackerLabAcademy.db`) is created automatically in `backend/data/` on first startup via `Base.metadata.create_all()` in `main.py`'s lifespan handler.
+Copy `backend/.env.example` → `backend/.env` and set `GEMINI_API_KEY` (or `OPENROUTER_API_KEY` + `AI_PROVIDER=openrouter`).
+The SQLite database is `HackerLabAcademy.db` in the **project root** (`backend/database.py`, independent of CWD;
+override with `DATABASE_URL`).
 
-**When adding a new SQLAlchemy model**: import it inside the lifespan block in `main.py` so it registers with `Base` before `create_all` runs.
+**Schema = Alembic** (since 2026-11-03). The lifespan calls `backend/migrations_runner.upgrade_database()`
+(`alembic upgrade head`). Revision `0001` is an idempotent baseline: it creates missing tables and adds missing
+columns to databases created by the old `create_all`, keeping data. New model → import it in
+`backend/models/__init__.py`, then from the project root:
+`alembic -c backend/alembic.ini revision --autogenerate -m "opis"` and make the migration idempotent
+(check `sa.inspect(op.get_bind())` before creating). Never `create_all` in app code.
 
 ## Architecture
 
 ### Backend
 
-**Stack**: FastAPI · SQLAlchemy (SQLite) · Google Gemini 2.0 Flash · edge-tts · fpdf2 · httpx (NVD API) · genanki
+**Stack**: FastAPI · SQLAlchemy 2 + Alembic (SQLite) · Gemini 2.5 Flash / OpenRouter / Ollama · FSRS · edge-tts · fpdf · httpx (NVD API) · genanki
 
 **Request flow**:
 ```
 Router → Service → SQLAlchemy Session (get_db dependency)
 ```
 
-**`backend/services/gemini_service.py`** is the single point of contact with Gemini. Two functions:
+**`backend/services/ai_service.py`** routes AI calls by `AI_PROVIDER` (Gemini, OpenRouter, Ollama) with fallbacks;
+`gemini_service.py` is the Gemini client. Two functions:
 - `generate_json(prompt)` — appends "Respond ONLY with valid JSON" and strips markdown fences
 - `generate_text(prompt)` — raw string response
 
 Every function calling Gemini has a hardcoded fallback dict/string for graceful degradation when the API fails.
 
-**`backend/services/lesson_generator.py`** — all AI prompt logic: theory lessons, quizzes, exercises, flashcards, CVE explanations, conversation questions.
+**`backend/services/lesson_service.py`** — all AI prompt logic: theory lessons, quizzes, exercises, flashcards, CVE explanations, conversation questions.
 
-### Key Routers (`backend/routers/`)
+### Key Routers (`backend/routers/`, all under `/api/v1`)
 
-| File | API prefix | Responsibility |
-|------|------------|-----------------|
-| `topics.py` | `/api/topics/` | Topics list, theory generation, quiz submit, prerequisites |
-| `labs.py` | `/api/labs/` | Docker lab control (start/stop/reset), DVWA integration |
-| `exercises.py` | `/api/exercises/` | Exercises CRUD, AI generation, submit answers |
-| `flashcards.py` | `/api/flashcards/` | SM-2 spaced repetition, quick-create, Anki export |
-| `conversation.py` | `/api/conversation/` | Structured AI Q&A sessions (5 turns) |
-| `mentor.py` | `/api/mentor/` | Free-form AI mentor chat |
-| `ctf.py` | `/api/ctf/` | CTF challenges, flag submission, leaderboard |
-| `defense.py` | `/api/defense/` | Defense challenges, code fix, AI evaluation |
-| `attack.py` | `/api/attack/` | Multi-step attack scenarios (kill chain) |
-| `cves.py` | `/api/cves/` | CVE Explorer, NVD API integration, refresh |
-| `videos.py` | `/api/videos/` | YouTube security videos per topic |
-| `writeups.py` | `/api/writeups/` | Write-up templates, PDF generation |
-| `certificates.py` | `/api/certificates/` | PDF certificates per category |
-| `stats.py` | `/api/stats/` | XP/level, achievements, analytics |
-| `daily.py` | `/api/daily/` | Daily completion status |
-| `articles.py` | `/api/articles/` | Security articles + quizzes |
-| `errors.py` | `/api/errors/` | Error tracking from quiz mistakes |
-| `brain.py` | `/api/brain/` | Adaptive learning agenda |
-| `downloads.py` | `/api/download/` | PDF, audio, Anki, bundle exports |
-| `vocabulary.py` | `/api/vocabulary/` | Topic terminology |
-| `terminal.py` | `/api/terminal/` | Terminal simulator scenarios |
-| `placement.py` | `/api/placement/` | User creation, level test |
+| File | Prefix | Responsibility |
+|------|--------|-----------------|
+| `thm.py` | `/thm` | TryHackMe tracker: rooms/paths, done, notes (no XP); `thm_*_completed` events |
+| `topics.py` | `/topics` | Topics, theory generation, quiz submit, practice step (`/{slug}/lab/complete`, `practice_hint`) |
+| `flashcards.py` | `/flashcards` | FSRS only, interleaved due queue, quick-create, `/from-notes`, `/decks/tools`, Anki export |
+| `ctf.py` | `/ctf` | CTF puzzles solvable from their text, hint = half points (`hint_used`), **no leaderboard** |
+| `mentor.py` | `/mentor` | AI mentor; conversation in DB (`mentor_messages`), modes guide/hint/answer, daily usage notice |
+| `exercises.py` | `/exercises` | Exercises CRUD, AI generation, submit |
+| `conversation.py` | `/conversation` | Structured AI Q&A sessions |
+| `defense.py` | `/defense` | Defense challenges, code fix, AI evaluation |
+| `cves.py` | `/cves` | CVE Explorer, NVD API |
+| `videos.py` | `/videos` | YouTube videos per topic |
+| `writeups.py` | `/writeups` | Write-up templates, PDF |
+| `certificates.py` | `/certificates` | PDF certificates per category |
+| `stats.py` | `/stats` | XP/level, achievements (informational, no ranking) |
+| `daily.py`, `brain.py` | `/daily`, `/brain` | Daily status, adaptive agenda |
+| `articles.py`, `errors.py`, `vocabulary.py` | … | Articles + quizzes, error tracking, terminology |
+| `downloads.py` | `/download` | PDF, audio, Anki, bundle exports |
+| `placement.py`, `ai_config.py` | … | User creation / level test, AI provider config |
+| `integration.py` | — | Hub contract: `GET /summary`, `POST /integrations/flush` |
+| `directives.py` | `/directives` | Hub directives (survival_mode, priority, quiet_hours) |
+
+Removed in the THM pivot (2026-11-03): `labs.py` (DVWA containers), `attack.py` (kill chain), the CTF leaderboard.
+CTF itself was restored 2026-11-03 (removed by mistake in `1b1f2ff`); the 5 old DVWA challenges are deactivated.
 
 ### Frontend
 
-**Stack**: React 18 · React Router v6 · Axios · Tailwind CSS · Vite · lucide-react · D3.js
+**Stack**: React 19 · React Router 7 · Axios · Tailwind CSS · Vite 8 · Vitest · lucide-react · D3.js
 
 **`frontend/src/api/client.js`** — all API calls. The `api` Axios instance has a response interceptor that unwraps `response.data`.
 
@@ -91,6 +99,7 @@ cd HackerLabAcademy
 docker-compose up --build
 ```
 
+- Build context of the backend is the project root (`backend/Dockerfile`, `CMD uvicorn backend.main:app`)
 - Frontend: http://localhost (nginx, multi-stage build)
 - Backend API docs: http://localhost:8003/docs
 - API proxy: nginx proxies `/api` → `http://backend:8003`
@@ -99,13 +108,23 @@ docker-compose up --build
 
 | Constant | Value | Location |
 |----------|-------|----------|
-| Lab completion XP | +30 | `routers/labs.py` |
+| Practice step XP | +50 | `routers/topics.py` (`XP_LAB`) |
 | Exercise submission XP | `score × 0.5` (max 50) | `services/exercise_service.py` |
-| CTF flag XP | points (10-50) | `routers/ctf.py` |
 | Defense completion XP | +25 | `services/defense_service.py` |
 | Level curve | `(n-1)² × 20` XP, 50 levels | `services/achievement_service.py` |
-| Gemini model | `gemini-2.0-flash` | `services/gemini_service.py` |
+| CTF solve | challenge points (50–100), half after a hint | `routers/ctf.py` |
+| TryHackMe tracker XP | **none** (decision 2026-08-09) | `routers/thm.py` |
+| Mentor daily notice threshold | 100 calls (`MENTOR_DAILY_WARN`) | `config.py` |
+| Cards from notes | max 5 | `routers/flashcards.py` |
 | API timeout (frontend) | 120 s | `api/client.js` |
+
+## Quality
+
+- Tests: `python -m pytest backend/tests -q` (from the project root); frontend `cd frontend && npx vitest run`.
+- Lint: `ruff check .` (config in `pyproject.toml`), `cd frontend && npx eslint . --max-warnings 0`.
+- CI: `.github/workflows/ci.yml` (ruff, pytest, ESLint, vitest, build). Pre-commit: `.pre-commit-config.yaml`.
+- Tests never reach paid AI or the real hub (keys blanked in `backend/tests/conftest.py`).
+- Plan: `decisions/ACTION_PLAN_2026-11-03.md`.
 
 ## Git — Mandatory Push Policy
 

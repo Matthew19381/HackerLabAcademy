@@ -29,18 +29,19 @@ export default function TheoryLesson() {
         alert(e.response?.data?.detail || 'Błąd ładowania lekcji')
         navigate('/topics')
       })
-  }, [slug, userId])
+  }, [slug, userId, navigate])
 
   // Start timing when quiz tab is opened
+  const quizItems = data?.content?.quiz
   useEffect(() => {
     if (view === 'quiz') {
       const now = Date.now()
       const initial = {}
-      const quiz = data?.content?.quiz || []
+      const quiz = quizItems || []
       quiz.forEach((_, idx) => { initial[String(idx)] = now })
       setQuestionStartTimes(initial)
     }
-  }, [view])
+  }, [view, quizItems])
 
   const handleAnswer = (idx, letter) => {
     const elapsed = Date.now() - (questionStartTimes[String(idx)] || Date.now())
@@ -54,7 +55,7 @@ export default function TheoryLesson() {
       const res = await submitQuiz(slug, userId, answers, responseTimes)
       setResult(res)
       setView('result')
-    } catch (e) {
+    } catch {
       alert('Błąd wysyłania quizu')
     } finally {
       setSubmitting(false)
@@ -309,12 +310,12 @@ export default function TheoryLesson() {
             >
               ← Wróć do tematów
             </button>
-            {topic.lab_type && (
+            {topic.practice_hint && (
               <button
-                onClick={() => navigate('/lab')}
+                onClick={() => navigate('/practice')}
                 className="bg-[#238636] hover:bg-[#2ea043] text-white px-4 py-2 rounded-lg text-sm"
               >
-                Przejdź do labu →
+                Przejdź do praktyki →
               </button>
             )}
           </div>

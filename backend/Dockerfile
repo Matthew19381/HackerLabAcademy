@@ -1,24 +1,17 @@
-# Backend Dockerfile
-FROM python:3.11-slim
+# Backend - build context is the project root (docker-compose.yml), so the code keeps its
+# package layout and `backend.main:app` imports work as in local runs (plan B2, 2026-11-03).
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install system dependencies (if needed)
-# RUN apt-get update && apt-get install -y \
-#     gcc \
-#     && rm -rf /var/lib/apt/lists/*
+COPY backend/requirements.txt backend/requirements.txt
+RUN pip install --no-cache-dir -r backend/requirements.txt
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/ backend/
 
-# Copy application
-COPY . .
+# Database, generated audio and exports live in volumes (docker-compose.yml)
+RUN mkdir -p data audio exports
 
-# Create necessary directories
-RUN mkdir -p audio exports
-
-# Expose port
 EXPOSE 8003
 
-# Run with uvicorn
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8003"]

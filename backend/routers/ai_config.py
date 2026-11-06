@@ -1,6 +1,8 @@
 import logging
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
 from backend.config import settings
 
 logger = logging.getLogger(__name__)
@@ -67,8 +69,9 @@ def set_ai_provider(req: AIProviderRequest):
 @router.get("/test")
 async def test_ai_connection(provider: str = None):
     """Test AI connection with current or specified provider."""
-    from backend.services.ai_service import generate_text
     import time
+
+    from backend.services.ai_service import generate_text
 
     test_prompt = "Respond with exactly: 'OK'"
     start = time.time()

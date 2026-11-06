@@ -1,10 +1,9 @@
 """
 Lesson bundle service: create ZIP containing PDF + audio for a lesson.
 """
+import logging
 import os
 import zipfile
-import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 PDF_EXPORTS_DIR = "exports"
 AUDIO_DIR = "audio"
 
-def create_lesson_bundle(slug: str, pdf_path: Optional[str] = None, audio_path: Optional[str] = None) -> str:
+def create_lesson_bundle(slug: str, pdf_path: str | None = None, audio_path: str | None = None) -> str:
     """
     Create a ZIP bundle with lesson PDF and audio.
 

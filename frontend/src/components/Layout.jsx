@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Map, FlaskConical, CreditCard, Bot, AlertTriangle, BarChart2, Brain, BookMarked, Terminal as TerminalIcon, Shield, Skull, Network, Award, Newspaper, Plus, X, Loader } from 'lucide-react'
+import { LayoutDashboard, Map, FlaskConical, CreditCard, Bot, AlertTriangle, BarChart2, Brain, BookMarked, Terminal as TerminalIcon, Shield, Network, Target, Flag, Award, Newspaper, Plus, X, Loader } from 'lucide-react'
 import { getStats, getUserId, quickCreateFlashcard } from '../api/client'
 import StudyTimer from './StudyTimer'
 
@@ -8,12 +8,13 @@ const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/topics', label: 'Tematy', icon: Map },
   { path: '/mindmap', label: 'Mindmap', icon: Network },
-  { path: '/lab', label: 'Lab', icon: FlaskConical },
+  { path: '/thm', label: 'TryHackMe', icon: Target },
+  { path: '/practice', label: 'Praktyka', icon: FlaskConical },
+  { path: '/ctf', label: 'CTF', icon: Flag },
   { path: '/flashcards', label: 'Fiszki', icon: CreditCard },
   { path: '/errors', label: 'Błędy', icon: AlertTriangle },
   { path: '/mentor', label: 'AI Mentor', icon: Bot },
   { path: '/defense', label: 'Defense', icon: Shield },
-  { path: '/attack', label: 'Attack', icon: Skull },
   { path: '/terminal', label: 'Terminal', icon: TerminalIcon },
   { path: '/articles', label: 'Artykuły', icon: Newspaper },
   { path: '/stats', label: 'Statystyki', icon: BarChart2 },

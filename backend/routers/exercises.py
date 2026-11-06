@@ -1,7 +1,9 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
-import json
 from backend.services.exercise_service import (
     generate_exercises_for_topic,
     get_exercises_for_topic,

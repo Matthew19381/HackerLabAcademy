@@ -1,19 +1,49 @@
 import { useState, useRef, useEffect } from 'react'
-import { mentorChat, getUserId } from '../api/client'
+import { mentorChat, getMentorSession, clearMentorSession } from '../api/client'
 import { Bot, Send, Loader, Trash2 } from 'lucide-react'
 
-const SESSION_ID = `mentor_${Date.now()}`
+// The conversation is stored by the backend (plan B3); the session id survives a page reload.
+const SESSION_KEY = 'hackerlabacademy_mentor_session'
+const newSessionId = () => `mentor_${Date.now()}`
+
+function storedSessionId() {
+  try {
+    const existing = localStorage.getItem(SESSION_KEY)
+    if (existing) return existing
+    const created = newSessionId()
+    localStorage.setItem(SESSION_KEY, created)
+    return created
+  } catch {
+    return newSessionId()
+  }
+}
+
+// Plan D1: how much the mentor gives away (graded hints)
+const MODES = [
+  { value: 'guide', label: 'Naprowadź', title: 'Jedno pytanie naprowadzające, bez odpowiedzi' },
+  { value: 'hint', label: 'Podpowiedź', title: 'Kierunek albo narzędzie, bez gotowej komendy' },
+  { value: 'answer', label: 'Wyjaśnij', title: 'Pełne wyjaśnienie z przykładem' },
+]
+
+const GREETING = {
+  role: 'assistant',
+  content: 'Cześć! Jestem Twoim AI Mentorem cyberbezpieczeństwa. Pytaj o cokolwiek — ataki, obrony, pojęcia. Wyjaśnię prosto i po polsku. 🛡️'
+}
 
 export default function Mentor() {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'Cześć! Jestem Twoim AI Mentorem cyberbezpieczeństwa. Pytaj o cokolwiek — ataki, obrony, pojęcia. Wyjaśnię prosto i po polsku. 🛡️'
-    }
-  ])
+  const [sessionId, setSessionId] = useState(storedSessionId)
+  const [messages, setMessages] = useState([GREETING])
   const [input, setInput] = useState('')
+  const [mode, setMode] = useState('answer')
+  const [usage, setUsage] = useState(null)
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef(null)
+
+  useEffect(() => {
+    getMentorSession(sessionId)
+      .then(data => { if (data.messages?.length) setMessages([GREETING, ...data.messages]) })
+      .catch(() => {})
+  }, [sessionId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -26,8 +56,9 @@ export default function Mentor() {
     setMessages(prev => [...prev, { role: 'user', content: msg }])
     setLoading(true)
     try {
-      const res = await mentorChat(SESSION_ID, msg)
+      const res = await mentorChat(sessionId, msg, null, mode)
       setMessages(prev => [...prev, { role: 'assistant', content: res.response }])
+      setUsage(res.usage || null)
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Błąd połączenia. Spróbuj ponownie.' }])
     } finally {
@@ -35,7 +66,11 @@ export default function Mentor() {
     }
   }
 
-  const clearChat = () => {
+  const clearChat = async () => {
+    await clearMentorSession(sessionId).catch(() => {})
+    const fresh = newSessionId()
+    try { localStorage.setItem(SESSION_KEY, fresh) } catch { /* private mode: session lives until reload */ }
+    setSessionId(fresh)
     setMessages([{
       role: 'assistant',
       content: 'Rozmowa wyczyszczona. O co chcesz zapytać? 🛡️'
@@ -104,8 +139,33 @@ export default function Mentor() {
         </div>
       )}
 
+      {usage?.over && (
+        <div className="mx-4 mb-2 text-xs text-[#e3b341] bg-[#e3b341]/10 border border-[#e3b341]/30 rounded-lg px-3 py-2">
+          Dziś to już {usage.today} pytań do Mentora (próg {usage.threshold}). To tylko informacja o kosztach AI — możesz pytać dalej.
+        </div>
+      )}
+
+      {/* Help mode */}
+      <div className="px-4 pt-3 flex items-center gap-2 border-t border-[#30363d] flex-shrink-0" role="radiogroup" aria-label="Ile pomocy">
+        <span className="text-xs text-[#8b949e]">Pomoc:</span>
+        {MODES.map(m => (
+          <button
+            key={m.value}
+            role="radio"
+            aria-checked={mode === m.value}
+            title={m.title}
+            onClick={() => setMode(m.value)}
+            className={`text-xs px-2.5 py-1 rounded-full border ${mode === m.value
+              ? 'border-[#58a6ff] bg-[#1f6feb]/20 text-[#58a6ff]'
+              : 'border-[#30363d] text-[#8b949e] hover:text-[#c9d1d9]'}`}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
       {/* Input */}
-      <div className="p-4 border-t border-[#30363d] flex gap-3 flex-shrink-0">
+      <div className="p-4 flex gap-3 flex-shrink-0">
         <input
           value={input}
           onChange={e => setInput(e.target.value)}

@@ -5,15 +5,17 @@ Decides: what to do today, in what order, and why.
 import json
 import logging
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from backend.database import get_db
-from backend.models.user import User
-from backend.models.topic import Topic, UserTopicProgress
 from backend.models.error_item import ErrorItem
 from backend.models.flashcard import Flashcard
-from backend.services.achievement_service import calculate_level_from_xp
+from backend.models.topic import Topic, UserTopicProgress
+from backend.models.user import User
 from backend.routers.directives import get_state as get_directive_state
+from backend.services.achievement_service import calculate_level_from_xp
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/brain", tags=["brain"])
@@ -122,7 +124,7 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
         if prog is None or not prog.theory_completed:
             if next_topic is None:
                 next_topic = t
-        elif prog.theory_completed and not prog.lab_completed and t.lab_type:
+        elif prog.theory_completed and not prog.lab_completed and t.practice_hint:
             if incomplete_topic is None:
                 incomplete_topic = t
         elif prog.quiz_score is not None and prog.quiz_score < weakest_score:
@@ -146,9 +148,9 @@ def get_daily_agenda(user_id: int, db: Session = Depends(get_db)):
         agenda.append({
             "type": "complete_lab",
             "priority": 4,
-            "title": f"Lab do ukończenia: {incomplete_topic.name}",
+            "title": f"Praktyka do zrobienia: {incomplete_topic.name}",
             "description": "Teoria zaliczona — czas na praktykę w Docker labie.",
-            "action_url": "/lab",
+            "action_url": "/practice",
             "topic_slug": incomplete_topic.slug,
             "topic_name": incomplete_topic.name,
             "xp_potential": 50,

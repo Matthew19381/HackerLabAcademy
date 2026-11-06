@@ -1,24 +1,28 @@
-from .user import User
-from .topic import Topic
+from .achievement import Achievement
+from .article import Article, ArticleQuiz, ArticleQuizAttempt, ArticleRead
+from .attack_scenario import AttackScenario, UserAttackProgress
+from .certificate import Certificate
+from .conversation import ConversationSession, ConversationTurn
+from .ctf import CtfChallenge, UserCtfAttempt
+from .cve import Cve
+from .defense import DefenseChallenge, UserDefenseAttempt
+from .directive_state import DirectiveState
+from .error_item import ErrorItem
 from .exercise import Exercise, UserExerciseAttempt
 from .flashcard import Flashcard
 from .flashcard_attempt import FlashcardAttempt
-from .conversation import ConversationSession, ConversationTurn
 from .lab_attempt import LabAttempt
-from .error_item import ErrorItem
-from .achievement import Achievement
-from .cve import Cve
-from .youtube_video import YouTubeVideo
-from .attack_scenario import AttackScenario, UserAttackProgress
-from .defense import DefenseChallenge, UserDefenseAttempt
-from .certificate import Certificate
-from .article import Article, ArticleRead, ArticleQuiz, ArticleQuizAttempt
-from .writeup_template import WriteupTemplate, Writeup
+from .mentor_message import MentorMessage
 from .outbound_event import OutboundEvent
-from .directive_state import DirectiveState
+from .thm_progress import ThmProgress
+from .topic import Topic
+from .user import User
+from .writeup_template import Writeup, WriteupTemplate
+from .youtube_video import YouTubeVideo
 
 __all__ = [
     "OutboundEvent",
+    "ThmProgress",
     "DirectiveState",
     "User",
     "Topic",
@@ -29,6 +33,7 @@ __all__ = [
     "ConversationSession",
     "ConversationTurn",
     "LabAttempt",
+    "MentorMessage",
     "ErrorItem",
     "Achievement",
     "Cve",
@@ -38,6 +43,8 @@ __all__ = [
     "DefenseChallenge",
     "UserDefenseAttempt",
     "Certificate",
+    "CtfChallenge",
+    "UserCtfAttempt",
     "Article",
     "ArticleRead",
     "ArticleQuiz",

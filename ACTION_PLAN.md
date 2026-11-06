@@ -1,5 +1,9 @@
 # ACTION PLAN — HackerLabAcademy
 
+> **Stan na 2026-11-03:** checkboxy poniżej nie były aktualizowane. Zweryfikowany stan i dalsza praca:
+> `decisions/ACTION_PLAN_2026-11-03.md` (Fazy 0–4, 6–7 tego planu zrobione tam jako A–D; Faza 8 FSRS — zrobiona,
+> SM-2 usunięty; CTF — decyzja D-HLA-1).
+
 **Data:** 2026-08-09
 **Autor:** Claude Code (audyt techniczny + plan działania), na podstawie audytu z 2026-08-09 i `MASTER_PLAN.md` / `CLAUDE.md` Systemu Głównego.
 **Cel dokumentu:** dać dowolnemu modelowi AI (bez pamięci tej rozmowy, bez dodatkowych pytań do człowieka) komplet kroków do wykonania pivotu HackerLabAcademy z samodzielnej platformy do nauki hakingu na narzędzie wspomagające istniejącą subskrypcję TryHackMe (THM) użytkownika, naprawy długu technicznego i domknięcia integracji z ekosystemem System-Główny.

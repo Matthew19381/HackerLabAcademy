@@ -1,1 +1,0 @@
-import ast; ast.parse(open('backend/main.py').read()); print('Syntax OK')

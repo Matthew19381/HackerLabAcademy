@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["frontend", ".worktrees"]
+
+[tool.ruff.lint]
+# Explicit set (ruff >=0.15 widened its defaults); B008 off: FastAPI Depends()/Query() in defaults
+select = ["E4", "E7", "E9", "F", "I", "B", "UP", "S110", "PLW1510"]
+ignore = ["B008", "B904"]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/tests/**" = ["S110"]

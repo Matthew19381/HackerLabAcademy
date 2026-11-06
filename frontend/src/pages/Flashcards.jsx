@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getDueFlashcards, reviewFlashcard, getUserId, downloadAnki, triggerDownload, quickCreateFlashcard } from '../api/client'
-import { CreditCard, Eye, EyeOff, Download, Volume2 } from 'lucide-react'
+import { getDueFlashcards, reviewFlashcard, getUserId, downloadAnki, triggerDownload, quickCreateFlashcard, addToolDeck } from '../api/client'
+import { CreditCard, Eye, EyeOff, Download, Volume2, Wrench } from 'lucide-react'
 
 export default function Flashcards() {
   const userId = getUserId()
@@ -14,6 +14,7 @@ export default function Flashcards() {
   // Quick add state
   const [quickTerm, setQuickTerm] = useState('')
   const [quickLoading, setQuickLoading] = useState(false)
+  const [deckMessage, setDeckMessage] = useState(null)
 
   useEffect(() => {
     getDueFlashcards(userId).then(data => {
@@ -65,13 +66,38 @@ export default function Flashcards() {
     }
   }
 
+  // Plan C6: tool syntax deck (nmap, gobuster, hydra, msfconsole, Burp, netcat), idempotent
+  const handleToolDeck = async () => {
+    try {
+      const res = await addToolDeck(userId)
+      setDeckMessage(res.added ? `Dodano ${res.added} fiszek ze składnią narzędzi.` : 'Talia narzędzi jest już w Twoich fiszkach.')
+      const due = await getDueFlashcards(userId)
+      setCards(due)
+      setIndex(0)
+      setDone(false)
+    } catch {
+      setDeckMessage('Nie udało się dodać talii.')
+    }
+  }
+
+  const toolDeckButton = (
+    <button
+      onClick={handleToolDeck}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:text-[#c9d1d9] hover:bg-[#21262d]"
+    >
+      <Wrench size={12} /> Talia narzędzi
+    </button>
+  )
+
   if (loading) return <div className="p-8 text-[#8b949e] text-center animate-pulse">Ładowanie fiszek...</div>
 
   if (cards.length === 0) return (
     <div className="p-8 max-w-2xl mx-auto text-center">
       <CreditCard size={48} className="text-[#8b949e] mx-auto mb-4" />
       <h2 className="text-xl font-bold text-[#f0f6fc] mb-2">Brak fiszek do powtórki</h2>
-      <p className="text-[#8b949e]">Ukończ quiz po lekcji, żeby automatycznie dodać fiszki.</p>
+      <p className="text-[#8b949e] mb-4">Ukończ quiz po lekcji, zrób fiszki z notatek do pokoju TryHackMe albo dodaj gotową talię składni narzędzi.</p>
+      {toolDeckButton}
+      {deckMessage && <p className="text-[#8b949e] text-sm mt-3">{deckMessage}</p>}
     </div>
   )
 
@@ -110,6 +136,7 @@ export default function Flashcards() {
           Fiszki
         </h2>
         <div className="flex items-center gap-3">
+          {toolDeckButton}
           <button
             onClick={handleDownloadAnki}
             disabled={downloading}
@@ -120,6 +147,8 @@ export default function Flashcards() {
           <span className="text-[#8b949e] text-sm">{index + 1} / {cards.length}</span>
         </div>
       </div>
+
+      {deckMessage && <p className="text-[#8b949e] text-sm -mt-3 mb-4">{deckMessage}</p>}
 
       {/* Quick Add Flashcard */}
       <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 mb-6">

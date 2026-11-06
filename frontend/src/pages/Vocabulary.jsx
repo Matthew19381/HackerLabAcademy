@@ -11,14 +11,6 @@ export default function Vocabulary() {
   const [tab, setTab] = useState('vocab')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    getTopics(userId).then(ts => {
-      const done = ts.filter(t => t.theory_completed)
-      setTopics(done)
-      if (done.length > 0) selectTopic(done[0].slug)
-    })
-  }, [userId])
-
   const selectTopic = async (slug) => {
     setSelectedSlug(slug)
     setVocab(null)
@@ -28,9 +20,19 @@ export default function Vocabulary() {
       const [v, r] = await Promise.all([getTopicVocabulary(slug), getTopicResources(slug)])
       setVocab(v)
       setResources(r)
-    } catch {}
+    } catch {
+      // keep the previous vocabulary view; the request is retried on the next selection
+    }
     setLoading(false)
   }
+
+  useEffect(() => {
+    getTopics(userId).then(ts => {
+      const done = ts.filter(t => t.theory_completed)
+      setTopics(done)
+      if (done.length > 0) selectTopic(done[0].slug)
+    })
+  }, [userId])
 
   return (
     <div className="p-8 max-w-4xl mx-auto">

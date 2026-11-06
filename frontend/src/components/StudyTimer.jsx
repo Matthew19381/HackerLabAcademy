@@ -37,6 +37,8 @@ export default function StudyTimer() {
       }, 1000)
     } else if (timeLeft === 0) {
       if (isRunning) {
+        // the countdown reaching zero is the external event this effect reacts to
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsRunning(false)
         // Notify
         if ('Notification' in window && Notification.permission === 'granted') {

@@ -2,10 +2,11 @@
 FSRS spaced repetition algorithm.
 """
 
-from datetime import datetime, timedelta
-from fsrs import Scheduler, Card, Rating
 import logging
 import time
+from datetime import datetime, timedelta
+
+from fsrs import Card, Rating, Scheduler
 
 logger = logging.getLogger(__name__)
 

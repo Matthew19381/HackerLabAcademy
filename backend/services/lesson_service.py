@@ -1,4 +1,5 @@
 import logging
+
 from backend.services.ai_service import generate_json, generate_text
 
 logger = logging.getLogger(__name__)
@@ -64,70 +65,6 @@ async def _generate_theory_lesson_UNUSED(topic_name, topic_slug):
             "flashcards": [
                 {"front": topic_name, "back": "Typ ataku/podatności w cyberbezpieczeństwie", "example": None}
             ]
-        }
-
-
-async def generate_lab_instructions(topic_name: str, topic_slug: str, lab_type: str) -> dict:
-    prompt = f"""Jesteś instruktorem cyberbezpieczeństwa. Napisz instrukcje do laboratorium praktycznego dla POCZĄTKUJĄCEGO.
-
-Temat: {topic_name}
-Typ labu: {lab_type}
-Środowisko: DVWA (Damn Vulnerable Web Application) działające lokalnie
-
-Napisz w języku polskim, krok po kroku, bardzo szczegółowo.
-
-Zwróć JSON:
-{{
-    "title": "Tytuł laboratorium",
-    "objective": "Cel laboratorium — czego się nauczysz",
-    "tools_needed": ["narzędzie 1", "narzędzie 2"],
-    "setup_steps": [
-        "Krok 1: ...",
-        "Krok 2: ..."
-    ],
-    "tasks": [
-        {{
-            "id": 1,
-            "title": "Zadanie 1",
-            "description": "Opis co zrobić",
-            "hint": "Wskazówka jeśli utkniesz",
-            "solution": "Rozwiązanie (payload/komenda)"
-        }}
-    ],
-    "verification_question": "Pytanie sprawdzające — co znalazłeś w bazie danych / jaki payload zadziałał",
-    "writeup_template": {{
-        "reconnaissance": "Co sprawdziłeś przed atakiem?",
-        "exploitation": "Jaki payload/technikę użyłeś?",
-        "result": "Co udało Ci się osiągnąć?",
-        "lesson": "Czego się nauczyłeś?"
-    }}
-}}"""
-
-    try:
-        return await generate_json(prompt)
-    except Exception as e:
-        logger.error(f"Error generating lab instructions for {topic_slug}: {e}")
-        return {
-            "title": f"Lab: {topic_name}",
-            "objective": f"Praktyczne ćwiczenie z {topic_name}",
-            "tools_needed": ["Przeglądarka", "DVWA"],
-            "setup_steps": ["Uruchom DVWA przez Docker", "Zaloguj się (admin/password)", "Ustaw poziom trudności na Low"],
-            "tasks": [
-                {
-                    "id": 1,
-                    "title": f"Podstawowe {topic_name}",
-                    "description": f"Wykonaj podstawowy atak {topic_name} na formularz.",
-                    "hint": "Zacznij od prostego testu.",
-                    "solution": "Patrz dokumentacja DVWA"
-                }
-            ],
-            "verification_question": "Jaki wynik uzyskałeś?",
-            "writeup_template": {
-                "reconnaissance": "Co sprawdziłeś?",
-                "exploitation": "Co zrobiłeś?",
-                "result": "Co osiągnąłeś?",
-                "lesson": "Czego się nauczyłeś?"
-            }
         }
 
 
@@ -248,13 +185,23 @@ Zasady języka (feedback o zadaniu, nie o osobie):
         }
 
 
-async def mentor_chat(message: str, history: list, topic_context: str = None) -> str:
+# Plan D1 (HL-4): graded help - the learner chooses how much the mentor gives away.
+MENTOR_MODES = {
+    "guide": "Nie podawaj odpowiedzi. Zadaj JEDNO pytanie naprowadzające, które pomoże uczniowi samemu dojść do rozwiązania.",
+    "hint": "Daj jedną konkretną podpowiedź (kierunek, narzędzie albo pojęcie), ale nie podawaj gotowej odpowiedzi ani komendy.",
+    "answer": "Wyjaśnij w pełni, z przykładem.",
+}
+
+
+async def mentor_chat(message: str, history: list, topic_context: str = None, mode: str = "answer") -> str:
     context = f"Kontekst tematu: {topic_context}\n\n" if topic_context else ""
+    instruction = MENTOR_MODES.get(mode, MENTOR_MODES["answer"])
     history_str = "\n".join([f"{m['role']}: {m['content']}" for m in history[-6:]])
 
     prompt = f"""Jesteś AI Mentorem cyberbezpieczeństwa. Pomagasz początkującemu uczniowi zrozumieć tematy z web security.
 Odpowiadaj po polsku, prosto i zrozumiale. Używaj analogii i przykładów z życia codziennego.
 Jeśli pytanie dotyczy ataków — zawsze tłumacz w kontekście EDUKACYJNYM i etycznym pentestingu.
+Tryb tej odpowiedzi: {instruction}
 
 {context}Historia rozmowy:
 {history_str}

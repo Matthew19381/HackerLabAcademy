@@ -1,13 +1,15 @@
-import logging
 import json
+import logging
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from backend.models.user import User
+from sqlalchemy.orm import Session
+
 from backend.database import get_db
 from backend.models.cve import Cve
 from backend.models.flashcard import Flashcard
+from backend.models.user import User
 from backend.services.cve_service import refresh_cves
 
 logger = logging.getLogger(__name__)

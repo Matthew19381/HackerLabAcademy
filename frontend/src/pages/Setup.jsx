@@ -15,7 +15,7 @@ export default function Setup() {
       const data = await createUser(name.trim())
       setUserId(data.user_id)
       navigate('/')
-    } catch (e) {
+    } catch {
       alert('Błąd podczas tworzenia konta. Sprawdź czy backend działa.')
     } finally {
       setLoading(false)
@@ -28,8 +28,8 @@ export default function Setup() {
         <ShieldCheck size={48} className="text-[#39d353] mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-[#f0f6fc] mb-2">HackerLabAcademy</h1>
         <p className="text-[#8b949e] mb-8">
-          Naucz się web security od podstaw.<br />
-          Teoria → Quiz → Docker Lab → Writeup.
+          Utrwalaj wiedzę z TryHackMe.<br />
+          Teoria → Quiz → Praktyka → Writeup.
         </p>
 
         <input

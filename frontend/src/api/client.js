@@ -27,12 +27,6 @@ export const submitQuiz = (slug, userId, answers, responseTimes = {}) =>
 export const completeLab = (slug, userId, writeupSteps) =>
   api.post(`/topics/${slug}/lab/complete`, { user_id: userId, writeup_steps: writeupSteps })
 
-// --- Labs ---
-export const getLabStatus = () => api.get('/labs/status')
-export const startLab = () => api.post('/labs/start')
-export const stopLab = () => api.post('/labs/stop')
-export const resetLab = () => api.post('/labs/reset')
-export const getLabUrl = (labType) => api.get(`/labs/url/${labType}`)
 
 // --- Flashcards ---
 export const getDueFlashcards = (userId) => api.get(`/flashcards/due/${userId}`)
@@ -80,11 +74,6 @@ export const generateCertificate = (category, userId) =>
 export const downloadCertificate = (certificateCode) =>
   axios.get(`/certificates/download/${certificateCode}`, { responseType: 'blob' })
 
-// --- Attack Scenarios ---
-export const getAttackScenarios = () => api.get('/attack/scenarios')
-export const getCurrentStep = (scenarioId, userId) => api.get(`/attack/scenarios/${scenarioId}/current?user_id=${userId}`)
-export const startAttackScenario = (scenarioId, userId) => api.post(`/attack/scenarios/${scenarioId}/start`, { user_id: userId })
-export const submitAttackAnswer = (scenarioId, userId, answer) => api.post(`/attack/scenarios/${scenarioId}/submit`, { user_id: userId, answer })
 
 // --- Exercises ---
 export const getExercises = (topicId) => api.get(`/exercises/topics/${topicId}`)
@@ -106,8 +95,9 @@ export const listConversationSessions = (userId) =>
   api.get(`/conversation/sessions/user/${userId}`)
 
 // --- Mentor ---
-export const mentorChat = (sessionId, message, topicContext = null) =>
-  api.post('/mentor/chat', { session_id: sessionId, message, topic_context: topicContext })
+export const mentorChat = (sessionId, message, topicContext = null, mode = 'answer') =>
+  api.post('/mentor/chat', { session_id: sessionId, message, topic_context: topicContext, mode })
+export const getMentorSession = (sessionId) => api.get(`/mentor/session/${sessionId}`)
 export const clearMentorSession = (sessionId) => api.delete(`/mentor/session/${sessionId}`)
 
 // --- Error Loop ---
@@ -178,3 +168,18 @@ export const triggerDownload = (blob, filename) => {
   a.click()
   window.URL.revokeObjectURL(url)
 }
+
+// --- TryHackMe tracker (plan C4/C5) ---
+export const getThmEntries = (userId) => api.get('/thm', { params: { user_id: userId } })
+export const createThmEntry = (data) => api.post('/thm', data)
+export const updateThmEntry = (id, data) => api.patch(`/thm/${id}`, data)
+export const deleteThmEntry = (id) => api.delete(`/thm/${id}`)
+export const flashcardsFromNotes = (userId, source, notes) =>
+  api.post('/flashcards/from-notes', { user_id: userId, source, notes })
+export const addToolDeck = (userId) => api.post('/flashcards/decks/tools', { user_id: userId })
+
+// --- CTF (restored 2026-11-03, no leaderboard) ---
+export const getCtfChallenges = (userId) => api.get('/ctf/challenges', { params: { user_id: userId } })
+export const takeCtfHint = (challengeId, userId) => api.post(`/ctf/challenges/${challengeId}/hint`, { user_id: userId })
+export const submitCtfFlag = (challengeId, userId, flag) =>
+  api.post(`/ctf/challenges/${challengeId}/submit`, { user_id: userId, flag })
